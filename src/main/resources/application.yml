@@ -1,3 +1,22 @@
+server:
+  port: 8080
+  forward-headers-strategy: framework
+
 spring:
   application:
     name: no-code-test-platform
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  info:
+    git:
+      enabled: true
+      mode: full
+    env:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
