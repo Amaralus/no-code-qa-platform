@@ -33,15 +33,14 @@ public final class RocksDbLifecycleBean implements DisposableBean {
 
             var cfDescriptors = new ArrayList<ColumnFamilyDescriptor>();
             cfDescriptors.add(new ColumnFamilyDescriptor(RocksDB.DEFAULT_COLUMN_FAMILY, columnFamilyOptions));
-            cfDescriptors.addAll(columnFamiliesNames.stream()
-                    .map(name -> new ColumnFamilyDescriptor(name.getBytes(), columnFamilyOptions))
-                    .toList());
+            columnFamiliesNames.forEach(name -> cfDescriptors.add(new ColumnFamilyDescriptor(name.getBytes(), columnFamilyOptions)));
 
             options = new DBOptions()
                     .setCreateIfMissing(true)
                     .setCreateMissingColumnFamilies(true);
 
             rocksDB = RocksDB.open(options, dirPath, cfDescriptors, columnFamilyHandleList);
+            log.debug("RocksDB initialized");
         } catch (RocksDBException e) {
             destroy();
             throw e;
@@ -61,6 +60,6 @@ public final class RocksDbLifecycleBean implements DisposableBean {
         if (options != null)
             options.close();
 
-        log.info("RocksDB successfully finished!");
+        log.debug("RocksDB successfully finished");
     }
 }
