@@ -2,6 +2,7 @@ package org.example.nocodetestplatform.rocksdb.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.nocodetestplatform.rocksdb.CustomKeyValueTemplate;
 import org.example.nocodetestplatform.rocksdb.RocksDbKeyValueAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -12,11 +13,12 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.data.config.ParsingUtils;
 import org.springframework.data.keyvalue.annotation.KeySpace;
-import org.springframework.data.keyvalue.core.KeyValueTemplate;
 import org.springframework.data.keyvalue.repository.config.KeyValueRepositoryConfigurationExtension;
 import org.springframework.data.repository.config.RepositoryConfigurationSource;
 
-import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -49,22 +51,26 @@ public class RocksDbRepositoryConfigurationExtension extends KeyValueRepositoryC
         adapterBuilder.addConstructorArgValue(dataFolder);
         adapterBuilder.addConstructorArgValue(scanKeySpaces(configurationSource));
 
-        BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(KeyValueTemplate.class);
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(CustomKeyValueTemplate.class);
         builder.addConstructorArgValue(ParsingUtils.getSourceBeanDefinition(adapterBuilder, configurationSource.getSource()));
         builder.setRole(BeanDefinition.ROLE_SUPPORT);
 
         return ParsingUtils.getSourceBeanDefinition(builder, configurationSource.getSource());
     }
 
-    private List<String> scanKeySpaces(RepositoryConfigurationSource configurationSource) {
+    private Map<String, Class<?>> scanKeySpaces(RepositoryConfigurationSource configurationSource) {
         var scanner = new ClassPathScanningCandidateComponentProvider(false);
         scanner.addIncludeFilter(new AnnotationTypeFilter(KeySpace.class));
 
-        List<String> keySpaces = configurationSource.getBasePackages()
+        Map<String, Class<?>> keySpaces = configurationSource.getBasePackages().stream()
                 .flatMap(basePackage -> scanner.findCandidateComponents(basePackage).stream())
                 .map(this::getBeanClass)
-                .map(clazz -> clazz.getAnnotation(KeySpace.class).value())
-                .toList();
+                .collect(Collectors.toMap(
+                        clazz -> clazz.getAnnotation(KeySpace.class).value().isEmpty()
+                                ? clazz.getName()
+                                : clazz.getAnnotation(KeySpace.class).value(),
+                        Function.identity()
+                ));
 
         log.debug("Key spaces found: {}", keySpaces);
         return keySpaces;
