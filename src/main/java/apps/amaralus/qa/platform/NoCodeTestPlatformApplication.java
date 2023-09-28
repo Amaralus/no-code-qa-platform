@@ -1,6 +1,6 @@
-package org.example.nocodetestplatform;
+package apps.amaralus.qa.platform;
 
-import org.example.nocodetestplatform.rocksdb.config.EnableRocksDbRepositories;
+import apps.amaralus.qa.platform.rocksdb.config.EnableRocksDbRepositories;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

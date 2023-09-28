@@ -1,4 +1,4 @@
-package org.example.nocodetestplatform.rocksdb.config;
+package apps.amaralus.qa.platform.rocksdb.config;
 
 import org.springframework.context.annotation.Import;
 import org.springframework.data.keyvalue.repository.support.KeyValueRepositoryFactoryBean;

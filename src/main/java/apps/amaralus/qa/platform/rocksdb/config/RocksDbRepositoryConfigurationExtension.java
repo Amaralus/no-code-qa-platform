@@ -1,9 +1,9 @@
-package org.example.nocodetestplatform.rocksdb.config;
+package apps.amaralus.qa.platform.rocksdb.config;
 
+import apps.amaralus.qa.platform.rocksdb.CustomKeyValueTemplate;
+import apps.amaralus.qa.platform.rocksdb.RocksDbKeyValueAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.nocodetestplatform.rocksdb.CustomKeyValueTemplate;
-import org.example.nocodetestplatform.rocksdb.RocksDbKeyValueAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;

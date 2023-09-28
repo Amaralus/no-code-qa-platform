@@ -1,4 +1,4 @@
-package org.example.nocodetestplatform.rocksdb;
+package apps.amaralus.qa.platform.rocksdb;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;

@@ -1,4 +1,4 @@
-package org.example.nocodetestplatform.rocksdb;
+package apps.amaralus.qa.platform.rocksdb;
 
 import org.springframework.data.keyvalue.core.IdentifierGenerator;
 import org.springframework.data.keyvalue.core.KeyValueAdapter;

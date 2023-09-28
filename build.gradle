@@ -4,9 +4,8 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.3'
 }
 
-// todo rename group
-group = 'org.example'
-version = '0.0.6'
+group = 'apps.amaralus'
+version = '0.0.7'
 
 java {
     sourceCompatibility = '17'

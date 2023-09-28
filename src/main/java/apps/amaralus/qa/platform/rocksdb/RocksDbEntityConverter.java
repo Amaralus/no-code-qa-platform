@@ -1,4 +1,4 @@
-package org.example.nocodetestplatform.rocksdb;
+package apps.amaralus.qa.platform.rocksdb;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

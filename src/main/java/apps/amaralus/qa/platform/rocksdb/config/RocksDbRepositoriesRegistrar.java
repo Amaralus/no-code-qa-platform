@@ -1,4 +1,4 @@
-package org.example.nocodetestplatform.rocksdb.config;
+package apps.amaralus.qa.platform.rocksdb.config;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.env.Environment;
