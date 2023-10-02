@@ -5,8 +5,6 @@ server:
 spring:
   application:
     name: no-code-test-platform
-  thymeleaf:
-    cache: false
 
 management:
   endpoints:
