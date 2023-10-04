@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'apps.amaralus'
-version = '0.0.9'
+version = '0.0.10'
 
 java {
     sourceCompatibility = '17'
@@ -53,12 +53,11 @@ jib {
         image = 'eclipse-temurin:17-jre'
     }
     to {
-        image = "$rootProject.name"
+        image = "amaralus/qa-platform"
         tags = ["$project.version"]
     }
 
     container {
-        jvmFlags = ['-Xdebug']
         mainClass = 'apps.amaralus.qa.platform.NoCodeTestPlatformApplication'
         ports = ['8080']
     }

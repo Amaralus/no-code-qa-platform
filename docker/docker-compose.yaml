@@ -3,6 +3,9 @@ version: '3.7'
 services:
 
   no-code-qa-platform:
-    image: 'no-code-qa-platform:latest'
+    image: 'amaralus/qa-platform:latest'
+    container_name: qa-platform
+    volumes:
+      - ./data/qa-platform:/rocksdb
     ports:
       - "8080:8080"

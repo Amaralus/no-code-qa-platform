@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 
 /rocksdb
+/docker/data
 
 ### STS ###
 .apt_generated
