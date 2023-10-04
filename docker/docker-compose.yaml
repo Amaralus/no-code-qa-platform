@@ -1,0 +1,8 @@
+version: '3.7'
+
+services:
+
+  no-code-qa-platform:
+    image: 'no-code-qa-platform:latest'
+    ports:
+      - "8080:8080"
