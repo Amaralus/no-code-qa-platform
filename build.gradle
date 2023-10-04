@@ -53,12 +53,11 @@ jib {
         image = 'eclipse-temurin:17-jre'
     }
     to {
-        image = "$rootProject.name"
+        image = "amaralus/qa-platform"
         tags = ["$project.version"]
     }
 
     container {
-        jvmFlags = ['-Xdebug']
         mainClass = 'apps.amaralus.qa.platform.NoCodeTestPlatformApplication'
         ports = ['8080']
     }
