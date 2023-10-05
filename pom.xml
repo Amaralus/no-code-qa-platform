@@ -26,7 +26,7 @@
     <developers>
         <developer>
             <name>Evgenii Dolgov</name>
-<!--            <email></email>-->
+            <email>navarus.n@gmail.com</email>
             <url>https://github.com/Amaralus</url>
         </developer>
         <developer>
@@ -150,10 +150,6 @@
                         <image>amaralus/qa-platform</image>
                         <tags>${project.version}</tags>
                     </to>
-                    <container>
-                        <mainClass>apps.amaralus.qa.platform.NoCodeTestPlatformApplication</mainClass>
-                        <ports>8080</ports>
-                    </container>
                 </configuration>
             </plugin>
         </plugins>
