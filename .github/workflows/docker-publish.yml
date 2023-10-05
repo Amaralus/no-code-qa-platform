@@ -30,6 +30,4 @@ jobs:
           server-id: github
 
       - name: Build image with Jib
-        run: mvn compile jib:build
-        with:
-          arguments: jib -Djib.to.auth.username=${{ secrets.DOCKER_HUB_LOGIN }} -Djib.to.auth.password=${{ secrets.DOCKER_HUB_PASS }}
+        run: mvn compile jib:build -Djib.to.auth.username=${{ secrets.DOCKER_HUB_LOGIN }} -Djib.to.auth.password=${{ secrets.DOCKER_HUB_PASS }}
