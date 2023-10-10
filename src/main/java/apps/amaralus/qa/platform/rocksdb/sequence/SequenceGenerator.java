@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class SequenceGenerator {
 
         var incrementedSequence = sequences.computeIfPresent(sequenceName, (name, sequence) -> {
             var increment = new Sequence(sequenceName, sequence.sequenceClass(), sequence.value() + 1);
-            keyValueAdapter.put(sequence, increment, Sequence.KEY_SPACE);
+            keyValueAdapter.put(name, increment, Sequence.KEY_SPACE);
             return increment;
         });
 
@@ -116,5 +117,11 @@ public class SequenceGenerator {
                 && !propertyType.equals(Integer.class)
                 && !propertyType.equals(Integer.TYPE))
             throw new InvalidPropertyException(sequenceClass, persistentProperty.getName(), "Sequence only supports long or integer types");
+    }
+
+    public Set<Class<?>> getSequencesClasses() {
+        return sequences.values().stream()
+                .map(Sequence::sequenceClass)
+                .collect(Collectors.toSet());
     }
 }

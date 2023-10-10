@@ -1,6 +1,7 @@
 package apps.amaralus.qa.platform.rocksdb;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -8,7 +9,8 @@ import java.nio.charset.StandardCharsets;
 
 public class RocksDbEntityConverter {
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper()
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
     public byte[] entityToBytes(Object entity) {
         try {
