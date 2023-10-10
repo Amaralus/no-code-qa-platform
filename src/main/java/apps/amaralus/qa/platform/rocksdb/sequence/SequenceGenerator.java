@@ -1,7 +1,8 @@
 package apps.amaralus.qa.platform.rocksdb.sequence;
 
+import apps.amaralus.qa.platform.rocksdb.RocksDbKeyValueAdapter;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.data.keyvalue.core.KeyValueAdapter;
+import org.springframework.beans.InvalidPropertyException;
 import org.springframework.data.mapping.PersistentProperty;
 import org.springframework.data.mapping.context.MappingContext;
 import org.springframework.data.mapping.model.BasicPersistentEntity;
@@ -18,14 +19,34 @@ import java.util.stream.Collectors;
 @Component
 public class SequenceGenerator {
 
-    private final Map<String, Sequence> sequences;
-    private final KeyValueAdapter keyValueAdapter;
+    private final Map<String, Sequence> sequences = new ConcurrentHashMap<>();
+    private final MappingContext<BasicPersistentEntity<?, ?>, ?> mappingContext;
+    private final RocksDbKeyValueAdapter keyValueAdapter;
 
     public SequenceGenerator(MappingContext<BasicPersistentEntity<?, ?>, ?> mappingContext,
-                             KeyValueAdapter keyValueAdapter) {
+                             RocksDbKeyValueAdapter keyValueAdapter) {
+        this.mappingContext = mappingContext;
         this.keyValueAdapter = keyValueAdapter;
+        initializeSequences();
+    }
 
-        var scannedSequences = new HashMap<>(createSequences(mappingContext));
+    public long increment(@NotNull String sequenceName) {
+        Assert.notNull(sequenceName, "Sequence name must not be null!");
+
+        var incrementedSequence = sequences.computeIfPresent(sequenceName, (name, sequence) -> {
+            var increment = new Sequence(sequenceName, sequence.sequenceClass(), sequence.value() + 1);
+            keyValueAdapter.put(sequence, increment, Sequence.KEY_SPACE);
+            return increment;
+        });
+
+        if (incrementedSequence == null)
+            throw new IllegalStateException("Sequence [" + sequenceName + "] doesn't exist!");
+
+        return incrementedSequence.value();
+    }
+
+    private void initializeSequences() {
+        var scannedSequences = createSequences();
         var existedSequences = loadSequences();
 
         for (var existed : existedSequences.entrySet()) {
@@ -44,22 +65,8 @@ public class SequenceGenerator {
                                 existedSequence.value()));
         }
 
-        sequences = new ConcurrentHashMap<>(scannedSequences);
-    }
-
-    public long increment(@NotNull String sequenceName) {
-        Assert.notNull(sequenceName, "Sequence name must not be null!");
-
-        var incrementedSequence = sequences.computeIfPresent(sequenceName, (name, sequence) -> {
-            var increment = new Sequence(sequenceName, sequence.sequenceClass(), sequence.value() + 1);
-            keyValueAdapter.put(sequence, increment, Sequence.KEY_SPACE);
-            return increment;
-        });
-
-        if (incrementedSequence == null)
-            throw new IllegalStateException("Sequence [" + sequenceName + "] doesn't exist!");
-
-        return incrementedSequence.value();
+        sequences.putAll(scannedSequences);
+        sequences.values().forEach(sequence -> keyValueAdapter.put(sequence.name(), sequence, Sequence.KEY_SPACE));
     }
 
     private Map<String, Sequence> loadSequences() {
@@ -69,8 +76,11 @@ public class SequenceGenerator {
         return map;
     }
 
-    private Map<String, Sequence> createSequences(MappingContext<BasicPersistentEntity<?, ?>, ?> mappingContext) {
-        return mappingContext.getPersistentEntities().stream()
+    private Map<String, Sequence> createSequences() {
+        Map<String, Sequence> map = keyValueAdapter.getKeySpacesEntityClasses().values().stream()
+                .filter(clazz -> !clazz.isAssignableFrom(Sequence.class))
+                // forced initialization of mapping context (by default mapping context has lazy initialization)
+                .map(mappingContext::getRequiredPersistentEntity)
                 .flatMap(persistentEntity -> ((List<?>) persistentEntity.getPersistentProperties(GeneratedSequence.class)).stream())
                 .map(PersistentProperty.class::cast)
                 .map(this::toSequence)
@@ -78,14 +88,33 @@ public class SequenceGenerator {
                         Sequence::name,
                         Function.identity()
                 ));
+        // make mutable
+        return new HashMap<>(map);
     }
 
     private Sequence toSequence(PersistentProperty<?> persistentProperty) {
+        validateProperty(persistentProperty);
+
         var sequenceClass = persistentProperty.getOwner().getType();
+
         var sequenceName = persistentProperty.getRequiredAnnotation(GeneratedSequence.class).value();
         if (sequenceName.isEmpty())
             sequenceName = sequenceClass.getName() + "." + persistentProperty.getName();
 
         return new Sequence(sequenceName, sequenceClass);
+    }
+
+    private void validateProperty(PersistentProperty<?> persistentProperty) {
+        var sequenceClass = persistentProperty.getOwner().getType();
+        if (sequenceClass.isRecord())
+            throw new InvalidPropertyException(sequenceClass, persistentProperty.getName(), "Sequences in records are not supported");
+
+        var propertyType = persistentProperty.getType();
+
+        if (!propertyType.equals(Long.class)
+                && !propertyType.equals(Long.TYPE)
+                && !propertyType.equals(Integer.class)
+                && !propertyType.equals(Integer.TYPE))
+            throw new InvalidPropertyException(sequenceClass, persistentProperty.getName(), "Sequence only supports long or integer types");
     }
 }

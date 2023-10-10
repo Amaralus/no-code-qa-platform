@@ -209,4 +209,8 @@ public final class RocksDbKeyValueAdapter extends AbstractKeyValueAdapter {
     private Class<?> getKeySpaceClass(String keySpace) {
         return keySpacesEntityClasses.get(keySpace);
     }
+
+    public Map<String, Class<?>> getKeySpacesEntityClasses() {
+        return Map.copyOf(keySpacesEntityClasses);
+    }
 }
