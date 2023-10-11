@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.rocksdb;
 
+import apps.amaralus.qa.platform.rocksdb.sequence.Sequence;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.rocksdb.*;
@@ -10,6 +11,7 @@ import org.springframework.data.util.CloseableIterator;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,8 +20,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public final class RocksDbKeyValueAdapter extends AbstractKeyValueAdapter {
-    private static final String ID_NOT_NULL_MESSAGE = "id must be not null!";
-    private static final String KEYSPACE_NOT_NULL_MESSAGE = "keyspace must be not null!";
+    private static final String ID_NOT_NULL_MESSAGE = "id must not be null!";
+    private static final String KEYSPACE_NOT_NULL_MESSAGE = "keyspace must not be null!";
     private final Map<String, ColumnFamilyHandle> keySpaces;
     private final Map<String, Class<?>> keySpacesEntityClasses;
     private final ColumnFamilyOptions columnFamilyOptions;
@@ -31,8 +33,8 @@ public final class RocksDbKeyValueAdapter extends AbstractKeyValueAdapter {
     public RocksDbKeyValueAdapter(@NotNull String dirPath, @NotNull Map<String, Class<?>> keySpacesEntityClasses) 
             throws RocksDBException {
         log.info("Starting RocksDB v{}", RocksDB.rocksdbVersion());
-        Assert.notNull(dirPath, "dirPath must be not null!");
-        Assert.notNull(keySpacesEntityClasses, "keySpacesEntityClasses must be not null!");
+        Assert.notNull(dirPath, "dirPath must not be null!");
+        Assert.notNull(keySpacesEntityClasses, "keySpacesEntityClasses must not be null!");
         
         try {
             RocksDB.loadLibrary();
@@ -40,8 +42,11 @@ public final class RocksDbKeyValueAdapter extends AbstractKeyValueAdapter {
 
             var cfDescriptors = new ArrayList<ColumnFamilyDescriptor>();
             cfDescriptors.add(new ColumnFamilyDescriptor(RocksDB.DEFAULT_COLUMN_FAMILY, columnFamilyOptions));
+            cfDescriptors.add(new ColumnFamilyDescriptor(Sequence.KEY_SPACE.getBytes(StandardCharsets.UTF_8), columnFamilyOptions));
 
-            this.keySpacesEntityClasses = keySpacesEntityClasses;
+            this.keySpacesEntityClasses = new HashMap<>(keySpacesEntityClasses);
+            this.keySpacesEntityClasses.put(Sequence.KEY_SPACE, Sequence.class);
+
             keySpacesEntityClasses.keySet()
                     .forEach(name -> cfDescriptors.add(new ColumnFamilyDescriptor(name.getBytes(), columnFamilyOptions)));
 
@@ -66,7 +71,7 @@ public final class RocksDbKeyValueAdapter extends AbstractKeyValueAdapter {
     @SuppressWarnings("NullableProblems")
     public Object put(@NotNull Object id, @NotNull Object item, @NotNull String keyspace) {
         Assert.notNull(id, ID_NOT_NULL_MESSAGE);
-        Assert.notNull(item, "item must be not null!");
+        Assert.notNull(item, "item must not be null!");
         Assert.notNull(keyspace, KEYSPACE_NOT_NULL_MESSAGE);
         
         var previous = get(id, keyspace);
@@ -183,6 +188,7 @@ public final class RocksDbKeyValueAdapter extends AbstractKeyValueAdapter {
 
     @Override
     public void destroy() {
+        log.debug("Shutdown RocksDB");
         if (keySpaces != null)
             keySpaces.values().forEach(ColumnFamilyHandle::close);
 
@@ -202,5 +208,9 @@ public final class RocksDbKeyValueAdapter extends AbstractKeyValueAdapter {
 
     private Class<?> getKeySpaceClass(String keySpace) {
         return keySpacesEntityClasses.get(keySpace);
+    }
+
+    public Map<String, Class<?>> getKeySpacesEntityClasses() {
+        return Map.copyOf(keySpacesEntityClasses);
     }
 }

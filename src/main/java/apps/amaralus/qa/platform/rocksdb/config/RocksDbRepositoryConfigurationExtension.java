@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
@@ -23,9 +24,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class RocksDbRepositoryConfigurationExtension extends KeyValueRepositoryConfigurationExtension {
-
+    private static final String ROCKS_DB_ADAPTER_BEAN_NAME = "rocksDbKeyValueAdapter";
     private final Environment environment;
-
     @Override
     public @NotNull String getModuleName() {
         return "RocksDB";
@@ -42,20 +42,29 @@ public class RocksDbRepositoryConfigurationExtension extends KeyValueRepositoryC
     }
 
     @Override
+    public void registerBeansForRoot(@NotNull BeanDefinitionRegistry registry,
+                                     @NotNull RepositoryConfigurationSource configurationSource) {
+        var dataFolder = environment.getRequiredProperty("rocksdb.data-path");
+
+        var adapterBeanDefinitionBuilder = BeanDefinitionBuilder.rootBeanDefinition(RocksDbKeyValueAdapter.class);
+        adapterBeanDefinitionBuilder.addConstructorArgValue(dataFolder);
+        adapterBeanDefinitionBuilder.addConstructorArgValue(scanKeySpaces(configurationSource));
+
+        registry.registerBeanDefinition(ROCKS_DB_ADAPTER_BEAN_NAME,
+                ParsingUtils.getSourceBeanDefinition(adapterBeanDefinitionBuilder, configurationSource.getSource()));
+
+        super.registerBeansForRoot(registry, configurationSource);
+    }
+
+    @Override
     protected AbstractBeanDefinition getDefaultKeyValueTemplateBeanDefinition(
             @NotNull RepositoryConfigurationSource configurationSource) {
 
-        var dataFolder = environment.getRequiredProperty("rocksdb.data-path");
+        var templateBeanDefinitionBuilder = BeanDefinitionBuilder.rootBeanDefinition(CustomKeyValueTemplate.class);
+        templateBeanDefinitionBuilder.addConstructorArgReference(ROCKS_DB_ADAPTER_BEAN_NAME);
+        templateBeanDefinitionBuilder.setRole(BeanDefinition.ROLE_SUPPORT);
 
-        BeanDefinitionBuilder adapterBuilder = BeanDefinitionBuilder.rootBeanDefinition(RocksDbKeyValueAdapter.class);
-        adapterBuilder.addConstructorArgValue(dataFolder);
-        adapterBuilder.addConstructorArgValue(scanKeySpaces(configurationSource));
-
-        BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(CustomKeyValueTemplate.class);
-        builder.addConstructorArgValue(ParsingUtils.getSourceBeanDefinition(adapterBuilder, configurationSource.getSource()));
-        builder.setRole(BeanDefinition.ROLE_SUPPORT);
-
-        return ParsingUtils.getSourceBeanDefinition(builder, configurationSource.getSource());
+        return ParsingUtils.getSourceBeanDefinition(templateBeanDefinitionBuilder, configurationSource.getSource());
     }
 
     private Map<String, Class<?>> scanKeySpaces(RepositoryConfigurationSource configurationSource) {

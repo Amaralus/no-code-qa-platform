@@ -9,7 +9,7 @@
         <appender-ref ref="console"/>
     </appender>
 
-    <logger level="debug" name="org.example.nocodetestplatform"/>
+    <logger level="debug" name="apps.amaralus.qa.platform"/>
 
     <root level="info">
         <appender-ref ref="console"/>

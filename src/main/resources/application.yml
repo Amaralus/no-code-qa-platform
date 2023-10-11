@@ -4,7 +4,7 @@ server:
 
 spring:
   application:
-    name: no-code-test-platform
+    name: qa-platform
 
 management:
   endpoints:
