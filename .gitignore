@@ -7,6 +7,8 @@ build/
 
 /rocksdb
 /docker/data
+/node
+/node_modules
 
 ### STS ###
 .apt_generated
@@ -39,3 +41,4 @@ out/
 ### VS Code ###
 .vscode/
 /target
+/node_modules/

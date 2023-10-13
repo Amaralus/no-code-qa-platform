@@ -13,7 +13,7 @@
 
     <groupId>apps.amaralus</groupId>
     <artifactId>no-code-qa-platform</artifactId>
-    <version>0.0.15</version>
+    <version>0.0.16</version>
     <packaging>jar</packaging>
 
     <licenses>
@@ -132,6 +132,22 @@
                         <image>amaralus/qa-platform</image>
                         <tags>${project.version}</tags>
                     </to>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.14.0</version>
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <nodeVersion>v18.18.1</nodeVersion>
                 </configuration>
             </plugin>
         </plugins>
