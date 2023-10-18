@@ -9,7 +9,7 @@ import java.util.List;
 
 @KeySpace("testCase")
 @Data
-public class TestCase {
+public class TestCaseModel {
     @Id
     @GeneratedSequence("test-case-id")
     private long id;

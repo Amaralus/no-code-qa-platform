@@ -13,7 +13,7 @@
 
     <groupId>apps.amaralus</groupId>
     <artifactId>no-code-qa-platform</artifactId>
-    <version>0.0.17</version>
+    <version>0.0.18</version>
     <packaging>jar</packaging>
 
     <licenses>
@@ -45,6 +45,11 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <rocksdb.version>8.5.3</rocksdb.version>
+        <guava.version>32.0.0-jre</guava.version>
+        <jib.version>3.4.0</jib.version>
+        <frontend.maven.plugin.version>1.14.0</frontend.maven.plugin.version>
+        <nodejs.version>v18.18.1</nodejs.version>
     </properties>
 
     <dependencies>
@@ -75,18 +80,27 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.rocksdb</groupId>
             <artifactId>rocksdbjni</artifactId>
-            <version>8.5.3</version>
+            <version>${rocksdb.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
         </dependency>
 
         <dependency>
@@ -123,7 +137,7 @@
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>${jib.version}</version>
                 <configuration>
                     <from>
                         <image>eclipse-temurin:17-jre</image>
@@ -137,7 +151,7 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.14.0</version>
+                <version>${frontend.maven.plugin.version}</version>
                 <executions>
                     <execution>
                         <id>install node and npm</id>
@@ -147,7 +161,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <nodeVersion>v18.18.1</nodeVersion>
+                    <nodeVersion>${nodejs.version}</nodeVersion>
                 </configuration>
             </plugin>
         </plugins>

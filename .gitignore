@@ -9,6 +9,7 @@ build/
 /docker/data
 /node
 /node_modules
+package-lock.json
 
 ### STS ###
 .apt_generated

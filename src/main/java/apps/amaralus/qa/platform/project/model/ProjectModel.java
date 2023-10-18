@@ -1,12 +1,12 @@
-package apps.amaralus.qa.platform.project;
+package apps.amaralus.qa.platform.project.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.keyvalue.annotation.KeySpace;
 
 @KeySpace("project")
-public record Project(
+public record ProjectModel(
         @Id String name,
-        long rootFolder,
-        String description
+        String description,
+        long rootFolder
 ) {
 }
