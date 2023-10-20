@@ -13,7 +13,7 @@
 
     <groupId>apps.amaralus</groupId>
     <artifactId>no-code-qa-platform</artifactId>
-    <version>0.0.18</version>
+    <version>0.0.19</version>
     <packaging>jar</packaging>
 
     <licenses>
