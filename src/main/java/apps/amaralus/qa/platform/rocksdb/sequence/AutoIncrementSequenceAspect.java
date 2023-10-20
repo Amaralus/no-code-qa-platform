@@ -27,16 +27,29 @@ public class AutoIncrementSequenceAspect {
     }
 
     @Around(value = "execution(public * org.springframework.data.keyvalue.repository.KeyValueRepository.save(..))")
-    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object aroundSave(ProceedingJoinPoint joinPoint) throws Throwable {
         var entity = joinPoint.getArgs()[0];
 
+        handleEntity(entity);
+
+        return joinPoint.proceed(new Object[]{entity});
+    }
+
+    @Around(value = "execution(* org.springframework.data.repository.CrudRepository.saveAll(..))")
+    public Object aroundSaveAll(ProceedingJoinPoint joinPoint) throws Throwable {
+        var entities = (Iterable<?>) joinPoint.getArgs()[0];
+
+        entities.forEach(this::handleEntity);
+
+        return joinPoint.proceed(new Object[]{entities});
+    }
+
+    private void handleEntity(Object entity) {
         if (sequences.contains(entity.getClass())) {
             var persistentEntity = mappingContext.getRequiredPersistentEntity(entity.getClass());
             for (var persistentProperty : persistentEntity.getPersistentProperties(GeneratedSequence.class))
                 incrementSequence(persistentEntity.getPropertyAccessor(entity), persistentProperty);
         }
-
-        return joinPoint.proceed(new Object[]{entity});
     }
 
     @SuppressWarnings("java:S2589")

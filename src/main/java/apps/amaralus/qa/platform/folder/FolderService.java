@@ -16,4 +16,8 @@ public class FolderService {
         var root = new FolderModel("root", projectName);
         return folderRepository.save(root);
     }
+
+    public void deleteAllByProject(String project) {
+        folderRepository.deleteAll(folderRepository.findAllByProject(project));
+    }
 }

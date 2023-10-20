@@ -1,10 +1,13 @@
 package apps.amaralus.qa.platform.folder.model;
 
+import apps.amaralus.qa.platform.label.LabelModel;
 import apps.amaralus.qa.platform.rocksdb.sequence.GeneratedSequence;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.keyvalue.annotation.KeySpace;
+
+import java.util.List;
 
 @KeySpace("folder")
 @Data
@@ -15,6 +18,7 @@ public class FolderModel {
     private long id;
     private String name;
     private String description;
+    private List<LabelModel> labels;
     private Long parent;
     private String project;
 
