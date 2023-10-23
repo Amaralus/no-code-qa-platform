@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.project;
 
+import apps.amaralus.qa.platform.project.model.ProjectModel;
 import apps.amaralus.qa.platform.project.model.api.Project;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -30,13 +31,13 @@ public class ProjectController {
     }
 
     @PatchMapping("/{id}/description")
-    public void updateDescription(@PathVariable String id, @RequestParam String description) {
-        projectService.updateDescription(id, description);
+    public ProjectModel updateDescription(@PathVariable String id, @RequestParam String description) {
+        return projectService.updateDescription(id, description);
     }
 
     @PatchMapping("/{id}/name")
-    public void updateName(@PathVariable String id, @RequestParam @NotBlank String name) {
-        projectService.updateName(id, name);
+    public ProjectModel updateName(@PathVariable String id, @RequestParam @NotBlank String name) {
+        return projectService.updateName(id, name);
     }
 
     @DeleteMapping("/{id}")
