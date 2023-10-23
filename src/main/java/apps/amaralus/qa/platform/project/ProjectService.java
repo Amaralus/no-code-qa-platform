@@ -8,6 +8,7 @@ import apps.amaralus.qa.platform.testcase.TestCaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -17,7 +18,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ProjectService {
-
+    private static final String ID_NOT_NULL_MESSAGE = "id must not be null!";
+    private static final String PROJECT_TEXT = "Project [";
     private final ProjectRepository projectRepository;
     private final FolderService folderService;
     private final TestCaseService testCaseService;
@@ -26,34 +28,45 @@ public class ProjectService {
     public @NotNull ProjectModel create(@NotNull Project project) {
         Assert.notNull(project, "project must not be null!");
 
-        if (projectRepository.existsById(project.name()))
-            throw new IllegalArgumentException("Project [" + project.name() + "] already exists!");
+        if (projectRepository.existsById(project.id()))
+            throw new IllegalArgumentException(PROJECT_TEXT + project.id() + "] already exists!");
 
-        var rootFolder = folderService.createProjectRoot(project.name());
+        var rootFolder = folderService.createProjectRoot(project.id());
 
-        return projectRepository.save(new ProjectModel(project.name(), project.description(), rootFolder.getId()));
+        return projectRepository.save(new ProjectModel(project.id(), project.name(), project.description(), rootFolder.getId()));
     }
 
-    public @NotNull ProjectModel updateDescription(@NotNull String projectName, @NotNull String description) {
-        Assert.notNull(projectName, "projectName must not be null!");
-        Assert.notNull(description, "description must not be null!");
+    public @NotNull ProjectModel updateDescription(@NotNull String id, @Nullable String description) {
+        Assert.notNull(id, ID_NOT_NULL_MESSAGE);
 
-        var project = projectRepository.findById(projectName)
-                .orElseThrow(() -> new IllegalArgumentException("Project [" + projectName + "] not exists!"));
+        var project = projectRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(PROJECT_TEXT + id + "] not exists!"));
 
-        return projectRepository.save(new ProjectModel(project.name(), description, project.rootFolder()));
+        return projectRepository.save(new ProjectModel(project.id(), project.name(), description, project.rootFolder()));
     }
 
-    public void delete(@NotNull String projectName) {
-        Assert.notNull(projectName, "projectName must not be null!");
+    public @NotNull ProjectModel updateName(@NotNull String id, @NotNull String name) {
+        Assert.notNull(id, ID_NOT_NULL_MESSAGE);
+        Assert.notNull(name, "name must not be null!");
 
-        if (!projectRepository.existsById(projectName))
+        var project = projectRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(PROJECT_TEXT + id + "] not exists!"));
+
+        return projectRepository.save(new ProjectModel(project.id(), name, project.description(), project.rootFolder()));
+    }
+
+    public void delete(@NotNull String id) {
+        Assert.notNull(id, ID_NOT_NULL_MESSAGE);
+
+        if (!projectRepository.existsById(id))
             return;
 
         // возможно стоит ввести общий интерфейс для операций с привязкой к проекту
-        labelService.deleteAllByProject(projectName);
-        testCaseService.deleteAllByProject(projectName);
-        folderService.deleteAllByProject(projectName);
+        labelService.deleteAllByProject(id);
+        testCaseService.deleteAllByProject(id);
+        folderService.deleteAllByProject(id);
+
+        projectRepository.deleteById(id);
     }
 
     public List<ProjectModel> findAll() {

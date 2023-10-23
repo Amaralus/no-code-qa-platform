@@ -2,8 +2,11 @@ package apps.amaralus.qa.platform;
 
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.ErrorResponseException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ServerErrorException;
@@ -24,6 +27,11 @@ public class ErrorHandler {
     @ExceptionHandler(ErrorResponseException.class)
     public ErrorResponse captureErrorResponseException(ErrorResponseException e) {
         return e;
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Object captureValidationException(MethodArgumentNotValidException e) {
+        return new ErrorResponseException(HttpStatus.BAD_REQUEST, ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage()), e);
     }
 
     private String buildErrorMessage(UUID errorId, Throwable t) {
