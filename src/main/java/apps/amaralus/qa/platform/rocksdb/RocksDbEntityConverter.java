@@ -45,7 +45,11 @@ public class RocksDbEntityConverter {
     public Object bytesToId(byte[] bytes, Class<?> idClass) {
         if (idClass.isAssignableFrom(Integer.class))
             return bytesToInt(bytes);
+        if (idClass.isAssignableFrom(Integer.TYPE))
+            return bytesToInt(bytes);
         else if (idClass.isAssignableFrom(Long.class))
+            return bytesToLong(bytes);
+        else if (idClass.isAssignableFrom(Long.TYPE))
             return bytesToLong(bytes);
         else if (idClass.isAssignableFrom(String.class))
             return new String(bytes, StandardCharsets.UTF_8);

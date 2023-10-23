@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.testcase;
 
+import apps.amaralus.qa.platform.label.LabelModel;
 import apps.amaralus.qa.platform.rocksdb.sequence.GeneratedSequence;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -9,14 +10,14 @@ import java.util.List;
 
 @KeySpace("testCase")
 @Data
-public class TestCase {
+public class TestCaseModel {
     @Id
     @GeneratedSequence("test-case-id")
     private long id;
     private String name;
     private String description;
     private Status status;
-    private List<Label> labels;
+    private List<LabelModel> labels;
     private List<TestStep> testSteps;
     private long folder;
     private String project;
