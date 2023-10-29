@@ -29,7 +29,6 @@ public class EnvironmentService {
         EnvironmentModel environmentModel = environmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(EnvironmentModel.class.getName(), id.toString()));
 
-        environmentModel.setName(environment.name());
         environmentModel.setDescription(environment.description());
 
        return environmentRepository.save(environmentModel);
