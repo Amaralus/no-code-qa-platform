@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   no-code-qa-platform:
-    image: 'amaralus/qa-platform:0.0.19'
+    image: 'amaralus/qa-platform:0.0.20'
     container_name: qa-platform
     volumes:
       - ./data/qa-platform:/rocksdb
