@@ -49,7 +49,7 @@
         <guava.version>32.0.0-jre</guava.version>
         <jib.version>3.4.0</jib.version>
         <frontend.maven.plugin.version>1.14.0</frontend.maven.plugin.version>
-        <nodejs.version>v18.18.1</nodejs.version>
+        <nodejs.version>v18.18.2</nodejs.version>
     </properties>
 
     <dependencies>
