@@ -1,9 +1,12 @@
 package apps.amaralus.qa.platform.project;
 
+import apps.amaralus.qa.platform.dataset.DatasetService;
+import apps.amaralus.qa.platform.environment.EnvironmentService;
 import apps.amaralus.qa.platform.folder.FolderService;
 import apps.amaralus.qa.platform.label.LabelService;
 import apps.amaralus.qa.platform.project.model.ProjectModel;
 import apps.amaralus.qa.platform.project.model.api.Project;
+import apps.amaralus.qa.platform.service.ITServiceService;
 import apps.amaralus.qa.platform.testcase.TestCaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +27,9 @@ public class ProjectService {
     private final FolderService folderService;
     private final TestCaseService testCaseService;
     private final LabelService labelService;
+    private final EnvironmentService environmentService;
+    private final ITServiceService itService;
+    private final DatasetService datasetService;
 
     public @NotNull ProjectModel create(@NotNull Project project) {
         Assert.notNull(project, "project must not be null!");
@@ -65,6 +71,9 @@ public class ProjectService {
         labelService.deleteAllByProject(id);
         testCaseService.deleteAllByProject(id);
         folderService.deleteAllByProject(id);
+        environmentService.deleteAllByProject(id);
+        itService.deleteAllByProject(id);
+        datasetService.deleteAllByProject(id);
 
         projectRepository.deleteById(id);
     }
