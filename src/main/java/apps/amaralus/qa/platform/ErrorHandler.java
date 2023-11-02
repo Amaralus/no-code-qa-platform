@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform;
 
+import apps.amaralus.qa.platform.exception.EntityNotFoundException;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,11 @@ public class ErrorHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Object captureValidationException(MethodArgumentNotValidException e) {
         return new ErrorResponseException(HttpStatus.BAD_REQUEST, ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage()), e);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public Object captureEntityNotFoundException(EntityNotFoundException e) {
+        return new ErrorResponseException(HttpStatus.NOT_FOUND, ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage()), e);
     }
 
     private String buildErrorMessage(UUID errorId, Throwable t) {
