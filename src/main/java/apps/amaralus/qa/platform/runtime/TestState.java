@@ -1,6 +1,6 @@
 package apps.amaralus.qa.platform.runtime;
 
-public enum ExecutionState {
+public enum TestState {
     CREATED,
     QUEUED,
     RUNNING,

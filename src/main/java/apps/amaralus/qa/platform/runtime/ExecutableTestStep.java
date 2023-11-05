@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static apps.amaralus.qa.platform.runtime.ExecutionState.*;
+import static apps.amaralus.qa.platform.runtime.TestState.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,25 +24,33 @@ public class ExecutableTestStep {
     private final StepAction stepAction;
     private final long timeout;
     private final TimeUnit timeUnit;
+    private final Runnable controlCallback;
     @Getter
     @Setter
-    private ExecutionState state = CREATED;
+    private TestState state = CREATED;
     @Getter
     private String resultMessage = "";
-    private CompletableFuture<ExecutionResult> task;
+    private CompletableFuture<ExecutionResult> stepTask;
+
+    public ExecutableTestStep(StepAction stepAction, long timeout, TimeUnit timeUnit) {
+        this(stepAction, timeout, timeUnit, null);
+    }
 
     public void execute(@NotNull ExecutorService executorService) {
         Assert.notNull(executorService, "executorService must not be null!");
 
         setState(RUNNING);
-        task = CompletableFuture.supplyAsync(stepAction, executorService);
-        task.completeOnTimeout(new TimeoutResult(timeout, timeUnit), timeout, timeUnit)
+        stepTask = CompletableFuture.supplyAsync(stepAction, executorService);
+        var handleTask = stepTask.completeOnTimeout(new TimeoutResult(timeout, timeUnit), timeout, timeUnit)
                 .exceptionally(ErrorResult::new)
                 .thenAccept(this::handleResult);
+
+        if (controlCallback != null)
+            handleTask.thenRun(controlCallback);
     }
 
     public void cancel() {
-        task.cancel(false);
+        stepTask.cancel(false);
     }
 
     private void handleResult(ExecutionResult result) {
