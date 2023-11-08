@@ -7,8 +7,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.util.Assert;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
@@ -19,12 +17,14 @@ import static apps.amaralus.qa.platform.runtime.TestState.*;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ExecutableTestStep {
+public class ExecutableTestStep implements StageTask {
 
     private final StepAction stepAction;
     private final long timeout;
     private final TimeUnit timeUnit;
-    private final Runnable controlCallback;
+    private final ExecutorService executorService;
+    @Setter
+    private Runnable taskFinishCallback;
     @Getter
     @Setter
     private TestState state = CREATED;
@@ -32,21 +32,15 @@ public class ExecutableTestStep {
     private String resultMessage = "";
     private CompletableFuture<ExecutionResult> stepTask;
 
-    public ExecutableTestStep(StepAction stepAction, long timeout, TimeUnit timeUnit) {
-        this(stepAction, timeout, timeUnit, null);
-    }
-
-    public void execute(@NotNull ExecutorService executorService) {
-        Assert.notNull(executorService, "executorService must not be null!");
-
+    public void execute() {
         setState(RUNNING);
         stepTask = CompletableFuture.supplyAsync(stepAction, executorService);
         var handleTask = stepTask.completeOnTimeout(new TimeoutResult(timeout, timeUnit), timeout, timeUnit)
                 .exceptionally(ErrorResult::new)
                 .thenAccept(this::handleResult);
 
-        if (controlCallback != null)
-            handleTask.thenRun(controlCallback);
+        if (taskFinishCallback != null)
+            handleTask.thenRun(taskFinishCallback);
     }
 
     public void cancel() {
