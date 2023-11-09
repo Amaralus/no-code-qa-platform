@@ -1,10 +1,6 @@
 package apps.amaralus.qa.platform.runtime.result;
 
-import java.util.Optional;
-
 public interface ExecutionResult {
-
-    Optional<Object> payload();
 
     default boolean isFailed() {
         return false;

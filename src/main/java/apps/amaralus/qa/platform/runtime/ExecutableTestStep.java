@@ -20,9 +20,11 @@ import static apps.amaralus.qa.platform.runtime.TestState.*;
 public class ExecutableTestStep implements StageTask {
 
     private final StepAction stepAction;
-    private final long timeout;
-    private final TimeUnit timeUnit;
     private final ExecutorService executorService;
+    // временно тут
+    private final TestContext testContext = new TestContext();
+    private long timeout = 10L;
+    private TimeUnit timeUnit = TimeUnit.SECONDS;
     @Setter
     private Runnable taskFinishCallback;
     @Getter
@@ -34,8 +36,8 @@ public class ExecutableTestStep implements StageTask {
 
     public void execute() {
         setState(RUNNING);
-        stepTask = CompletableFuture.supplyAsync(stepAction, executorService);
-        var handleTask = stepTask.completeOnTimeout(new TimeoutResult(timeout, timeUnit), timeout, timeUnit)
+        stepTask = CompletableFuture.supplyAsync(this::executeAction, executorService);
+        var handleTask = stepTask.completeOnTimeout(timeoutResult(), timeout, timeUnit)
                 .exceptionally(ErrorResult::new)
                 .thenAccept(this::handleResult);
 
@@ -44,7 +46,13 @@ public class ExecutableTestStep implements StageTask {
     }
 
     public void cancel() {
-        stepTask.cancel(false);
+        if (stepTask != null)
+            stepTask.cancel(false);
+    }
+
+    private ExecutionResult executeAction() {
+        stepAction.execute(testContext);
+        return testContext.getExecutionResult();
     }
 
     private void handleResult(ExecutionResult result) {
@@ -69,5 +77,14 @@ public class ExecutableTestStep implements StageTask {
         }
         setState(ERROR);
         log.error("Test-step error", errorResult.throwable());
+    }
+
+    private TimeoutResult timeoutResult() {
+        return new TimeoutResult(timeout, timeUnit);
+    }
+
+    public void timeout(long timeout, TimeUnit timeUnit) {
+        this.timeout = timeout;
+        this.timeUnit = timeUnit;
     }
 }
