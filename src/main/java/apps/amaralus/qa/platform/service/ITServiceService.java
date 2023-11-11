@@ -3,37 +3,46 @@ package apps.amaralus.qa.platform.service;
 import apps.amaralus.qa.platform.exception.EntityNotFoundException;
 import apps.amaralus.qa.platform.project.ProjectRepository;
 import apps.amaralus.qa.platform.project.model.ProjectModel;
+import apps.amaralus.qa.platform.service.mapper.ITServiceMapper;
 import apps.amaralus.qa.platform.service.model.ITServiceModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ITServiceService {
     private final ITServiceRepository itServiceRepository;
     private final ProjectRepository projectRepository;
+    private final ITServiceMapper itServiceMapper;
 
-    public void deleteAllByProject(String project) {
-        itServiceRepository.deleteAllByProject(project);
+    public List<ITService> findAllByProject(String project) {
+        return itServiceMapper.toITServices(itServiceRepository.findAllByProject(project));
     }
 
-    public ITServiceModel createService(ITService itService) {
+    public void deleteAllByProject(String project) {
+        itServiceRepository.deleteAll(itServiceRepository.findAllByProject(project));
+    }
+
+    public ITService createService(ITService itService) {
 
         projectRepository.findById(itService.project())
                 .orElseThrow(() -> new EntityNotFoundException(ProjectModel.class.getName(), itService.project()));
 
-        return itServiceRepository.save(new ITServiceModel(itService.name(), itService.description(), itService.project()));
+        ITServiceModel itServiceModel = itServiceMapper.toITServiceModel(itService);
+
+        return itServiceMapper.toITService(itServiceRepository.save(itServiceModel));
     }
 
-    public ITServiceModel updateService(Long id, ITService itService) {
+    public ITService updateService(Long id, ITService itService) {
 
         ITServiceModel itServiceModel = itServiceRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ITServiceModel.class.getName(), id.toString()));
 
-        itServiceModel.setName(itService.name());
-        itServiceModel.setDescription(itService.description());
+        ITServiceModel updated = itServiceMapper.update(itServiceModel, itService);
 
-        return itServiceRepository.save(itServiceModel);
+        return itServiceMapper.toITService(itServiceRepository.save(updated));
     }
 
     public void deleteService(Long id) {

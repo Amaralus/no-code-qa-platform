@@ -18,10 +18,4 @@ public class EnvironmentModel {
     private String description;
     private String project;
     private long dataset;
-
-    public EnvironmentModel(String name, String description, String project) {
-        this.name = name;
-        this.description = description;
-        this.project = project;
-    }
 }

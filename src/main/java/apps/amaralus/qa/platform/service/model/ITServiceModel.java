@@ -21,18 +21,4 @@ public class ITServiceModel {
         private String project;
         private List<EnvironmentModel> environments;
         private long dataset;
-
-        public ITServiceModel(String name, String description, String project) {
-                this.name = name;
-                this.description = description;
-                this.project = project;
-        }
-
-        public ITServiceModel(String name, String description, String project, List<EnvironmentModel> environments, long dataset) {
-                this.name = name;
-                this.description = description;
-                this.project = project;
-                this.environments = environments;
-                this.dataset = dataset;
-        }
 }

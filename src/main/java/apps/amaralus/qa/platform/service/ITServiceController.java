@@ -4,8 +4,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/it-services")
@@ -15,15 +18,20 @@ public class ITServiceController {
 
     private final ITServiceService itServiceService;
 
+    @GetMapping
+    public ResponseEntity<List<ITService>> findAll(@RequestParam String project) {
+        return ResponseEntity.ok(itServiceService.findAllByProject(project));
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createService(@Valid @RequestBody ITService itService) {
-        itServiceService.createService(itService);
+    public ResponseEntity<ITService> createService(@Valid @RequestBody ITService itService) {
+        return ResponseEntity.ok(itServiceService.createService(itService));
     }
 
     @PatchMapping("/{id}")
-    public void updateService(@PathVariable Long id, @RequestBody ITService itService) {
-        itServiceService.updateService(id, itService);
+    public ResponseEntity<ITService> updateService(@PathVariable Long id, @RequestBody ITService itService) {
+        return ResponseEntity.ok(itServiceService.updateService(id, itService));
     }
 
     @DeleteMapping("/{id}")

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 public record ITService(
         @NotBlank String name,
         String description,
-        @NotBlank String project
+        @NotBlank String project,
+        long dataset
 ) {
 }
