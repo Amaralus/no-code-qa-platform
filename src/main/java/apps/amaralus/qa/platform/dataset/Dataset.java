@@ -8,6 +8,6 @@ public record Dataset(
         String alias,
         String description,
         String project,
-        Map<String, String> variables
+        Map<String, Object> variables
 ) {
 }

@@ -17,5 +17,5 @@ public class DatasetModel {
     private String alias;
     private String description;
     private String project;
-    private Map<String, String> variables;
+    private Map<String, Object> variables;
 }
