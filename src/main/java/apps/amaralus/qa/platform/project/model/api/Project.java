@@ -7,6 +7,7 @@ public record Project(
         @Pattern(regexp = "^[a-z0-9]+(?:-[a-z0-9]+)*$", message = "Must be in kebab-case")
         String id,
         @NotBlank String name,
-        String description
+        String description,
+        long dataset
 ) {
 }

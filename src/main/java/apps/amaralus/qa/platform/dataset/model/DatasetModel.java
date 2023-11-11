@@ -1,4 +1,4 @@
-package apps.amaralus.qa.platform.dataset;
+package apps.amaralus.qa.platform.dataset.model;
 
 import apps.amaralus.qa.platform.rocksdb.sequence.GeneratedSequence;
 import lombok.Data;
@@ -14,7 +14,8 @@ public class DatasetModel {
     @GeneratedSequence("dataset-id")
     private long id;
     private String name;
+    private String alias;
     private String description;
     private String project;
-    private Map<String, String> variables;
+    private Map<String, Object> variables;
 }
