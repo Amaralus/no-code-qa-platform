@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.label;
 
+import apps.amaralus.qa.platform.label.model.LabelModel;
 import org.springframework.data.keyvalue.repository.KeyValueRepository;
 
 import java.util.List;
