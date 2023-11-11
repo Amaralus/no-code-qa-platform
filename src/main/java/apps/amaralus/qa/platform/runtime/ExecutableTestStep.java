@@ -17,12 +17,13 @@ import static apps.amaralus.qa.platform.runtime.TestState.*;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ExecutableTestStep implements StageTask {
+public class ExecutableTestStep implements StageTask, ExecutorServiceAware {
 
     private final StepAction stepAction;
-    private final ExecutorService executorService;
     // временно тут
     private final TestContext testContext = new TestContext();
+    @Setter
+    private ExecutorService executorService;
     private long timeout = 10L;
     private TimeUnit timeUnit = TimeUnit.SECONDS;
     @Setter
@@ -34,6 +35,7 @@ public class ExecutableTestStep implements StageTask {
     private String resultMessage = "";
     private CompletableFuture<ExecutionResult> stepTask;
 
+    @Override
     public void execute() {
         setState(RUNNING);
         stepTask = CompletableFuture.supplyAsync(this::executeAction, executorService);

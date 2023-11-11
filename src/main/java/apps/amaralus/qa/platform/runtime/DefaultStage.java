@@ -42,4 +42,14 @@ public class DefaultStage implements Stage {
         Assert.notNull(stage, "Stage must not be null!");
         outputStages.add(stage);
     }
+
+    @Override
+    public int inputsCount() {
+        return inputBarrier;
+    }
+
+    @Override
+    public int outputsCount() {
+        return outputStages.size();
+    }
 }
