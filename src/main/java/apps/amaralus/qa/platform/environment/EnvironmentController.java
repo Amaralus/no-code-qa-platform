@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,19 +18,19 @@ public class EnvironmentController {
     private final EnvironmentService environmentService;
 
     @GetMapping
-    public ResponseEntity<List<Environment>> findAll(@RequestParam String project) {
-        return ResponseEntity.ok(environmentService.findAllByProject(project));
+    public List<Environment> findAll(@RequestParam String project) {
+        return environmentService.findAllByProject(project);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createEnvironment(@Valid @RequestBody Environment environment) {
-        environmentService.createEnvironment(environment);
+    public Environment createEnvironment(@Valid @RequestBody Environment environment) {
+        return environmentService.createEnvironment(environment);
     }
 
     @PatchMapping("/{id}")
-    public void updateEnvironment(@PathVariable Long id, @RequestBody Environment environment) {
-        environmentService.updateEnvironment(id, environment);
+    public Environment updateEnvironment(@PathVariable Long id, @RequestBody Environment environment) {
+        return environmentService.updateEnvironment(id, environment);
     }
 
     @DeleteMapping("/{id}")

@@ -3,7 +3,7 @@ package apps.amaralus.qa.platform.service;
 import apps.amaralus.qa.platform.exception.EntityNotFoundException;
 import apps.amaralus.qa.platform.project.ProjectRepository;
 import apps.amaralus.qa.platform.project.model.ProjectModel;
-import apps.amaralus.qa.platform.service.mapper.ITServiceMapper;
+import apps.amaralus.qa.platform.mapper.service.ITServiceMapper;
 import apps.amaralus.qa.platform.service.model.ITServiceModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class ITServiceService {
     private final ITServiceMapper itServiceMapper;
 
     public List<ITService> findAllByProject(String project) {
-        return itServiceMapper.toITServices(itServiceRepository.findAllByProject(project));
+        return itServiceMapper.mapToListD(itServiceRepository.findAllByProject(project));
     }
 
     public void deleteAllByProject(String project) {
@@ -30,19 +30,19 @@ public class ITServiceService {
         projectRepository.findById(itService.project())
                 .orElseThrow(() -> new EntityNotFoundException(ProjectModel.class.getName(), itService.project()));
 
-        ITServiceModel itServiceModel = itServiceMapper.toITServiceModel(itService);
+        var itServiceModel = itServiceMapper.mapToM(itService);
 
-        return itServiceMapper.toITService(itServiceRepository.save(itServiceModel));
+        return itServiceMapper.mapToD(itServiceRepository.save(itServiceModel));
     }
 
     public ITService updateService(Long id, ITService itService) {
 
-        ITServiceModel itServiceModel = itServiceRepository.findById(id)
+        var itServiceModel = itServiceRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ITServiceModel.class.getName(), id.toString()));
 
-        ITServiceModel updated = itServiceMapper.update(itServiceModel, itService);
+        var updated = itServiceMapper.update(itServiceModel, itService);
 
-        return itServiceMapper.toITService(itServiceRepository.save(updated));
+        return itServiceMapper.mapToD(itServiceRepository.save(updated));
     }
 
     public void deleteService(Long id) {

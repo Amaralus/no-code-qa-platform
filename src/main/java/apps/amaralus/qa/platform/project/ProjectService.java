@@ -4,7 +4,7 @@ import apps.amaralus.qa.platform.dataset.DatasetService;
 import apps.amaralus.qa.platform.environment.EnvironmentService;
 import apps.amaralus.qa.platform.folder.FolderService;
 import apps.amaralus.qa.platform.label.LabelService;
-import apps.amaralus.qa.platform.project.mapper.ProjectMapper;
+import apps.amaralus.qa.platform.mapper.project.ProjectMapper;
 import apps.amaralus.qa.platform.project.model.ProjectModel;
 import apps.amaralus.qa.platform.project.model.api.Project;
 import apps.amaralus.qa.platform.service.ITServiceService;
@@ -40,7 +40,7 @@ public class ProjectService {
             throw new IllegalArgumentException(PROJECT_TEXT + project.id() + "] already exists!");
 
         var rootFolder = folderService.createProjectRoot(project.id());
-        ProjectModel projectModel = projectMapper.toProjectModel(project);
+        ProjectModel projectModel = projectMapper.mapToM(project);
         projectModel.setRootFolder(rootFolder.getId());
 
         return projectRepository.save(projectModel);

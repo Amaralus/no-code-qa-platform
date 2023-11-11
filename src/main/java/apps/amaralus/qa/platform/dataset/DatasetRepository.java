@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface DatasetRepository extends KeyValueRepository<DatasetModel, Long> {
     List<DatasetModel> findAllByProject(String project);
-    Optional<DatasetModel> findByAlias(String alias);
+    Optional<DatasetModel> findByAliasAndProject(String alias, String project);
 }

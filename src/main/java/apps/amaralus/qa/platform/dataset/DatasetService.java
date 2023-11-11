@@ -1,6 +1,6 @@
 package apps.amaralus.qa.platform.dataset;
 
-import apps.amaralus.qa.platform.dataset.mapper.DatasetMapper;
+import apps.amaralus.qa.platform.mapper.dataset.DatasetMapper;
 import apps.amaralus.qa.platform.dataset.model.DatasetModel;
 import apps.amaralus.qa.platform.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -18,28 +18,28 @@ public class DatasetService {
     }
 
     public Dataset create(Dataset dataset) {
-        DatasetModel datasetModel = datasetMapper.toDatasetModel(dataset);
-        return datasetMapper.toDataset(datasetRepository.save(datasetModel));
+        var datasetModel = datasetMapper.mapToM(dataset);
+        return datasetMapper.mapToD(datasetRepository.save(datasetModel));
     }
 
-    public Dataset getByAlias(String alias) {
-        DatasetModel datasetModel = datasetRepository.findByAlias(alias)
+    public Dataset getByAlias(String alias, String project) {
+        var datasetModel = datasetRepository.findByAliasAndProject(alias, project)
                 .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class.getSimpleName()));
-        return datasetMapper.toDataset(datasetModel);
+        return datasetMapper.mapToD(datasetModel);
     }
 
     public Dataset getById(Long id) {
-        DatasetModel datasetModel = datasetRepository.findById(id)
+        var datasetModel = datasetRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class.getSimpleName(), id.toString()));
-        return datasetMapper.toDataset(datasetModel);
+        return datasetMapper.mapToD(datasetModel);
     }
 
     public Dataset updateDataset(Long id, Dataset dataset) {
-        DatasetModel datasetModel = datasetRepository.findById(id)
+        var datasetModel = datasetRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class.getSimpleName(), id.toString()));
 
-        DatasetModel updated = datasetMapper.update(datasetModel, dataset);
+        var updated = datasetMapper.update(datasetModel, dataset);
 
-        return datasetMapper.toDataset(updated);
+        return datasetMapper.mapToD(updated);
     }
 }

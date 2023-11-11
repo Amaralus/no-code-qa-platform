@@ -1,6 +1,6 @@
 package apps.amaralus.qa.platform.dataset;
 
-import java.util.List;
+import java.util.Map;
 
 public record Dataset(
         long id,
@@ -8,6 +8,6 @@ public record Dataset(
         String alias,
         String description,
         String project,
-        List<Variable> variables
+        Map<String, String> variables
 ) {
 }
