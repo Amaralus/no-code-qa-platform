@@ -4,6 +4,7 @@ import apps.amaralus.qa.platform.dataset.DatasetService;
 import apps.amaralus.qa.platform.environment.EnvironmentService;
 import apps.amaralus.qa.platform.folder.FolderService;
 import apps.amaralus.qa.platform.label.LabelService;
+import apps.amaralus.qa.platform.mapper.project.ProjectMapper;
 import apps.amaralus.qa.platform.project.model.ProjectModel;
 import apps.amaralus.qa.platform.project.model.api.Project;
 import apps.amaralus.qa.platform.service.ITServiceService;
@@ -24,6 +25,7 @@ public class ProjectService {
     private static final String ID_NOT_NULL_MESSAGE = "id must not be null!";
     private static final String PROJECT_TEXT = "Project [";
     private final ProjectRepository projectRepository;
+    private final ProjectMapper projectMapper;
     private final FolderService folderService;
     private final TestCaseService testCaseService;
     private final LabelService labelService;
@@ -38,8 +40,10 @@ public class ProjectService {
             throw new IllegalArgumentException(PROJECT_TEXT + project.id() + "] already exists!");
 
         var rootFolder = folderService.createProjectRoot(project.id());
+        ProjectModel projectModel = projectMapper.mapToM(project);
+        projectModel.setRootFolder(rootFolder.getId());
 
-        return projectRepository.save(new ProjectModel(project.id(), project.name(), project.description(), rootFolder.getId()));
+        return projectRepository.save(projectModel);
     }
 
     public @NotNull ProjectModel updateDescription(@NotNull String id, @Nullable String description) {
@@ -48,7 +52,9 @@ public class ProjectService {
         var project = projectRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(PROJECT_TEXT + id + "] not exists!"));
 
-        return projectRepository.save(new ProjectModel(project.id(), project.name(), description, project.rootFolder()));
+        project.setDescription(description);
+
+        return projectRepository.save(project);
     }
 
     public @NotNull ProjectModel updateName(@NotNull String id, @NotNull String name) {
@@ -58,7 +64,9 @@ public class ProjectService {
         var project = projectRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(PROJECT_TEXT + id + "] not exists!"));
 
-        return projectRepository.save(new ProjectModel(project.id(), name, project.description(), project.rootFolder()));
+        project.setName(name);
+
+        return projectRepository.save(project);
     }
 
     public void delete(@NotNull String id) {
