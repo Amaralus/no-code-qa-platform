@@ -3,10 +3,12 @@ package apps.amaralus.qa.platform.runtime;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
-public class ExecutionGraph implements Executable {
+public class ExecutionGraph implements Executable, Cancelable {
 
+    private final AtomicBoolean canceled = new AtomicBoolean();
     private final Stage initialStage;
     private final Stage finalStage;
     private final List<? extends Stage> stages;
@@ -20,5 +22,16 @@ public class ExecutionGraph implements Executable {
     @Override
     public void execute() {
         initialStage.execute();
+    }
+
+    @Override
+    public void cancel() {
+        canceled.set(true);
+        stages.forEach(Cancelable::cancel);
+    }
+
+    @Override
+    public boolean isCanceled() {
+        return canceled.get();
     }
 }

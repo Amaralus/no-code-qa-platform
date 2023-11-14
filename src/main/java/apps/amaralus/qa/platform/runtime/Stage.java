@@ -3,7 +3,7 @@ package apps.amaralus.qa.platform.runtime;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.Assert;
 
-public interface Stage extends Executable {
+public interface Stage extends Executable, Cancelable {
 
     void taskFinishCallback();
 

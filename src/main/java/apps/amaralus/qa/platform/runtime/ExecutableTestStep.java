@@ -12,6 +12,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static apps.amaralus.qa.platform.runtime.TestState.*;
 
@@ -22,6 +23,7 @@ public class ExecutableTestStep implements StageTask, ExecutorServiceAware {
     private final StepAction stepAction;
     // временно тут
     private final TestContext testContext = new TestContext();
+    private final AtomicBoolean canceled = new AtomicBoolean();
     @Setter
     private ExecutorService executorService;
     private long timeout = 10L;
@@ -37,6 +39,9 @@ public class ExecutableTestStep implements StageTask, ExecutorServiceAware {
 
     @Override
     public void execute() {
+        if (isCanceled())
+            return;
+
         setState(RUNNING);
         stepTask = CompletableFuture.supplyAsync(this::executeAction, executorService);
         var handleTask = stepTask.completeOnTimeout(timeoutResult(), timeout, timeUnit)
@@ -44,17 +49,33 @@ public class ExecutableTestStep implements StageTask, ExecutorServiceAware {
                 .thenAccept(this::handleResult);
 
         if (taskFinishCallback != null)
-            handleTask.thenRun(taskFinishCallback);
+            handleTask.thenRun(this::executeCallback);
     }
 
+    @Override
     public void cancel() {
+        canceled.set(true);
         if (stepTask != null)
+            // значение true никак не влияет на прерывание потока, всегда работает как false
             stepTask.cancel(false);
+        else
+            state = CANCELED;
+    }
+
+    @Override
+    public boolean isCanceled() {
+        return canceled.get();
     }
 
     private ExecutionResult executeAction() {
         stepAction.execute(testContext);
         return testContext.getExecutionResult();
+    }
+
+    private void executeCallback() {
+        if (isCanceled())
+            return;
+        taskFinishCallback.run();
     }
 
     private void handleResult(ExecutionResult result) {

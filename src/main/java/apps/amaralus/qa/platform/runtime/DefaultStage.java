@@ -5,10 +5,12 @@ import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DefaultStage implements Stage {
 
+    private final AtomicBoolean canceled = new AtomicBoolean();
     private final AtomicInteger inputCounter = new AtomicInteger();
     private final List<Stage> inputStages = new ArrayList<>();
     private final List<Stage> outputStages = new ArrayList<>();
@@ -21,8 +23,19 @@ public class DefaultStage implements Stage {
 
     @Override
     public void execute() {
-        if (inputStages.isEmpty() || inputCounter.incrementAndGet() == inputsCount())
-            stageTask.execute();
+        if (!isCanceled() && (inputStages.isEmpty() || inputCounter.incrementAndGet() == inputsCount()))
+                stageTask.execute();
+    }
+
+    @Override
+    public void cancel() {
+        canceled.set(true);
+        stageTask.cancel();
+    }
+
+    @Override
+    public boolean isCanceled() {
+        return canceled.get();
     }
 
     @Override
