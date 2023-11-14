@@ -5,13 +5,17 @@ import apps.amaralus.qa.platform.runtime.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ParallelExecutionScheduler {
+public class ParallelExecutionScheduler extends AbstractExecutionScheduler {
 
+    @Override
     public ExecutionGraph schedule(List<? extends StageTask> tasks) {
         return schedule(tasks, new TaskStub(), new TaskStub());
     }
 
+    @Override
     public ExecutionGraph schedule(List<? extends StageTask> tasks, StageTask initialTask, StageTask finalTask) {
+        injectExecutorService(tasks);
+
         var initialStage = new DefaultStage(initialTask);
         var finalStage = new DefaultStage(finalTask);
 

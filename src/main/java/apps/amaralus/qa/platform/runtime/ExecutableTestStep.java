@@ -20,6 +20,7 @@ import static apps.amaralus.qa.platform.runtime.TestState.*;
 @RequiredArgsConstructor
 public class ExecutableTestStep implements StageTask, ExecutorServiceAware {
 
+    private final String testStepName;
     private final StepAction stepAction;
     // временно тут
     private final TestContext testContext = new TestContext();
@@ -90,7 +91,7 @@ public class ExecutableTestStep implements StageTask, ExecutorServiceAware {
 
         if (state != CANCELED)
             resultMessage = result.message();
-        log.debug("Step finished as {}: {}", state, resultMessage);
+        log.debug("Step \"{}\" finished as {}: {}", testStepName, state, resultMessage);
     }
 
     private void onError(ErrorResult errorResult) {
