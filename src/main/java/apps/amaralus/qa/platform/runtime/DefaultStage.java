@@ -10,9 +10,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DefaultStage implements Stage {
 
     private final AtomicInteger inputCounter = new AtomicInteger();
+    private final List<Stage> inputStages = new ArrayList<>();
     private final List<Stage> outputStages = new ArrayList<>();
     private final StageTask stageTask;
-    private int inputBarrier;
 
     public DefaultStage(StageTask stageTask) {
         this.stageTask = stageTask;
@@ -21,7 +21,7 @@ public class DefaultStage implements Stage {
 
     @Override
     public void execute() {
-        if (inputBarrier == 0 || inputCounter.incrementAndGet() == inputBarrier)
+        if (inputStages.isEmpty() || inputCounter.incrementAndGet() == inputsCount())
             stageTask.execute();
     }
 
@@ -33,8 +33,7 @@ public class DefaultStage implements Stage {
     @Override
     public void addInput(@NotNull Stage stage) {
         Assert.notNull(stage, "Stage must not be null!");
-        ++inputBarrier;
-        stage.addOutput(this);
+        inputStages.add(stage);
     }
 
     @Override
@@ -45,7 +44,7 @@ public class DefaultStage implements Stage {
 
     @Override
     public int inputsCount() {
-        return inputBarrier;
+        return inputStages.size();
     }
 
     @Override
