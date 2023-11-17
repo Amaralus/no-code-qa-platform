@@ -1,4 +1,4 @@
-package apps.amaralus.qa.platform.runtime;
+package apps.amaralus.qa.platform.runtime.execution;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.Assert;

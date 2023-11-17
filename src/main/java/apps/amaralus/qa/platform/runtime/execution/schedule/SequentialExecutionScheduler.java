@@ -1,6 +1,6 @@
-package apps.amaralus.qa.platform.runtime.schedule;
+package apps.amaralus.qa.platform.runtime.execution.schedule;
 
-import apps.amaralus.qa.platform.runtime.*;
+import apps.amaralus.qa.platform.runtime.execution.*;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -1,5 +1,7 @@
 package apps.amaralus.qa.platform.runtime;
 
+import apps.amaralus.qa.platform.runtime.execution.ExecutionGraph;
+import apps.amaralus.qa.platform.runtime.execution.StageTask;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

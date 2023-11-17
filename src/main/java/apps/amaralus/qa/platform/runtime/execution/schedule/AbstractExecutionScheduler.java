@@ -1,7 +1,7 @@
-package apps.amaralus.qa.platform.runtime.schedule;
+package apps.amaralus.qa.platform.runtime.execution.schedule;
 
-import apps.amaralus.qa.platform.runtime.ExecutorServiceAware;
-import apps.amaralus.qa.platform.runtime.StageTask;
+import apps.amaralus.qa.platform.runtime.execution.ExecutorServiceAware;
+import apps.amaralus.qa.platform.runtime.execution.StageTask;
 import lombok.Setter;
 
 import java.util.List;

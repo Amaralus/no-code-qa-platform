@@ -1,8 +1,8 @@
-package apps.amaralus.qa.platform.runtime.schedule;
+package apps.amaralus.qa.platform.runtime.execution.schedule;
 
-import apps.amaralus.qa.platform.runtime.ExecutionGraph;
-import apps.amaralus.qa.platform.runtime.ExecutorServiceAware;
-import apps.amaralus.qa.platform.runtime.StageTask;
+import apps.amaralus.qa.platform.runtime.execution.ExecutionGraph;
+import apps.amaralus.qa.platform.runtime.execution.ExecutorServiceAware;
+import apps.amaralus.qa.platform.runtime.execution.StageTask;
 
 import java.util.List;
 
