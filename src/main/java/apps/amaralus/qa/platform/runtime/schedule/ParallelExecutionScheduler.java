@@ -9,7 +9,7 @@ public class ParallelExecutionScheduler extends AbstractExecutionScheduler {
 
     @Override
     public ExecutionGraph schedule(List<? extends StageTask> tasks) {
-        return schedule(tasks, new TaskStub(), new TaskStub());
+        return schedule(tasks, new SimpleTask(), new SimpleTask());
     }
 
     @Override

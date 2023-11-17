@@ -20,7 +20,7 @@ import static apps.amaralus.qa.platform.runtime.TestState.*;
 @RequiredArgsConstructor
 public class ExecutableTestStep implements StageTask, ExecutorServiceAware {
 
-    private final String testStepName;
+    private final TestStepInfo testStepInfo;
     private final StepAction stepAction;
     // временно тут
     private final TestContext testContext = new TestContext();
@@ -31,6 +31,8 @@ public class ExecutableTestStep implements StageTask, ExecutorServiceAware {
     private TimeUnit timeUnit = TimeUnit.SECONDS;
     @Setter
     private Runnable taskFinishCallback;
+    @Setter
+    private Runnable taskFailCallback;
     @Getter
     @Setter
     private TestState state = CREATED;
@@ -49,8 +51,7 @@ public class ExecutableTestStep implements StageTask, ExecutorServiceAware {
                 .exceptionally(ErrorResult::new)
                 .thenAccept(this::handleResult);
 
-        if (taskFinishCallback != null)
-            handleTask.thenRun(this::executeCallback);
+        handleTask.thenRunAsync(this::executeCallback, executorService);
     }
 
     @Override
@@ -76,7 +77,11 @@ public class ExecutableTestStep implements StageTask, ExecutorServiceAware {
     private void executeCallback() {
         if (isCanceled())
             return;
-        taskFinishCallback.run();
+
+        if (state == FAILED || state == ERROR)
+            taskFailCallback.run();
+        else
+            taskFinishCallback.run();
     }
 
     private void handleResult(ExecutionResult result) {
@@ -91,7 +96,7 @@ public class ExecutableTestStep implements StageTask, ExecutorServiceAware {
 
         if (state != CANCELED)
             resultMessage = result.message();
-        log.debug("Step \"{}\" finished as {}: {}", testStepName, state, resultMessage);
+        log.debug("Step \"{}\" finished as {}: {}", testStepInfo.name(), state, resultMessage);
     }
 
     private void onError(ErrorResult errorResult) {

@@ -40,6 +40,7 @@ public class DefaultStage implements Stage {
 
     @Override
     public void taskFinishCallback() {
+        inputCounter.set(0);
         outputStages.forEach(Stage::execute);
     }
 
