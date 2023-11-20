@@ -37,10 +37,15 @@ public enum Placeholder {
 
     public abstract Supplier<Object> generateValue();
 
-    public static Optional<Object> getValueByPlaceholder(String name) {
+    public static Optional<Object> getOptionalByPlaceholder(String name) {
         return EnumSet.allOf(Placeholder.class).stream()
                 .filter(placeholder -> placeholder.name().equalsIgnoreCase(name))
                 .findFirst()
                 .map(placeholder -> placeholder.generateValue().get());
+    }
+
+    public static Object getValueByPlaceholder(String name) {
+        return getOptionalByPlaceholder(name)
+                .orElse(null);
     }
 }

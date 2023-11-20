@@ -13,7 +13,7 @@
 
     <groupId>apps.amaralus</groupId>
     <artifactId>no-code-qa-platform</artifactId>
-    <version>0.0.22</version>
+    <version>0.0.23</version>
     <packaging>jar</packaging>
 
     <licenses>
@@ -113,7 +113,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
-
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

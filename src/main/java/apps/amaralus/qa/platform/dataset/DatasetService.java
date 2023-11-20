@@ -1,10 +1,13 @@
 package apps.amaralus.qa.platform.dataset;
 
+import apps.amaralus.qa.platform.exception.EntityAlreadyExistsException;
 import apps.amaralus.qa.platform.mapper.dataset.DatasetMapper;
 import apps.amaralus.qa.platform.dataset.model.DatasetModel;
 import apps.amaralus.qa.platform.exception.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +21,12 @@ public class DatasetService {
     }
 
     public Dataset create(Dataset dataset) {
+
+        Optional<DatasetModel> optional = datasetRepository.findByAliasAndProject(dataset.alias(), dataset.project());
+        if (optional.isPresent()) {
+            throw new EntityAlreadyExistsException(dataset.alias());
+        }
+
         var datasetModel = datasetMapper.mapToM(dataset);
         return datasetMapper.mapToD(datasetRepository.save(datasetModel));
     }
@@ -25,6 +34,7 @@ public class DatasetService {
     public Dataset getByAlias(String alias, String project) {
         var datasetModel = datasetRepository.findByAliasAndProject(alias, project)
                 .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class.getSimpleName()));
+
         return datasetMapper.mapToD(datasetModel);
     }
 

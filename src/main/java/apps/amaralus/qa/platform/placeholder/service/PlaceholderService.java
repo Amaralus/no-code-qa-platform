@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.placeholder.service;
 
+import apps.amaralus.qa.platform.dataset.Dataset;
 import apps.amaralus.qa.platform.dataset.DatasetService;
 import apps.amaralus.qa.platform.placeholder.enums.Placeholder;
 import lombok.RequiredArgsConstructor;
@@ -10,11 +11,11 @@ import org.springframework.stereotype.Service;
 public class PlaceholderService {
 
     private final DatasetService datasetService;
-
-    private final static String SEPARATOR = ";";
+    private final PlaceholderResolver placeholderResolver;
+    private final static String SEPARATOR = ":";
 
     public Object getByPlaceholder(String placeholder, String project) {
-        return Placeholder.getValueByPlaceholder(placeholder)
+        return Placeholder.getOptionalByPlaceholder(placeholder)
                 .orElseGet(() -> findByPropertyName(placeholder, project));
     }
 
@@ -24,8 +25,7 @@ public class PlaceholderService {
         var alias = split[0];
         var propertyName = split[1];
 
-        return datasetService.getByAlias(alias, project)
-                .variables()
-                .get(propertyName);
+        Dataset dataset = datasetService.getByAlias(alias, project);
+        return placeholderResolver.getPropertyValue(propertyName, dataset.variables());
     }
 }
