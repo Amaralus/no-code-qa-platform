@@ -1,10 +1,12 @@
 package apps.amaralus.qa.platform.runtime.execution.schedule;
 
 import apps.amaralus.qa.platform.runtime.execution.*;
+import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
 import java.util.List;
 
+@Component
 public class SequentialExecutionScheduler extends AbstractExecutionScheduler {
 
     @Override

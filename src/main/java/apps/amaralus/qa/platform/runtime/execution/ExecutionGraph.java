@@ -10,13 +10,11 @@ public class ExecutionGraph implements Executable, Cancelable {
 
     private final AtomicBoolean canceled = new AtomicBoolean();
     private final Stage initialStage;
-    private final Stage finalStage;
     private final List<? extends Stage> stages;
 
     public ExecutionGraph(List<? extends Stage> stages) {
         this.stages = stages;
         this.initialStage = stages.get(0);
-        this.finalStage = stages.get(stages.size() - 1);
     }
 
     @Override

@@ -23,6 +23,7 @@ import static apps.amaralus.qa.platform.runtime.TestState.*;
 @RequiredArgsConstructor
 public class ExecutableTestStep implements StageTask, ExecutorServiceAware {
 
+    @Getter
     private final TestStepInfo testStepInfo;
     private final StepAction stepAction;
     // временно тут
@@ -30,8 +31,8 @@ public class ExecutableTestStep implements StageTask, ExecutorServiceAware {
     private final AtomicBoolean canceled = new AtomicBoolean();
     @Setter
     private ExecutorService executorService;
-    private long timeout = 10L;
-    private TimeUnit timeUnit = TimeUnit.SECONDS;
+    private long timeout;
+    private TimeUnit timeUnit;
     @Setter
     private Runnable taskFinishCallback;
     @Setter

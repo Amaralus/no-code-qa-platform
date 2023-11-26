@@ -16,11 +16,13 @@ import static apps.amaralus.qa.platform.runtime.TestState.*;
 @RequiredArgsConstructor
 public class ExecutableTestCase implements StageTask {
 
-    private final String testCaseName;
+    @Getter
+    private final TestCaseInfo testCaseInfo;
     private final AtomicBoolean canceled = new AtomicBoolean();
     private final AtomicBoolean failed = new AtomicBoolean();
     @Setter
     private ExecutionGraph stepsExecutionGraph;
+    @Getter
     private List<ExecutableTestStep> testSteps;
     @Setter
     private Runnable taskFinishCallback;
@@ -41,7 +43,7 @@ public class ExecutableTestCase implements StageTask {
         if (!isCanceled() && !isFailed())
             setState(COMPLETED);
 
-        log.debug("Test \"{}\" finished as {}", testCaseName, state);
+        log.debug("Test {}#\"{}\" finished as {}", testCaseInfo.id(), testCaseInfo.name(), state);
         if (taskFinishCallback != null)
             taskFinishCallback.run();
     }
