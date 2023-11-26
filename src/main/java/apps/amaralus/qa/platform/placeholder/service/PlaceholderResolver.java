@@ -1,6 +1,6 @@
 package apps.amaralus.qa.platform.placeholder.service;
 
-import apps.amaralus.qa.platform.placeholder.enums.Placeholder;
+import apps.amaralus.qa.platform.placeholder.enums.BaseGenPlaceholder;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -47,7 +47,7 @@ public class PlaceholderResolver {
     private String getRawString(String key, Map<String, Object> properties) {
         Object o = ObjectUtils.defaultIfNull(
                 properties.get(key),
-                Placeholder.getValueByPlaceholder(key)
+                BaseGenPlaceholder.getValueByPlaceholder(key)
         );
         return Objects.nonNull(o) ? o.toString() : null;
     }

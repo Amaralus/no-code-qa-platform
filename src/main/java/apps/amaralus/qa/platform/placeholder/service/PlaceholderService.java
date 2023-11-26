@@ -2,7 +2,7 @@ package apps.amaralus.qa.platform.placeholder.service;
 
 import apps.amaralus.qa.platform.dataset.Dataset;
 import apps.amaralus.qa.platform.dataset.DatasetService;
-import apps.amaralus.qa.platform.placeholder.enums.Placeholder;
+import apps.amaralus.qa.platform.placeholder.enums.BaseGenPlaceholder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ public class PlaceholderService {
     private final static String SEPARATOR = ":";
 
     public Object getByPlaceholder(String placeholder, String project) {
-        return Placeholder.getOptionalByPlaceholder(placeholder)
+        return BaseGenPlaceholder.getOptionalByPlaceholder(placeholder)
                 .orElseGet(() -> findByPropertyName(placeholder, project));
     }
 
