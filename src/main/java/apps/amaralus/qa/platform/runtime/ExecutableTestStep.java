@@ -1,6 +1,7 @@
 package apps.amaralus.qa.platform.runtime;
 
-import apps.amaralus.qa.platform.runtime.execution.ExecutorServiceAware;
+import apps.amaralus.qa.platform.runtime.execution.RuntimeExecutor;
+import apps.amaralus.qa.platform.runtime.execution.RuntimeExecutorAware;
 import apps.amaralus.qa.platform.runtime.execution.StageTask;
 import apps.amaralus.qa.platform.runtime.execution.StepAction;
 import apps.amaralus.qa.platform.runtime.result.ErrorResult;
@@ -13,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -21,7 +21,7 @@ import static apps.amaralus.qa.platform.runtime.TestState.*;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ExecutableTestStep implements StageTask, ExecutorServiceAware {
+public class ExecutableTestStep implements StageTask, RuntimeExecutorAware {
 
     @Getter
     private final TestStepInfo testStepInfo;
@@ -30,7 +30,7 @@ public class ExecutableTestStep implements StageTask, ExecutorServiceAware {
     private final TestContext testContext = new TestContext();
     private final AtomicBoolean canceled = new AtomicBoolean();
     @Setter
-    private ExecutorService executorService;
+    private RuntimeExecutor runtimeExecutor;
     private long timeout;
     private TimeUnit timeUnit;
     @Setter
@@ -50,12 +50,12 @@ public class ExecutableTestStep implements StageTask, ExecutorServiceAware {
             return;
 
         setState(RUNNING);
-        stepTask = CompletableFuture.supplyAsync(this::executeAction, executorService);
+        stepTask = runtimeExecutor.supplyAsync(this::executeAction);
         var handleTask = stepTask.completeOnTimeout(timeoutResult(), timeout, timeUnit)
                 .exceptionally(ErrorResult::new)
                 .thenAccept(this::handleResult);
 
-        handleTask.thenRunAsync(this::executeCallback, executorService);
+        runtimeExecutor.runAsync(handleTask, this::executeCallback);
     }
 
     @Override

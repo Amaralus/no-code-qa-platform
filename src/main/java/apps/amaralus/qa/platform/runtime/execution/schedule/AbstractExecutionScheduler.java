@@ -1,21 +1,26 @@
 package apps.amaralus.qa.platform.runtime.execution.schedule;
 
-import apps.amaralus.qa.platform.runtime.execution.ExecutorServiceAware;
+import apps.amaralus.qa.platform.runtime.execution.RuntimeExecutor;
+import apps.amaralus.qa.platform.runtime.execution.RuntimeExecutorAware;
 import apps.amaralus.qa.platform.runtime.execution.StageTask;
-import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 public abstract class AbstractExecutionScheduler implements ExecutionScheduler {
 
-    @Setter
-    protected ExecutorService executorService;
+    protected RuntimeExecutor runtimeExecutor;
 
     protected void injectExecutorService(List<? extends StageTask> tasks) {
         for (var task : tasks) {
-            if (task instanceof ExecutorServiceAware aware)
-                aware.setExecutorService(executorService);
+            if (task instanceof RuntimeExecutorAware aware)
+                aware.setRuntimeExecutor(runtimeExecutor);
         }
+    }
+
+    @Override
+    @Autowired
+    public void setRuntimeExecutor(RuntimeExecutor runtimeExecutor) {
+        this.runtimeExecutor = runtimeExecutor;
     }
 }
