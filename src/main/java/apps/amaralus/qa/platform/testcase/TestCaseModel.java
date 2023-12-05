@@ -2,6 +2,7 @@ package apps.amaralus.qa.platform.testcase;
 
 import apps.amaralus.qa.platform.label.model.LabelModel;
 import apps.amaralus.qa.platform.rocksdb.sequence.GeneratedSequence;
+import apps.amaralus.qa.platform.runtime.ExecutionProperties;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.keyvalue.annotation.KeySpace;
@@ -19,6 +20,8 @@ public class TestCaseModel {
     private Status status;
     private List<LabelModel> labels;
     private List<TestStep> testSteps;
+    private ExecutionProperties executionProperties;
+
     private long folder;
     private String project;
 }
