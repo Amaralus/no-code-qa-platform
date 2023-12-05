@@ -11,6 +11,9 @@ import java.util.Objects;
 @Component
 public class PlaceholderResolver {
 
+    private final static String SEPARATOR = ":";
+
+    //fixme убрать мапу и сюда датасет
     public String getPropertyValue(String key, Map<String, Object> properties) {
         return this.getPropertyValue(key, properties, new CircularDefinitionProtector());
     }
@@ -35,7 +38,7 @@ public class PlaceholderResolver {
             buffer.moveResolvedPartToNextProperty();
             String newValue = getPropertyValue(newKey, properties, circularDefinitionProtector.cloneWithAdditionalKey(key));
             if (newValue == null) {
-                buffer.add("{{" + newKey + "}}");
+                buffer.add("{{" + newKey + "}}"); // запаковываю только имя ключа без алиаса
             } else {
                 buffer.add(newValue);
             }
@@ -49,6 +52,7 @@ public class PlaceholderResolver {
                 properties.get(key),
                 BaseGenPlaceholder.getValueByPlaceholder(key)
         );
+
         return Objects.nonNull(o) ? o.toString() : null;
     }
 }

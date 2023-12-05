@@ -14,6 +14,7 @@ public class PlaceholderController {
 
     private final PlaceholderService placeholderService;
 
+    //project в урл пихнуть
     @GetMapping
     public Object getValueByPlaceholder(@RequestParam String placeholder, @RequestParam String project) {
         return placeholderService.getByPlaceholder(placeholder, project);

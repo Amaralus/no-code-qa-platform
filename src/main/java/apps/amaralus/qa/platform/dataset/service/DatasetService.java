@@ -1,5 +1,7 @@
-package apps.amaralus.qa.platform.dataset;
+package apps.amaralus.qa.platform.dataset.service;
 
+import apps.amaralus.qa.platform.dataset.dto.Dataset;
+import apps.amaralus.qa.platform.dataset.repository.DatasetRepository;
 import apps.amaralus.qa.platform.exception.EntityAlreadyExistsException;
 import apps.amaralus.qa.platform.mapper.dataset.DatasetMapper;
 import apps.amaralus.qa.platform.dataset.model.DatasetModel;
@@ -22,17 +24,17 @@ public class DatasetService {
 
     public Dataset create(Dataset dataset) {
 
-        Optional<DatasetModel> optional = datasetRepository.findByAliasAndProject(dataset.alias(), dataset.project());
+        Optional<DatasetModel> optional = datasetRepository.findByPathAndProject(dataset.path(), dataset.project());
         if (optional.isPresent()) {
-            throw new EntityAlreadyExistsException(dataset.alias());
+            throw new EntityAlreadyExistsException(dataset.path());
         }
 
         var datasetModel = datasetMapper.mapToM(dataset);
         return datasetMapper.mapToD(datasetRepository.save(datasetModel));
     }
 
-    public Dataset getByAlias(String alias, String project) {
-        var datasetModel = datasetRepository.findByAliasAndProject(alias, project)
+    public Dataset getByPath(String alias, String project) {
+        var datasetModel = datasetRepository.findByPathAndProject(alias, project)
                 .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class.getSimpleName()));
 
         return datasetMapper.mapToD(datasetModel);

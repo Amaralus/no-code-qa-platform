@@ -1,5 +1,7 @@
-package apps.amaralus.qa.platform.dataset;
+package apps.amaralus.qa.platform.dataset.controller;
 
+import apps.amaralus.qa.platform.dataset.service.DatasetService;
+import apps.amaralus.qa.platform.dataset.dto.Dataset;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -23,9 +25,9 @@ public class DatasetController {
         return datasetService.getById(id);
     }
 
-    @GetMapping("/alias")
-    public Dataset findByAlias(@RequestParam String alias, @RequestParam String project) {
-        return datasetService.getByAlias(alias, project);
+    @GetMapping("/path")
+    public Dataset findByPath(@RequestParam String path, @RequestParam String project) {
+        return datasetService.getByPath(path, project);
     }
 
     @PatchMapping("/{id}")

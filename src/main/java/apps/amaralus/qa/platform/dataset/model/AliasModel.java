@@ -5,17 +5,15 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.keyvalue.annotation.KeySpace;
 
-import java.util.Map;
-
 @Data
-@KeySpace("dataset")
-public class DatasetModel {
+@KeySpace("alias")
+//todo сделать составной ключ name+project
+public class AliasModel {
     @Id
-    @GeneratedSequence("dataset-id")
+    @GeneratedSequence("alias-sequence")
     private long id;
     private String name;
-    private String path;
-    private String description;
+    private long dataset;
+    private long propertyName;
     private String project;
-    private Map<String, Object> variables;
 }
