@@ -1,8 +1,8 @@
 package apps.amaralus.qa.platform.runtime;
 
+import apps.amaralus.qa.platform.runtime.action.ActionsService;
 import apps.amaralus.qa.platform.runtime.execution.SimpleTask;
-import apps.amaralus.qa.platform.runtime.execution.schedule.ExecutionScheduler;
-import apps.amaralus.qa.platform.testcase.ExecutionActionService;
+import apps.amaralus.qa.platform.runtime.schedule.ExecutionScheduler;
 import apps.amaralus.qa.platform.testcase.TestCaseModel;
 import apps.amaralus.qa.platform.testcase.TestStep;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class TestCaseFactory {
 
     private final ExecutionScheduler sequentialExecutionScheduler;
     private final ExecutionScheduler parallelExecutionScheduler;
-    private final ExecutionActionService executionActionService;
+    private final ActionsService actionsService;
 
     public ExecutableTestCase produce(TestCaseModel testCaseModel) {
 
@@ -35,8 +35,7 @@ public class TestCaseFactory {
 
     private ExecutableTestStep produce(TestStep testStep, int orderNumber) {
         var executionProperties = testStep.getStepExecutionProperties();
-        var stepAction = executionActionService.getById(executionProperties.getExecutionAction())
-                .toStepAction();
+        var stepAction = actionsService.produceAction(executionProperties);
 
         var executableTestStep = new ExecutableTestStep(new TestStepInfo(orderNumber, testStep.getName()), stepAction);
         executableTestStep.timeout(executionProperties.getTimeout(), executionProperties.getTimeUnit());

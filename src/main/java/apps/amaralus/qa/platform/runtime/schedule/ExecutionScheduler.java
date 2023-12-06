@@ -1,4 +1,4 @@
-package apps.amaralus.qa.platform.runtime.execution.schedule;
+package apps.amaralus.qa.platform.runtime.schedule;
 
 import apps.amaralus.qa.platform.runtime.execution.ExecutionGraph;
 import apps.amaralus.qa.platform.runtime.execution.RuntimeExecutorAware;

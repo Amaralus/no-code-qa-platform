@@ -1,9 +1,9 @@
 package apps.amaralus.qa.platform.runtime;
 
+import apps.amaralus.qa.platform.runtime.action.StepAction;
 import apps.amaralus.qa.platform.runtime.execution.RuntimeExecutor;
 import apps.amaralus.qa.platform.runtime.execution.RuntimeExecutorAware;
 import apps.amaralus.qa.platform.runtime.execution.StageTask;
-import apps.amaralus.qa.platform.runtime.execution.StepAction;
 import apps.amaralus.qa.platform.runtime.result.ErrorResult;
 import apps.amaralus.qa.platform.runtime.result.ExecutionResult;
 import apps.amaralus.qa.platform.runtime.result.TimeoutResult;

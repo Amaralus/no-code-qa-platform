@@ -2,11 +2,11 @@ package apps.amaralus.qa.platform.exception;
 
 public class EntityNotFoundException extends RuntimeException {
 
-    public EntityNotFoundException(String className, String id) {
-        super(String.format("%s with id - %s not found", className, id));
+    public EntityNotFoundException(Class<?> entityClass, Object id) {
+        super(String.format("%s with id - %s not found", entityClass.getName(), id));
     }
 
-    public EntityNotFoundException(String className) {
-        super(String.format("%s not found", className));
+    public EntityNotFoundException(Class<?> entityClass) {
+        super(String.format("%s not found", entityClass.getName()));
     }
 }

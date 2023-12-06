@@ -1,8 +1,8 @@
 package apps.amaralus.qa.platform.environment;
 
-import apps.amaralus.qa.platform.mapper.environment.EnvironmentMapper;
 import apps.amaralus.qa.platform.environment.model.EnvironmentModel;
 import apps.amaralus.qa.platform.exception.EntityNotFoundException;
+import apps.amaralus.qa.platform.mapper.environment.EnvironmentMapper;
 import apps.amaralus.qa.platform.project.ProjectRepository;
 import apps.amaralus.qa.platform.project.model.ProjectModel;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class EnvironmentService {
     public Environment createEnvironment(Environment environment) {
 
         projectRepository.findById(environment.project())
-                .orElseThrow(() -> new EntityNotFoundException(ProjectModel.class.getName(), environment.project()));
+                .orElseThrow(() -> new EntityNotFoundException(ProjectModel.class, environment.project()));
 
         var environmentModel = environmentMapper.mapToM(environment);
         return environmentMapper.mapToD(environmentRepository.save(environmentModel));
@@ -37,7 +37,7 @@ public class EnvironmentService {
     public Environment updateEnvironment(Long id, Environment environment) {
 
         var environmentModel = environmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(EnvironmentModel.class.getName(), id.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(EnvironmentModel.class, id));
 
 
         var updated = environmentMapper.update(environmentModel, environment);
