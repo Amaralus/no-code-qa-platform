@@ -6,7 +6,9 @@ import apps.amaralus.qa.platform.runtime.execution.RuntimeExecutorAware;
 import apps.amaralus.qa.platform.runtime.execution.StageTask;
 import apps.amaralus.qa.platform.runtime.result.ErrorResult;
 import apps.amaralus.qa.platform.runtime.result.ExecutionResult;
+import apps.amaralus.qa.platform.runtime.result.TestFailedException;
 import apps.amaralus.qa.platform.runtime.result.TimeoutResult;
+import com.google.common.base.Throwables;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -52,7 +54,7 @@ public class ExecutableTestStep implements StageTask, RuntimeExecutorAware {
         setState(RUNNING);
         stepTask = runtimeExecutor.supplyAsync(this::executeAction);
         var handleTask = stepTask.completeOnTimeout(timeoutResult(), timeout, timeUnit)
-                .exceptionally(ErrorResult::new)
+                .exceptionally(this::handleException)
                 .thenAccept(this::handleResult);
 
         runtimeExecutor.runAsync(handleTask, this::executeCallback);
@@ -95,19 +97,27 @@ public class ExecutableTestStep implements StageTask, RuntimeExecutorAware {
             setState(FAILED);
         else if (result.isFailed())
             setState(FAILED);
+        else if (result.isCanceled())
+            setState(CANCELED);
         else
             setState(COMPLETED);
 
-        if (state != CANCELED)
-            resultMessage = result.message();
+        resultMessage = result.message();
         log.debug("Step \"{}\" finished as {}: {}", testStepInfo.name(), state, resultMessage);
     }
 
+    private ExecutionResult handleException(Throwable throwable) {
+        var exceptionClass = Throwables.getRootCause(throwable).getClass();
+
+        if (CancellationException.class == exceptionClass)
+            return ExecutionResult.cancel();
+        if (TestFailedException.class == exceptionClass)
+            return ExecutionResult.fail(throwable.getMessage());
+
+        return new ErrorResult(throwable);
+    }
+
     private void onError(ErrorResult errorResult) {
-        if (CancellationException.class == errorResult.throwable().getClass()) {
-            setState(CANCELED);
-            return;
-        }
         setState(ERROR);
         log.error("Test-step error", errorResult.throwable());
     }

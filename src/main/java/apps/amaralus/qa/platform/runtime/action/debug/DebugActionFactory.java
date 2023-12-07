@@ -7,7 +7,6 @@ import apps.amaralus.qa.platform.runtime.action.ActionFactory;
 import apps.amaralus.qa.platform.runtime.action.ActionType;
 import apps.amaralus.qa.platform.runtime.action.StepAction;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,7 +24,6 @@ public class DebugActionFactory implements ActionFactory {
         var action = debugActionRepository.findById(stepExecutionProperties.getExecutionAction())
                 .orElseThrow(() -> new EntityNotFoundException(DebugAction.class, stepExecutionProperties.getExecutionAction()));
 
-        // todo resolve message to possible placeholders
         return new DebugStepAction(action.getMessage());
     }
 
@@ -34,12 +32,11 @@ public class DebugActionFactory implements ActionFactory {
         return ActionType.DEBUG;
     }
 
-    @Slf4j
     private record DebugStepAction(String message) implements StepAction {
         @Override
         public void execute(TestContext testContext) {
-            log.debug("Debug step message: {}", message);
-            // todo put message to result
+            // todo resolve message to possible placeholders
+            testContext.setResultMessage(message);
         }
     }
 }
