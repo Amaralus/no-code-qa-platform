@@ -2,8 +2,9 @@ package apps.amaralus.qa.platform.runtime;
 
 import apps.amaralus.qa.platform.runtime.execution.ExecutionGraph;
 import apps.amaralus.qa.platform.runtime.execution.StageTask;
+import apps.amaralus.qa.platform.runtime.report.TestCaseReport;
+import apps.amaralus.qa.platform.runtime.report.Timer;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,13 +14,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static apps.amaralus.qa.platform.runtime.TestState.*;
 
 @Slf4j
-@RequiredArgsConstructor
 public class ExecutableTestCase implements StageTask {
 
     @Getter
     private final TestCaseInfo testCaseInfo;
     private final AtomicBoolean canceled = new AtomicBoolean();
     private final AtomicBoolean failed = new AtomicBoolean();
+    private final Timer timer;
     @Setter
     private ExecutionGraph stepsExecutionGraph;
     @Getter
@@ -30,18 +31,26 @@ public class ExecutableTestCase implements StageTask {
     @Getter
     private TestState state = CREATED;
 
+    public ExecutableTestCase(TestCaseInfo testCaseInfo) {
+        this.testCaseInfo = testCaseInfo;
+        timer = new Timer();
+    }
+
     @Override
     public void execute() {
         if (isCanceled())
             return;
 
+        timer.start();
         setState(RUNNING);
         stepsExecutionGraph.execute();
     }
 
     public void stepsGraphFinishedCallback() {
-        if (!isCanceled() && !isFailed())
+        if (!isCanceled() && !isFailed()) {
             setState(COMPLETED);
+            timer.stop();
+        }
 
         log.debug("Test {}#\"{}\" finished as {}", testCaseInfo.id(), testCaseInfo.name(), state);
         if (taskFinishCallback != null)
@@ -51,6 +60,8 @@ public class ExecutableTestCase implements StageTask {
     public void testStepFailCallback() {
         failed.set(true);
         setState(FAILED);
+        timer.stop();
+
         stepsExecutionGraph.cancel();
         stepsGraphFinishedCallback();
     }
@@ -61,6 +72,7 @@ public class ExecutableTestCase implements StageTask {
             return;
         canceled.set(true);
         setState(CANCELED);
+        timer.stop();
         stepsExecutionGraph.cancel();
     }
 
@@ -76,5 +88,15 @@ public class ExecutableTestCase implements StageTask {
     public void setTestSteps(List<ExecutableTestStep> testSteps) {
         this.testSteps = testSteps;
         testSteps.forEach(testStep -> testStep.setTaskFailCallback(this::testStepFailCallback));
+    }
+
+    public TestCaseReport getReport() {
+        return new TestCaseReport(
+                testCaseInfo.name(),
+                state,
+                timer.getElapsedAsLocalTime(),
+                getTestSteps().stream()
+                        .map(ExecutableTestStep::getReport)
+                        .toList());
     }
 }
