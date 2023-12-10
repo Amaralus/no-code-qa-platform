@@ -1,15 +1,13 @@
 package apps.amaralus.qa.platform.dataset.service;
 
 import apps.amaralus.qa.platform.dataset.dto.Dataset;
+import apps.amaralus.qa.platform.dataset.model.DatasetModel;
 import apps.amaralus.qa.platform.dataset.repository.DatasetRepository;
 import apps.amaralus.qa.platform.exception.EntityAlreadyExistsException;
-import apps.amaralus.qa.platform.mapper.dataset.DatasetMapper;
-import apps.amaralus.qa.platform.dataset.model.DatasetModel;
 import apps.amaralus.qa.platform.exception.EntityNotFoundException;
+import apps.amaralus.qa.platform.mapper.dataset.DatasetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +22,8 @@ public class DatasetService {
 
     public Dataset create(Dataset dataset) {
 
-        Optional<DatasetModel> optional = datasetRepository.findByPathAndProject(dataset.path(), dataset.project());
+        var optional = datasetRepository.findByPathAndProject(dataset.path(), dataset.project());
+
         if (optional.isPresent()) {
             throw new EntityAlreadyExistsException(dataset.path());
         }
@@ -33,22 +32,22 @@ public class DatasetService {
         return datasetMapper.mapToD(datasetRepository.save(datasetModel));
     }
 
-    public Dataset getByPath(String alias, String project) {
-        var datasetModel = datasetRepository.findByPathAndProject(alias, project)
-                .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class.getSimpleName()));
+    public Dataset getByPath(String path, String project) {
+        var datasetModel = datasetRepository.findByPathAndProject(path, project)
+                .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class));
 
         return datasetMapper.mapToD(datasetModel);
     }
 
     public Dataset getById(Long id) {
         var datasetModel = datasetRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class.getSimpleName(), id.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class, id.toString()));
         return datasetMapper.mapToD(datasetModel);
     }
 
     public Dataset updateDataset(Long id, Dataset dataset) {
         var datasetModel = datasetRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class.getSimpleName(), id.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class, id.toString()));
 
         var updated = datasetMapper.update(datasetModel, dataset);
 

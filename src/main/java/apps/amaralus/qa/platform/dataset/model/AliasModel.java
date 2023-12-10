@@ -14,6 +14,6 @@ public class AliasModel {
     private long id;
     private String name;
     private long dataset;
-    private long propertyName;
+    private String propertyName;
     private String project;
 }

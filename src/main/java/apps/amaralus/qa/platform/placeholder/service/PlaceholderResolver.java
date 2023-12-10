@@ -1,6 +1,10 @@
 package apps.amaralus.qa.platform.placeholder.service;
 
+import apps.amaralus.qa.platform.dataset.dto.Alias;
+import apps.amaralus.qa.platform.dataset.dto.Dataset;
+import apps.amaralus.qa.platform.dataset.service.DatasetService;
 import apps.amaralus.qa.platform.placeholder.enums.BaseGenPlaceholder;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -9,12 +13,54 @@ import java.util.Map;
 import java.util.Objects;
 
 @Component
+@RequiredArgsConstructor
 public class PlaceholderResolver {
 
-    private final static String SEPARATOR = ":";
+    private final DatasetService datasetService;
+    private static final String SEPARATOR = ":";
+    private static final String DATASET = "dataset";
 
-    //fixme убрать мапу и сюда датасет
-    public String getPropertyValue(String key, Map<String, Object> properties) {
+    /**
+     * Находим значение по плейсхолдеру, например если плейсхолдер folder#3:some, то
+     * он разбивается на path - folder#3 и ключ плейсхолдера - some
+     * <p>
+     * Если плейсходер вида dataset#3:some, то из path берется просто id датасета и напрямую
+     * обращается к нему
+     *
+     * @param placeholder - ключ плейсхолдера
+     * @param project     - проект у которого надо взять плейсхолдер
+     * @param resolve     - вернуть разрешенный плейсхолдер или вернуть в сыром виде
+     * @return разрешенный или неразрешенный плейсхолдер
+     */
+    public String findByPlaceholder(String placeholder, String project, boolean resolve) {
+
+        String[] split = placeholder.split(SEPARATOR);
+        var path = split[0];
+        var propertyName = split[1];
+
+        Dataset dataset;
+
+        if (path.contains(DATASET)) {
+            dataset = datasetService.getById(Long.parseLong(path.split("#")[1]));
+        } else {
+            dataset = datasetService.getByPath(path, project);
+        }
+
+        return resolve ? getPropertyValue(propertyName, dataset.variables()) : getRawString(propertyName, dataset.variables());
+    }
+
+    /**
+     * Достать значение плейсхолдера через заданный для алиас
+     * @param alias - быстрый доступ к плейсхолдера
+     * @param resolve - вернуть разрешенный плейсхолдер или вернуть в сыром виде
+     * @return разрешенный или неразрешенный плейсхолдер
+     */
+    public String getPropertyValueByAlias(Alias alias, boolean resolve) {
+        var dataset = datasetService.getById(alias.dataset());
+        return resolve ? getPropertyValue(alias.propertyName(), dataset.variables()) : getRawString(alias.propertyName(), dataset.variables());
+    }
+
+    private String getPropertyValue(String key, Map<String, Object> properties) {
         return this.getPropertyValue(key, properties, new CircularDefinitionProtector());
     }
 
@@ -38,7 +84,7 @@ public class PlaceholderResolver {
             buffer.moveResolvedPartToNextProperty();
             String newValue = getPropertyValue(newKey, properties, circularDefinitionProtector.cloneWithAdditionalKey(key));
             if (newValue == null) {
-                buffer.add("{{" + newKey + "}}"); // запаковываю только имя ключа без алиаса
+                buffer.add("{{" + newKey + "}}");
             } else {
                 buffer.add(newValue);
             }

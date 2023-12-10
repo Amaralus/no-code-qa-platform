@@ -20,20 +20,22 @@ public class AliasService {
 
     public Alias save(Alias alias) {
 
-        projectRepository.findById(alias.project())
-                .orElseThrow(() -> new EntityNotFoundException(ProjectModel.class.getName(), alias.project()));
+        if (!projectRepository.existsById(alias.project())) {
+            throw new EntityNotFoundException(ProjectModel.class, alias.project());
+        }
 
         var aliasModel = aliasMapper.mapToM(alias);
         return aliasMapper.mapToD(aliasRepository.save(aliasModel));
     }
 
     public Alias updateAliasName(String newName, String oldName, String project) {
+
         var alias = aliasRepository.findByNameAndProject(oldName, project)
                 .map(aliasModel -> {
                     aliasModel.setName(newName);
                     return aliasRepository.save(aliasModel);
                 })
-                .orElseThrow(() -> new EntityNotFoundException(AliasModel.class.getName()));
+                .orElseThrow(() -> new EntityNotFoundException(AliasModel.class));
 
         return aliasMapper.mapToD(alias);
     }
@@ -44,5 +46,11 @@ public class AliasService {
 
     public void deleteAllByProject(String project) {
         aliasRepository.deleteAll(aliasRepository.findAllByProject(project));
+    }
+
+    public Alias getAliasByName(String aliasName, String project) {
+        return aliasRepository.findByNameAndProject(aliasName, project)
+                .map(aliasMapper::mapToD)
+                .orElse(null);
     }
 }

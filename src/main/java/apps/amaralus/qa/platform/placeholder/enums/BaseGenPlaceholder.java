@@ -7,10 +7,7 @@ import apps.amaralus.qa.platform.placeholder.enums.impl.UUIDGenerator;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -41,7 +38,11 @@ public enum BaseGenPlaceholder implements PlaceholderGenerator {
     }
 
     public static Optional<Object> getOptionalByPlaceholder(String name) {
-        return Optional.ofNullable(genValueMap.get(name.toLowerCase()).generateValue());
+        PlaceholderGenerator generator = genValueMap.get(name.toLowerCase());
+        if (Objects.isNull(generator)) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(generator.generateValue());
     }
 
     public static Object getValueByPlaceholder(String name) {
