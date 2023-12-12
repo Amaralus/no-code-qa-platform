@@ -2,7 +2,9 @@ package apps.amaralus.qa.platform.placeholder.service;
 
 import apps.amaralus.qa.platform.dataset.dto.Alias;
 import apps.amaralus.qa.platform.dataset.dto.Dataset;
+import apps.amaralus.qa.platform.dataset.model.DatasetModel;
 import apps.amaralus.qa.platform.dataset.service.DatasetService;
+import apps.amaralus.qa.platform.exception.EntityNotFoundException;
 import apps.amaralus.qa.platform.placeholder.enums.BaseGenPlaceholder;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -41,9 +43,12 @@ public class PlaceholderResolver {
         Dataset dataset;
 
         if (path.contains(DATASET)) {
-            dataset = datasetService.getById(Long.parseLong(path.split("#")[1]));
+            long id = Long.parseLong(path.split("#")[1]);
+            dataset = datasetService.getById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class, id));
         } else {
-            dataset = datasetService.getByPath(path, project);
+            dataset = datasetService.getByPath(path, project)
+                    .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class));
         }
 
         return resolve ? getPropertyValue(propertyName, dataset.variables()) : getRawString(propertyName, dataset.variables());
@@ -56,7 +61,8 @@ public class PlaceholderResolver {
      * @return разрешенный или неразрешенный плейсхолдер
      */
     public String getPropertyValueByAlias(Alias alias, boolean resolve) {
-        var dataset = datasetService.getById(alias.dataset());
+        var dataset = datasetService.getById(alias.dataset())
+                .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class, alias.dataset()));
         return resolve ? getPropertyValue(alias.propertyName(), dataset.variables()) : getRawString(alias.propertyName(), dataset.variables());
     }
 

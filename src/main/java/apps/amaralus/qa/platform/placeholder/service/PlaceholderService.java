@@ -30,7 +30,7 @@ public class PlaceholderService {
 
     private Object findByAlias(String placeholder, String project, boolean resolve) {
 
-        var alias = aliasService.getAliasByName(placeholder, project);
+        var alias = aliasService.getAliasByName(placeholder, project).orElse(null);
 
         if (Objects.isNull(alias)) return null;
 

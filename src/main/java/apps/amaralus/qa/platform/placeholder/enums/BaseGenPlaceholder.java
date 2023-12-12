@@ -38,11 +38,8 @@ public enum BaseGenPlaceholder implements PlaceholderGenerator {
     }
 
     public static Optional<Object> getOptionalByPlaceholder(String name) {
-        PlaceholderGenerator generator = genValueMap.get(name.toLowerCase());
-        if (Objects.isNull(generator)) {
-            return Optional.empty();
-        }
-        return Optional.ofNullable(generator.generateValue());
+        return Optional.ofNullable(genValueMap.get(name.toLowerCase()))
+                .map(PlaceholderGenerator::generateValue);
     }
 
     public static Object getValueByPlaceholder(String name) {

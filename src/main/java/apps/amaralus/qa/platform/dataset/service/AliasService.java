@@ -10,6 +10,8 @@ import apps.amaralus.qa.platform.project.model.ProjectModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AliasService {
@@ -41,16 +43,15 @@ public class AliasService {
     }
 
     public void deleteAliasByName(String name, String project) {
-        aliasRepository.deleteByNameAndProject(name, project);
+        aliasRepository.deleteAll(aliasRepository.findAllByNameAndProject(name, project));
     }
 
     public void deleteAllByProject(String project) {
         aliasRepository.deleteAll(aliasRepository.findAllByProject(project));
     }
 
-    public Alias getAliasByName(String aliasName, String project) {
+    public Optional<Alias> getAliasByName(String aliasName, String project) {
         return aliasRepository.findByNameAndProject(aliasName, project)
-                .map(aliasMapper::mapToD)
-                .orElse(null);
+                .map(aliasMapper::mapToD);
     }
 }
