@@ -27,8 +27,9 @@ public class EnvironmentService {
 
     public Environment createEnvironment(Environment environment) {
 
-        projectRepository.findById(environment.project())
-                .orElseThrow(() -> new EntityNotFoundException(ProjectModel.class.getName(), environment.project()));
+        if (!projectRepository.existsById(environment.project())) {
+            throw new EntityNotFoundException(ProjectModel.class, environment.project());
+        }
 
         var environmentModel = environmentMapper.mapToM(environment);
         return environmentMapper.mapToD(environmentRepository.save(environmentModel));
@@ -37,7 +38,7 @@ public class EnvironmentService {
     public Environment updateEnvironment(Long id, Environment environment) {
 
         var environmentModel = environmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(EnvironmentModel.class.getName(), id.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(EnvironmentModel.class, id.toString()));
 
 
         var updated = environmentMapper.update(environmentModel, environment);

@@ -1,6 +1,8 @@
 package apps.amaralus.qa.platform;
 
+import apps.amaralus.qa.platform.exception.EntityAlreadyExistsException;
 import apps.amaralus.qa.platform.exception.EntityNotFoundException;
+import apps.amaralus.qa.platform.exception.PropertyCircularDefinitionException;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -40,7 +42,17 @@ public class ErrorHandler {
         return new ErrorResponseException(HttpStatus.NOT_FOUND, ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage()), e);
     }
 
+    @ExceptionHandler(PropertyCircularDefinitionException.class)
+    public Object capturePropertyCircularDefinitionException(PropertyCircularDefinitionException e) {
+        return new ErrorResponseException(HttpStatus.BAD_REQUEST, ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage()), e);
+    }
+
+    @ExceptionHandler(EntityAlreadyExistsException.class)
+    public Object captureEntityAlreadyExistsException(EntityAlreadyExistsException e) {
+        return new ErrorResponseException(HttpStatus.BAD_REQUEST, ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage()), e);
+    }
+
     private String buildErrorMessage(UUID errorId, Throwable t) {
-        return "errorId=" + errorId + " cause: " + Throwables.getRootCause(t).getMessage();
+        return "errorId= " + errorId + " cause: " + Throwables.getRootCause(t).getMessage();
     }
 }

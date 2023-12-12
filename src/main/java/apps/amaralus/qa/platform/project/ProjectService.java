@@ -1,6 +1,7 @@
 package apps.amaralus.qa.platform.project;
 
-import apps.amaralus.qa.platform.dataset.DatasetService;
+import apps.amaralus.qa.platform.dataset.service.AliasService;
+import apps.amaralus.qa.platform.dataset.service.DatasetService;
 import apps.amaralus.qa.platform.environment.EnvironmentService;
 import apps.amaralus.qa.platform.folder.FolderService;
 import apps.amaralus.qa.platform.label.LabelService;
@@ -32,6 +33,7 @@ public class ProjectService {
     private final EnvironmentService environmentService;
     private final ITServiceService itService;
     private final DatasetService datasetService;
+    private final AliasService aliasService;
 
     public @NotNull ProjectModel create(@NotNull Project project) {
         Assert.notNull(project, "project must not be null!");
@@ -82,6 +84,7 @@ public class ProjectService {
         environmentService.deleteAllByProject(id);
         itService.deleteAllByProject(id);
         datasetService.deleteAllByProject(id);
+        aliasService.deleteAllByProject(id);
 
         projectRepository.deleteById(id);
     }
