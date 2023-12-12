@@ -1,10 +1,15 @@
-package apps.amaralus.qa.platform.dataset;
+package apps.amaralus.qa.platform.dataset.service;
 
+import apps.amaralus.qa.platform.dataset.dto.Dataset;
 import apps.amaralus.qa.platform.dataset.model.DatasetModel;
+import apps.amaralus.qa.platform.dataset.repository.DatasetRepository;
+import apps.amaralus.qa.platform.exception.EntityAlreadyExistsException;
 import apps.amaralus.qa.platform.exception.EntityNotFoundException;
 import apps.amaralus.qa.platform.mapper.dataset.DatasetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,20 +23,25 @@ public class DatasetService {
     }
 
     public Dataset create(Dataset dataset) {
+
+        var optional = datasetRepository.findByPathAndProject(dataset.path(), dataset.project());
+
+        if (optional.isPresent()) {
+            throw new EntityAlreadyExistsException(dataset.path());
+        }
+
         var datasetModel = datasetMapper.mapToM(dataset);
         return datasetMapper.mapToD(datasetRepository.save(datasetModel));
     }
 
-    public Dataset getByAlias(String alias, String project) {
-        var datasetModel = datasetRepository.findByAliasAndProject(alias, project)
-                .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class));
-        return datasetMapper.mapToD(datasetModel);
+    public Optional<Dataset> getByPath(String path, String project) {
+        return datasetRepository.findByPathAndProject(path, project)
+                .map(datasetMapper::mapToD);
     }
 
-    public Dataset getById(Long id) {
-        var datasetModel = datasetRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class, id));
-        return datasetMapper.mapToD(datasetModel);
+    public Optional<Dataset> getById(Long id) {
+        return datasetRepository.findById(id)
+                .map(datasetMapper::mapToD);
     }
 
     public Dataset updateDataset(Long id, Dataset dataset) {

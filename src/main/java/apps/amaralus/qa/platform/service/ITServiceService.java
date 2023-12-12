@@ -27,8 +27,9 @@ public class ITServiceService {
 
     public ITService createService(ITService itService) {
 
-        projectRepository.findById(itService.project())
-                .orElseThrow(() -> new EntityNotFoundException(ProjectModel.class, itService.project()));
+        if (!projectRepository.existsById(itService.project())) {
+            throw new EntityNotFoundException(ProjectModel.class, itService.project());
+        }
 
         var itServiceModel = itServiceMapper.mapToM(itService);
 

@@ -1,6 +1,6 @@
 package apps.amaralus.qa.platform.mapper.dataset;
 
-import apps.amaralus.qa.platform.dataset.Dataset;
+import apps.amaralus.qa.platform.dataset.dto.Dataset;
 import apps.amaralus.qa.platform.dataset.model.DatasetModel;
 import apps.amaralus.qa.platform.mapper.GenericMapper;
 import org.mapstruct.*;
