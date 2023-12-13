@@ -7,6 +7,7 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.keyvalue.annotation.KeySpace;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @KeySpace("testCase")
@@ -19,7 +20,7 @@ public class TestCaseModel {
     private String description;
     private Status status;
     private List<LabelModel> labels;
-    private List<TestStep> testSteps;
+    private List<TestStep> testSteps = new ArrayList<>();
     private ExecutionProperties executionProperties;
 
     private long folder;

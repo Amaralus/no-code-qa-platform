@@ -3,6 +3,7 @@ package apps.amaralus.qa.platform.runtime;
 import apps.amaralus.qa.platform.runtime.execution.Cancelable;
 import apps.amaralus.qa.platform.runtime.execution.Executable;
 import apps.amaralus.qa.platform.runtime.execution.ExecutionGraph;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ExecutableTestPlan implements Executable, Cancelable {
 
     private final ExecutionGraph executionGraph;
+    @Getter
     private final List<ExecutableTestCase> testCases;
     private final AtomicBoolean canceled = new AtomicBoolean();
 
