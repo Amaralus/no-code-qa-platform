@@ -1,14 +1,17 @@
 package apps.amaralus.qa.platform.runtime;
 
+import apps.amaralus.qa.platform.runtime.action.StepAction;
 import apps.amaralus.qa.platform.runtime.execution.RuntimeExecutor;
 import apps.amaralus.qa.platform.runtime.execution.RuntimeExecutorAware;
 import apps.amaralus.qa.platform.runtime.execution.StageTask;
-import apps.amaralus.qa.platform.runtime.execution.StepAction;
+import apps.amaralus.qa.platform.runtime.report.TestReport;
+import apps.amaralus.qa.platform.runtime.report.Timer;
 import apps.amaralus.qa.platform.runtime.result.ErrorResult;
 import apps.amaralus.qa.platform.runtime.result.ExecutionResult;
+import apps.amaralus.qa.platform.runtime.result.TestFailedException;
 import apps.amaralus.qa.platform.runtime.result.TimeoutResult;
+import com.google.common.base.Throwables;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,7 +23,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static apps.amaralus.qa.platform.runtime.TestState.*;
 
 @Slf4j
-@RequiredArgsConstructor
 public class ExecutableTestStep implements StageTask, RuntimeExecutorAware {
 
     @Getter
@@ -29,6 +31,7 @@ public class ExecutableTestStep implements StageTask, RuntimeExecutorAware {
     // временно тут
     private final TestContext testContext = new TestContext();
     private final AtomicBoolean canceled = new AtomicBoolean();
+    private final Timer timer;
     @Setter
     private RuntimeExecutor runtimeExecutor;
     private long timeout;
@@ -44,15 +47,23 @@ public class ExecutableTestStep implements StageTask, RuntimeExecutorAware {
     private String resultMessage = "";
     private CompletableFuture<ExecutionResult> stepTask;
 
+    public ExecutableTestStep(TestStepInfo testStepInfo, StepAction stepAction) {
+        this.testStepInfo = testStepInfo;
+        this.stepAction = stepAction;
+        timer = new Timer();
+    }
+
     @Override
     public void execute() {
         if (isCanceled())
             return;
 
         setState(RUNNING);
+        timer.start();
+
         stepTask = runtimeExecutor.supplyAsync(this::executeAction);
         var handleTask = stepTask.completeOnTimeout(timeoutResult(), timeout, timeUnit)
-                .exceptionally(ErrorResult::new)
+                .exceptionally(this::handleException)
                 .thenAccept(this::handleResult);
 
         runtimeExecutor.runAsync(handleTask, this::executeCallback);
@@ -64,8 +75,10 @@ public class ExecutableTestStep implements StageTask, RuntimeExecutorAware {
         if (stepTask != null)
             // значение true никак не влияет на прерывание потока, всегда работает как false
             stepTask.cancel(false);
-        else
+        else {
+            timer.stop();
             state = CANCELED;
+        }
     }
 
     @Override
@@ -95,19 +108,28 @@ public class ExecutableTestStep implements StageTask, RuntimeExecutorAware {
             setState(FAILED);
         else if (result.isFailed())
             setState(FAILED);
+        else if (result.isCanceled())
+            setState(CANCELED);
         else
             setState(COMPLETED);
 
-        if (state != CANCELED)
-            resultMessage = result.message();
+        timer.stop();
+        resultMessage = result.message();
         log.debug("Step \"{}\" finished as {}: {}", testStepInfo.name(), state, resultMessage);
     }
 
+    private ExecutionResult handleException(Throwable throwable) {
+        var exceptionClass = Throwables.getRootCause(throwable).getClass();
+
+        if (CancellationException.class == exceptionClass)
+            return ExecutionResult.cancel();
+        if (TestFailedException.class == exceptionClass)
+            return ExecutionResult.fail(throwable.getMessage());
+
+        return new ErrorResult(throwable);
+    }
+
     private void onError(ErrorResult errorResult) {
-        if (CancellationException.class == errorResult.throwable().getClass()) {
-            setState(CANCELED);
-            return;
-        }
         setState(ERROR);
         log.error("Test-step error", errorResult.throwable());
     }
@@ -119,5 +141,9 @@ public class ExecutableTestStep implements StageTask, RuntimeExecutorAware {
     public void timeout(long timeout, TimeUnit timeUnit) {
         this.timeout = timeout;
         this.timeUnit = timeUnit;
+    }
+
+    public TestReport getReport() {
+        return new TestReport(testStepInfo.name(), state, resultMessage, timer.getElapsedAsLocalTime());
     }
 }

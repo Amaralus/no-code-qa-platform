@@ -1,13 +1,14 @@
 package apps.amaralus.qa.platform.runtime.result;
 
-public record DefaultResult(String message, boolean failed) implements ExecutionResult {
-
-    public DefaultResult(boolean failed) {
-        this("", failed);
-    }
+public record DefaultResult(String message, boolean failed, boolean canceled) implements ExecutionResult {
 
     @Override
     public boolean isFailed() {
         return failed;
+    }
+
+    @Override
+    public boolean isCanceled() {
+        return canceled;
     }
 }

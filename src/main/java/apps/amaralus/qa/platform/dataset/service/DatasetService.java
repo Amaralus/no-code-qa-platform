@@ -46,7 +46,7 @@ public class DatasetService {
 
     public Dataset updateDataset(Long id, Dataset dataset) {
         var datasetModel = datasetRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class, id.toString()));
+                .orElseThrow(() -> new EntityNotFoundException(DatasetModel.class, id));
 
         var updated = datasetMapper.update(datasetModel, dataset);
 
