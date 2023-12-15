@@ -24,11 +24,10 @@ public class TestCaseFactory {
         for (int i = 0; i < testCaseModel.getTestSteps().size(); i++)
             testSteps.add(produce(testCaseModel.getTestSteps().get(i), i));
 
-        var testCase = new ExecutableTestCase(new TestCaseInfo(testCaseModel));
-        testCase.setTestSteps(testSteps);
+        var testCase = new ExecutableTestCase(new TestInfo(testCaseModel.getId(), testCaseModel.getName()));
         var graph = getScheduler(testCaseModel.getExecutionProperties().parallelExecution())
-                .schedule(testSteps, new SimpleTask(), new SimpleTask(testCase::stepsGraphFinishedCallback));
-        testCase.setStepsExecutionGraph(graph);
+                .schedule(testSteps, new SimpleTask(), new SimpleTask(testCase::graphExecutionFinishedCallback));
+        testCase.setExecutionGraph(graph);
 
         return testCase;
     }
@@ -37,7 +36,7 @@ public class TestCaseFactory {
         var executionProperties = testStep.getStepExecutionProperties();
         var stepAction = actionsService.produceAction(executionProperties);
 
-        var executableTestStep = new ExecutableTestStep(new TestStepInfo(orderNumber, testStep.getName()), stepAction);
+        var executableTestStep = new ExecutableTestStep(new TestInfo(orderNumber, testStep.getName()), stepAction);
         executableTestStep.timeout(executionProperties.getTimeout(), executionProperties.getTimeUnit());
 
         return executableTestStep;

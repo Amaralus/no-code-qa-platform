@@ -5,33 +5,25 @@ import apps.amaralus.qa.platform.runtime.execution.RuntimeExecutor;
 import apps.amaralus.qa.platform.runtime.execution.RuntimeExecutorAware;
 import apps.amaralus.qa.platform.runtime.execution.StageTask;
 import apps.amaralus.qa.platform.runtime.report.TestReport;
-import apps.amaralus.qa.platform.runtime.report.Timer;
 import apps.amaralus.qa.platform.runtime.result.ErrorResult;
 import apps.amaralus.qa.platform.runtime.result.ExecutionResult;
 import apps.amaralus.qa.platform.runtime.result.TestFailedException;
 import apps.amaralus.qa.platform.runtime.result.TimeoutResult;
 import com.google.common.base.Throwables;
-import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static apps.amaralus.qa.platform.runtime.TestState.*;
 
 @Slf4j
-public class ExecutableTestStep implements StageTask, RuntimeExecutorAware {
+public class ExecutableTestStep extends ExecutableTestSupport implements StageTask, RuntimeExecutorAware {
 
-    @Getter
-    private final TestStepInfo testStepInfo;
     private final StepAction stepAction;
-    // временно тут
     private final TestContext testContext = new TestContext();
-    private final AtomicBoolean canceled = new AtomicBoolean();
-    private final Timer timer;
     @Setter
     private RuntimeExecutor runtimeExecutor;
     private long timeout;
@@ -40,18 +32,13 @@ public class ExecutableTestStep implements StageTask, RuntimeExecutorAware {
     private Runnable taskFinishCallback;
     @Setter
     private Runnable taskFailCallback;
-    @Getter
-    @Setter
-    private TestState state = CREATED;
-    @Getter
-    private String resultMessage = "";
     private CompletableFuture<ExecutionResult> stepTask;
 
-    public ExecutableTestStep(TestStepInfo testStepInfo, StepAction stepAction) {
-        this.testStepInfo = testStepInfo;
+    public ExecutableTestStep(TestInfo testInfo, StepAction stepAction) {
+        super(testInfo);
         this.stepAction = stepAction;
-        timer = new Timer();
     }
+
 
     @Override
     public void execute() {
@@ -71,19 +58,14 @@ public class ExecutableTestStep implements StageTask, RuntimeExecutorAware {
 
     @Override
     public void cancel() {
-        canceled.set(true);
+        super.cancel();
         if (stepTask != null)
             // значение true никак не влияет на прерывание потока, всегда работает как false
             stepTask.cancel(false);
         else {
             timer.stop();
-            state = CANCELED;
+            setState(CANCELED);
         }
-    }
-
-    @Override
-    public boolean isCanceled() {
-        return canceled.get();
     }
 
     private ExecutionResult executeAction() {
@@ -115,7 +97,7 @@ public class ExecutableTestStep implements StageTask, RuntimeExecutorAware {
 
         timer.stop();
         resultMessage = result.message();
-        log.debug("Step \"{}\" finished as {}: {}", testStepInfo.name(), state, resultMessage);
+        log.debug("Step \"{}\" finished as {}: {}", testInfo.name(), state, resultMessage);
     }
 
     private ExecutionResult handleException(Throwable throwable) {
@@ -143,7 +125,10 @@ public class ExecutableTestStep implements StageTask, RuntimeExecutorAware {
         this.timeUnit = timeUnit;
     }
 
+    @Override
     public TestReport getReport() {
-        return new TestReport(testStepInfo.name(), state, resultMessage, timer.getElapsedAsLocalTime());
+        var report = super.getReport();
+        report.setDeep(2);
+        return report;
     }
 }

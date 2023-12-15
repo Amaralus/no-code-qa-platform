@@ -1,6 +1,7 @@
 package apps.amaralus.qa.platform.runtime;
 
 import apps.amaralus.qa.platform.runtime.action.ActionType;
+import apps.amaralus.qa.platform.runtime.execution.SimpleTask;
 import apps.amaralus.qa.platform.runtime.schedule.ExecutionScheduler;
 import apps.amaralus.qa.platform.testcase.TestCaseModel;
 import apps.amaralus.qa.platform.testcase.TestCaseService;
@@ -25,10 +26,13 @@ public class TestPlanFactory {
                 .map(testCaseFactory::produce)
                 .toList();
 
-        var executionGraph = getScheduler(testPlanModel.getExecutionProperties().parallelExecution())
-                .schedule(testCases);
+        var testPlan = new ExecutableTestPlan(new TestInfo(1, "TestPlan"));
 
-        return new ExecutableTestPlan(executionGraph, testCases);
+        var executionGraph = getScheduler(testPlanModel.getExecutionProperties().parallelExecution())
+                .schedule(testCases, new SimpleTask(), new SimpleTask(testPlan::graphExecutionFinishedCallback));
+        testPlan.setExecutionGraph(executionGraph);
+
+        return testPlan;
     }
 
     private boolean allAutoStepsFilter(TestCaseModel testCaseModel) {

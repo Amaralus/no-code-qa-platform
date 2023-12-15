@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.runtime.execution;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.Assert;
 
@@ -14,6 +15,7 @@ public class DefaultStage implements Stage {
     private final AtomicInteger inputCounter = new AtomicInteger();
     private final List<Stage> inputStages = new ArrayList<>();
     private final List<Stage> outputStages = new ArrayList<>();
+    @Getter
     private final StageTask stageTask;
 
     public DefaultStage(StageTask stageTask) {
