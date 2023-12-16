@@ -35,7 +35,7 @@ public class ExecutableTestCase extends ExecutableTestSupport implements StageTa
     }
 
     @Override
-    public void graphExecutionFinishedCallback() {
+    public void executionGraphFinishedCallback() {
         if (!isCanceled() && !isFailed()) {
             setState(COMPLETED);
             timer.stop();
@@ -52,7 +52,7 @@ public class ExecutableTestCase extends ExecutableTestSupport implements StageTa
         timer.stop();
 
         executionGraph.cancel();
-        graphExecutionFinishedCallback();
+        executionGraphFinishedCallback();
     }
 
     @Override

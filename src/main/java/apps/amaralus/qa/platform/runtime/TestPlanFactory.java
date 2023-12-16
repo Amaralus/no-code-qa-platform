@@ -29,7 +29,7 @@ public class TestPlanFactory {
         var testPlan = new ExecutableTestPlan(new TestInfo(1, "TestPlan"));
 
         var executionGraph = getScheduler(testPlanModel.getExecutionProperties().parallelExecution())
-                .schedule(testCases, new SimpleTask(), new SimpleTask(testPlan::graphExecutionFinishedCallback));
+                .schedule(testCases, new SimpleTask(), new SimpleTask(testPlan::executionGraphFinishedCallback));
         testPlan.setExecutionGraph(executionGraph);
 
         return testPlan;

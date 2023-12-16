@@ -36,7 +36,7 @@ public class ExecutableTestPlan extends ExecutableTestSupport implements Executi
     }
 
     @Override
-    public void graphExecutionFinishedCallback() {
+    public void executionGraphFinishedCallback() {
         setState(COMPLETED);
     }
 
