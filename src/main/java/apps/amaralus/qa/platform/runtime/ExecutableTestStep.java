@@ -23,7 +23,8 @@ import static apps.amaralus.qa.platform.runtime.TestState.*;
 public class ExecutableTestStep extends ExecutableTestSupport implements StageTask, RuntimeExecutorAware {
 
     private final StepAction stepAction;
-    private final TestContext testContext = new TestContext();
+    @Setter
+    private TestContext testContext;
     @Setter
     private RuntimeExecutor runtimeExecutor;
     private long timeout;

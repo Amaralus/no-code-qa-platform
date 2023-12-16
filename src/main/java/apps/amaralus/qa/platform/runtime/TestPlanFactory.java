@@ -26,11 +26,13 @@ public class TestPlanFactory {
                 .map(testCaseFactory::produce)
                 .toList();
 
-        var testPlan = new ExecutableTestPlan(new TestInfo(1, "TestPlan"));
+        var testPlan = new ExecutableTestPlan(new TestInfo(testPlanModel.getId(), testPlanModel.getName()));
 
         var executionGraph = getScheduler(testPlanModel.getExecutionProperties().parallelExecution())
                 .schedule(testCases, new SimpleTask(), new SimpleTask(testPlan::executionGraphFinishedCallback));
         testPlan.setExecutionGraph(executionGraph);
+
+        initializeTestContext(testPlan);
 
         return testPlan;
     }
@@ -42,6 +44,13 @@ public class TestPlanFactory {
         return testCaseModel.getTestSteps().stream()
                 .map(testStep -> testStep.getStepExecutionProperties().getActionType())
                 .allMatch(actionType -> actionType != ActionType.NONE);
+    }
+
+    private void initializeTestContext(ExecutableTestPlan testPlan) {
+        testPlan.getTestCases().forEach(testCase ->
+                testCase.getTestSteps().forEach(testStep ->
+                        testStep.setTestContext(
+                                new TestContext(testPlan.getTestInfo(), testCase.testInfo, testStep.testInfo))));
     }
 
     private ExecutionScheduler getScheduler(boolean isParallel) {
