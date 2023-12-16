@@ -3,11 +3,16 @@ package apps.amaralus.qa.platform.runtime;
 import apps.amaralus.qa.platform.runtime.result.ExecutionResult;
 import apps.amaralus.qa.platform.runtime.result.TestFailedException;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
+@RequiredArgsConstructor
 public class TestContext {
 
+    private final TestInfo testPlanInfo;
+    private final TestInfo testCaseInfo;
+    private final TestInfo testStepInfo;
     private ExecutionResult executionResult = ExecutionResult.success();
 
     public void fail(String message) {

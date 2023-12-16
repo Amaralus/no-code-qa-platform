@@ -5,6 +5,8 @@ import org.springframework.util.Assert;
 
 public interface Stage extends Executable, Cancelable {
 
+    StageTask getStageTask();
+
     void taskFinishCallback();
 
     void addInput(@NotNull Stage stage);

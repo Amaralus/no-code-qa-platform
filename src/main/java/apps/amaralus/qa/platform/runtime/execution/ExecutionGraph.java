@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.runtime.execution;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -10,6 +11,7 @@ public class ExecutionGraph implements Executable, Cancelable {
 
     private final AtomicBoolean canceled = new AtomicBoolean();
     private final Stage initialStage;
+    @Getter
     private final List<? extends Stage> stages;
 
     public ExecutionGraph(List<? extends Stage> stages) {
@@ -31,5 +33,19 @@ public class ExecutionGraph implements Executable, Cancelable {
     @Override
     public boolean isCanceled() {
         return canceled.get();
+    }
+
+    public List<StageTask> getTasks() {
+        return getStages().stream()
+                .map(Stage::getStageTask)
+                .toList();
+    }
+
+    public <T extends StageTask> List<T> getTasks(Class<T> taskClass) {
+        return getStages().stream()
+                .map(Stage::getStageTask)
+                .filter(task -> task.getClass() == taskClass)
+                .map(taskClass::cast)
+                .toList();
     }
 }

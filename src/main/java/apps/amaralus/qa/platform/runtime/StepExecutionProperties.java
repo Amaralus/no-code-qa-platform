@@ -2,10 +2,12 @@ package apps.amaralus.qa.platform.runtime;
 
 import apps.amaralus.qa.platform.runtime.action.ActionType;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.concurrent.TimeUnit;
 
 @Data
+@NoArgsConstructor
 public class StepExecutionProperties {
     private long executionAction;
     private ActionType actionType = ActionType.NONE;

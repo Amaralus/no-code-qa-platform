@@ -1,10 +1,10 @@
 package apps.amaralus.qa.platform.runtime;
 
 import apps.amaralus.qa.platform.runtime.execution.ExecutionGraph;
+import apps.amaralus.qa.platform.runtime.execution.ExecutionGraphDelegate;
 import apps.amaralus.qa.platform.runtime.execution.StageTask;
-import apps.amaralus.qa.platform.runtime.report.TestCaseReport;
-import apps.amaralus.qa.platform.runtime.report.Timer;
-import lombok.Getter;
+import apps.amaralus.qa.platform.runtime.report.ReportSupplier;
+import apps.amaralus.qa.platform.runtime.report.TestReport;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,26 +14,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static apps.amaralus.qa.platform.runtime.TestState.*;
 
 @Slf4j
-public class ExecutableTestCase implements StageTask {
-
-    @Getter
-    private final TestCaseInfo testCaseInfo;
-    private final AtomicBoolean canceled = new AtomicBoolean();
+public class ExecutableTestCase extends ExecutableTestSupport implements StageTask, ExecutionGraphDelegate {
     private final AtomicBoolean failed = new AtomicBoolean();
-    private final Timer timer;
-    @Setter
-    private ExecutionGraph stepsExecutionGraph;
-    @Getter
-    private List<ExecutableTestStep> testSteps;
+    private ExecutionGraph executionGraph;
     @Setter
     private Runnable taskFinishCallback;
-    @Setter
-    @Getter
-    private TestState state = CREATED;
 
-    public ExecutableTestCase(TestCaseInfo testCaseInfo) {
-        this.testCaseInfo = testCaseInfo;
-        timer = new Timer();
+    public ExecutableTestCase(TestInfo testInfo) {
+        super(testInfo);
     }
 
     @Override
@@ -43,16 +31,17 @@ public class ExecutableTestCase implements StageTask {
 
         timer.start();
         setState(RUNNING);
-        stepsExecutionGraph.execute();
+        executionGraph.execute();
     }
 
-    public void stepsGraphFinishedCallback() {
+    @Override
+    public void executionGraphFinishedCallback() {
         if (!isCanceled() && !isFailed()) {
             setState(COMPLETED);
             timer.stop();
         }
 
-        log.debug("Test {}#\"{}\" finished as {}", testCaseInfo.id(), testCaseInfo.name(), state);
+        log.debug("Test {}#\"{}\" finished as {}", testInfo.id(), testInfo.name(), state);
         if (taskFinishCallback != null)
             taskFinishCallback.run();
     }
@@ -62,41 +51,41 @@ public class ExecutableTestCase implements StageTask {
         setState(FAILED);
         timer.stop();
 
-        stepsExecutionGraph.cancel();
-        stepsGraphFinishedCallback();
+        executionGraph.cancel();
+        executionGraphFinishedCallback();
     }
 
     @Override
     public void cancel() {
         if (isFailed())
             return;
-        canceled.set(true);
+        super.cancel();
         setState(CANCELED);
         timer.stop();
-        stepsExecutionGraph.cancel();
-    }
-
-    @Override
-    public boolean isCanceled() {
-        return canceled.get();
+        executionGraph.cancel();
     }
 
     public boolean isFailed() {
         return failed.get();
     }
 
-    public void setTestSteps(List<ExecutableTestStep> testSteps) {
-        this.testSteps = testSteps;
-        testSteps.forEach(testStep -> testStep.setTaskFailCallback(this::testStepFailCallback));
+    @Override
+    public void setExecutionGraph(ExecutionGraph executionGraph) {
+        this.executionGraph = executionGraph;
+        getTestSteps().forEach(testStep -> testStep.setTaskFailCallback(this::testStepFailCallback));
     }
 
-    public TestCaseReport getReport() {
-        return new TestCaseReport(
-                testCaseInfo.name(),
-                state,
-                timer.getElapsedAsLocalTime(),
-                getTestSteps().stream()
-                        .map(ExecutableTestStep::getReport)
-                        .toList());
+    public List<ExecutableTestStep> getTestSteps() {
+        return executionGraph.getTasks(ExecutableTestStep.class);
+    }
+
+    @Override
+    public TestReport getReport() {
+        var report = super.getReport();
+        report.setSubReports(getTestSteps().stream()
+                .map(ReportSupplier::getReport)
+                .toList());
+        report.setDeep(1);
+        return report;
     }
 }

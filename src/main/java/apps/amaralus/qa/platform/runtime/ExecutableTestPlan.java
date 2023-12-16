@@ -1,35 +1,55 @@
 package apps.amaralus.qa.platform.runtime;
 
-import apps.amaralus.qa.platform.runtime.execution.Cancelable;
-import apps.amaralus.qa.platform.runtime.execution.Executable;
 import apps.amaralus.qa.platform.runtime.execution.ExecutionGraph;
-import lombok.RequiredArgsConstructor;
+import apps.amaralus.qa.platform.runtime.execution.ExecutionGraphDelegate;
+import apps.amaralus.qa.platform.runtime.report.ReportSupplier;
+import apps.amaralus.qa.platform.runtime.report.TestReport;
+import lombok.Setter;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-@RequiredArgsConstructor
-public class ExecutableTestPlan implements Executable, Cancelable {
+import static apps.amaralus.qa.platform.runtime.TestState.*;
 
-    private final ExecutionGraph executionGraph;
-    private final List<ExecutableTestCase> testCases;
-    private final AtomicBoolean canceled = new AtomicBoolean();
+public class ExecutableTestPlan extends ExecutableTestSupport implements ExecutionGraphDelegate {
+    @Setter
+    private ExecutionGraph executionGraph;
+
+    public ExecutableTestPlan(TestInfo testInfo) {
+        super(testInfo);
+    }
 
     @Override
     public void execute() {
         if (isCanceled())
             return;
+
+        timer.start();
+        setState(RUNNING);
         executionGraph.execute();
     }
 
     @Override
     public void cancel() {
-        canceled.set(true);
+        super.cancel();
+        setState(CANCELED);
         executionGraph.cancel();
     }
 
     @Override
-    public boolean isCanceled() {
-        return canceled.get();
+    public void executionGraphFinishedCallback() {
+        setState(COMPLETED);
+    }
+
+    public List<ExecutableTestCase> getTestCases() {
+        return executionGraph.getTasks(ExecutableTestCase.class);
+    }
+
+    @Override
+    public TestReport getReport() {
+        var report = super.getReport();
+        report.setSubReports(getTestCases().stream()
+                .map(ReportSupplier::getReport)
+                .toList());
+        return report;
     }
 }
