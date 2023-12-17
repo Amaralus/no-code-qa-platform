@@ -32,7 +32,7 @@ public class AliasService {
 
     public Alias updateAliasName(String newName, String oldName, String project) {
 
-        var alias = aliasRepository.findByNameAndProject(oldName, project)
+        var alias = aliasRepository.findByNameAndKey_Project(oldName, project)
                 .map(aliasModel -> {
                     aliasModel.setName(newName);
                     return aliasRepository.save(aliasModel);
@@ -43,15 +43,15 @@ public class AliasService {
     }
 
     public void deleteAliasByName(String name, String project) {
-        aliasRepository.deleteAll(aliasRepository.findAllByNameAndProject(name, project));
+        aliasRepository.deleteAll(aliasRepository.findAllByNameAndKey_Project(name, project));
     }
 
     public void deleteAllByProject(String project) {
-        aliasRepository.deleteAll(aliasRepository.findAllByProject(project));
+        aliasRepository.deleteAll(aliasRepository.findAllByKey_Project(project));
     }
 
     public Optional<Alias> getAliasByName(String aliasName, String project) {
-        return aliasRepository.findByNameAndProject(aliasName, project)
+        return aliasRepository.findByNameAndKey_Project(aliasName, project)
                 .map(aliasMapper::mapToD);
     }
 }

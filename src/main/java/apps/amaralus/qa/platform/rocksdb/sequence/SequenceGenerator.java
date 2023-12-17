@@ -1,6 +1,7 @@
 package apps.amaralus.qa.platform.rocksdb.sequence;
 
 import apps.amaralus.qa.platform.rocksdb.RocksDbKeyValueAdapter;
+import apps.amaralus.qa.platform.rocksdb.key.CompoundKey;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.data.mapping.PersistentProperty;
@@ -115,7 +116,8 @@ public class SequenceGenerator {
         if (!propertyType.equals(Long.class)
                 && !propertyType.equals(Long.TYPE)
                 && !propertyType.equals(Integer.class)
-                && !propertyType.equals(Integer.TYPE))
+                && !propertyType.equals(Integer.TYPE)
+                && !propertyType.isAnnotationPresent(CompoundKey.class))
             throw new InvalidPropertyException(sequenceClass, persistentProperty.getName(), "Sequence only supports long or integer types");
     }
 

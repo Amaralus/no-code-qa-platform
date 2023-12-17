@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface AliasRepository extends KeyValueRepository<AliasModel, Long> {
 
-    List<AliasModel> findAllByProject(String project);
+    List<AliasModel> findAllByKey_Project(String project);
 
-    Optional<AliasModel> findByNameAndProject(String name, String project);
+    Optional<AliasModel> findByNameAndKey_Project(String name, String project);
 
-    List<AliasModel> findAllByNameAndProject(String name, String project);
+    List<AliasModel> findAllByNameAndKey_Project(String name, String project);
 }

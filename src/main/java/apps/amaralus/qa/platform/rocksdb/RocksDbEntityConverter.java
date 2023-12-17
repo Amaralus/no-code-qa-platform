@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.rocksdb;
 
+import apps.amaralus.qa.platform.rocksdb.key.CompoundKey;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,7 +39,13 @@ public class RocksDbEntityConverter {
             return longToBytes(l);
         else if (id instanceof String s)
             return s.getBytes(StandardCharsets.UTF_8);
-        else
+        else if (id.getClass().isAnnotationPresent(CompoundKey.class)) {
+            try {
+                return mapper.writer().writeValueAsBytes(id);
+            } catch (JsonProcessingException e) {
+                throw new RocksDbRuntimeException(e);
+            }
+        } else
             throw new UnsupportedOperationException("Id type [" + id.getClass().getName() + "] is unsupported!");
     }
 
@@ -53,8 +60,15 @@ public class RocksDbEntityConverter {
             return bytesToLong(bytes);
         else if (idClass.isAssignableFrom(String.class))
             return new String(bytes, StandardCharsets.UTF_8);
-        else
+        else if (idClass.isAnnotationPresent(CompoundKey.class)) {
+            try {
+                return mapper.reader().readValue(bytes, idClass);
+            } catch (IOException e) {
+                throw new RocksDbRuntimeException(e);
+            }
+        } else
             throw new UnsupportedOperationException("Id type [" + idClass.getName() + "] is unsupported!");
+
     }
 
     private byte[] intToBytes(int data) {
