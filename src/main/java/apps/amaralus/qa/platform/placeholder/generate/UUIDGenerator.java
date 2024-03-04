@@ -12,7 +12,7 @@ public class UUIDGenerator implements PlaceholderGenerator {
     }
 
     @Override
-    public GeneratedLocationType getPlaceholderLocation() {
-        return GeneratedLocationType.UUID;
+    public GeneratedPlaceholderType getPlaceholderLocation() {
+        return GeneratedPlaceholderType.UUID;
     }
 }

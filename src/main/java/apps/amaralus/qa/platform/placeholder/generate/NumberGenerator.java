@@ -11,7 +11,7 @@ public class NumberGenerator implements PlaceholderGenerator {
     }
 
     @Override
-    public GeneratedLocationType getPlaceholderLocation() {
-        return GeneratedLocationType.NUMBER;
+    public GeneratedPlaceholderType getPlaceholderLocation() {
+        return GeneratedPlaceholderType.NUMBER;
     }
 }

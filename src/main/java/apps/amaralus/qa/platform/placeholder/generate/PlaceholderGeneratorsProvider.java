@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Service
 public class PlaceholderGeneratorsProvider {
 
-    private final Map<GeneratedLocationType, PlaceholderGenerator> generators;
+    private final Map<GeneratedPlaceholderType, PlaceholderGenerator> generators;
 
     public PlaceholderGeneratorsProvider(List<PlaceholderGenerator> generators) {
         this.generators = generators.stream()
@@ -22,7 +22,7 @@ public class PlaceholderGeneratorsProvider {
                 ));
     }
 
-    public PlaceholderGenerator getGenerator(@NotNull GeneratedLocationType location) {
+    public PlaceholderGenerator getGenerator(@NotNull GeneratedPlaceholderType location) {
         Assert.notNull(location, "location must not be null!");
         return generators.get(location);
     }

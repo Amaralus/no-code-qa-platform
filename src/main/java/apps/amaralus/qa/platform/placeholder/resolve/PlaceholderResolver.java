@@ -1,7 +1,7 @@
 package apps.amaralus.qa.platform.placeholder.resolve;
 
 import apps.amaralus.qa.platform.placeholder.Placeholder;
-import apps.amaralus.qa.platform.placeholder.generate.GeneratedLocationType;
+import apps.amaralus.qa.platform.placeholder.generate.GeneratedPlaceholderType;
 import apps.amaralus.qa.platform.placeholder.generate.PlaceholderGeneratorsProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,8 +14,8 @@ public class PlaceholderResolver {
     private final PlaceholderGeneratorsProvider generatorsProvider;
 
     public Object resolve(Placeholder placeholder) {
-        var locationType = placeholder.getLocationType();
-        if (locationType instanceof GeneratedLocationType generatedType)
+        var locationType = placeholder.getPlaceholderType();
+        if (locationType instanceof GeneratedPlaceholderType generatedType)
             return generatorsProvider.getGenerator(generatedType).generateValue();
 
         return null;

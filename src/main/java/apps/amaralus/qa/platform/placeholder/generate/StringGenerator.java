@@ -11,7 +11,7 @@ public class StringGenerator implements PlaceholderGenerator {
     }
 
     @Override
-    public GeneratedLocationType getPlaceholderLocation() {
-        return GeneratedLocationType.STRING;
+    public GeneratedPlaceholderType getPlaceholderLocation() {
+        return GeneratedPlaceholderType.STRING;
     }
 }

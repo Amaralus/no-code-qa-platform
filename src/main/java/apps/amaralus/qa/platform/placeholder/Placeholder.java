@@ -16,7 +16,7 @@ public class Placeholder {
 
     private final String path;
     private final String location;
-    private final PlaceholderLocationType locationType;
+    private final PlaceholderType placeholderType;
     private final Long id;
     private final String variable;
 
@@ -50,7 +50,13 @@ public class Placeholder {
         } else
             throw new InvalidPlaceholderException(placeholderString);
 
-        locationType = PlaceholderLocationType.from(location);
+        placeholderType = PlaceholderType.from(location);
+        validateByType();
+    }
+
+    private void validateByType() {
+        if (!placeholderType.getValidationRules().validate(id, variable))
+            throw new InvalidPlaceholderException(toString());
     }
 
     @Override

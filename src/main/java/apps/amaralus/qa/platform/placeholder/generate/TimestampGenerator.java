@@ -12,7 +12,7 @@ public class TimestampGenerator implements PlaceholderGenerator {
     }
 
     @Override
-    public GeneratedLocationType getPlaceholderLocation() {
-        return GeneratedLocationType.TIMESTAMP;
+    public GeneratedPlaceholderType getPlaceholderLocation() {
+        return GeneratedPlaceholderType.TIMESTAMP;
     }
 }
