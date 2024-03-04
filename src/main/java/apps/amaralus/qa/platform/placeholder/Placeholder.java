@@ -7,9 +7,16 @@ import java.util.regex.Pattern;
 @Getter
 public class Placeholder {
 
-    public static final Pattern PATTERN = Pattern.compile("\\{\\{(.*?)}}");
+    public static final Pattern BRACES_PATTERN = Pattern.compile("\\{\\{(.*?)}}");
+    public static final Pattern LOCATION_PATTERN = Pattern.compile("([a-zA-Z0-9-_]+)");
+    public static final Pattern LOCATION_VARIABLE_PATTERN =
+            Pattern.compile(LOCATION_PATTERN + ":" + LOCATION_PATTERN);
+    public static final Pattern FULL_PATH_PATTERN =
+            Pattern.compile(LOCATION_PATTERN + "#(\\d+):" + LOCATION_PATTERN);
 
-    private final String entity;
+    private final String path;
+    private final String location;
+    private final PlaceholderLocation locationType;
     private final Long id;
     private final String variable;
 
@@ -18,41 +25,36 @@ public class Placeholder {
     }
 
     private Placeholder(String placeholderString) {
-        var matcher = PATTERN.matcher(placeholderString);
-        if (!matcher.matches())
-            throwIllegalArgumentException(placeholderString);
+        var matcher = BRACES_PATTERN.matcher(placeholderString);
+        if (!matcher.matches() || matcher.group(1).isBlank())
+            throw new InvalidPlaceholderException(placeholderString);
 
-        var variableSplit = matcher.group(1).split(":");
-        if (variableSplit.length == 1) {
-            variable = variableSplit[0];
-            entity = null;
+        path = matcher.group(1);
+
+        var locationMatcher = LOCATION_PATTERN.matcher(path);
+        var locationVariableMatcher = LOCATION_VARIABLE_PATTERN.matcher(path);
+        var fullPathMatcher = FULL_PATH_PATTERN.matcher(path);
+
+        if (locationMatcher.matches()) {
+            location = path;
             id = null;
-        } else {
-            variable = variableSplit[1];
-            var entitySplit = variableSplit[0].split("#");
-            if (entitySplit.length == 1) {
-                entity = entitySplit[0];
-                id = null;
-            } else {
-                entity = entitySplit[0];
-                try {
-                    id = Long.parseLong(entitySplit[1]);
-                    if (id <= 0)
-                        throwIllegalArgumentException(placeholderString, " id value <= 0");
-                } catch (NumberFormatException e) {
-                    // нельзя заменить на метод и сохранить final id из-за особенности компиляции
-                    throw new IllegalArgumentException(
-                            "Invalid placeholder \"" + placeholderString + "\" Invalid id: " + e.getMessage());
-                }
-            }
-        }
+            variable = null;
+        } else if (locationVariableMatcher.matches()) {
+            location = locationVariableMatcher.group(1);
+            id = null;
+            variable = locationVariableMatcher.group(2);
+        } else if (fullPathMatcher.matches()) {
+            location = fullPathMatcher.group(1);
+            id = Long.valueOf(fullPathMatcher.group(2));
+            variable = fullPathMatcher.group(3);
+        } else
+            throw new InvalidPlaceholderException(placeholderString);
+
+        locationType = PlaceholderLocation.from(location);
     }
 
-    private void throwIllegalArgumentException(String placeholderString) {
-        throwIllegalArgumentException(placeholderString, "");
-    }
-
-    private void throwIllegalArgumentException(String placeholderString, String extraMessage) {
-        throw new IllegalArgumentException("Invalid placeholder \"" + placeholderString + "\"." + extraMessage);
+    @Override
+    public String toString() {
+        return "{{" + path + "}}";
     }
 }
