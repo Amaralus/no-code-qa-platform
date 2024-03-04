@@ -3,7 +3,7 @@ package apps.amaralus.qa.platform.placeholder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static apps.amaralus.qa.platform.placeholder.DefaultLocation.ALIAS;
+import static apps.amaralus.qa.platform.placeholder.DefaultLocationType.UNKNOWN;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlaceholderTest {
@@ -26,7 +26,7 @@ class PlaceholderTest {
     void locationParsed() {
         var placeholder = Placeholder.parse("{{abc}}");
         assertEquals("abc", placeholder.getLocation());
-        assertEquals(ALIAS, placeholder.getLocationType());
+        assertEquals(UNKNOWN, placeholder.getLocationType());
         assertNull(placeholder.getId());
         assertNull(placeholder.getVariable());
     }
@@ -70,7 +70,7 @@ class PlaceholderTest {
     void locationAndVariableParsed() {
         var placeholder = Placeholder.parse("{{abc:def}}");
         assertEquals("abc", placeholder.getLocation());
-        assertEquals(ALIAS, placeholder.getLocationType());
+        assertEquals(UNKNOWN, placeholder.getLocationType());
         assertNull(placeholder.getId());
         assertEquals("def", placeholder.getVariable());
     }
@@ -79,7 +79,7 @@ class PlaceholderTest {
     void locationAndIdAndVariableParsed() {
         var placeholder = Placeholder.parse("{{abc#123:def}}");
         assertEquals("abc", placeholder.getLocation());
-        assertEquals(ALIAS, placeholder.getLocationType());
+        assertEquals(UNKNOWN, placeholder.getLocationType());
         assertEquals(123, placeholder.getId());
         assertEquals("def", placeholder.getVariable());
     }

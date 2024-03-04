@@ -6,26 +6,26 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toUnmodifiableMap;
 
-public enum DefaultLocation implements PlaceholderLocation {
+public enum DefaultLocationType implements PlaceholderLocationType {
     DATASET,
     PROJECT,
     FOLDER,
     TESTCASE,
     ENVIRONMENT,
     SERVICE,
-    ALIAS;
+    UNKNOWN;
 
-    private static final Map<String, DefaultLocation> locations =
+    private static final Map<String, DefaultLocationType> locations =
             Stream.of(values())
-                    .filter(location -> location != ALIAS)
+                    .filter(location -> location != UNKNOWN)
                     .collect(toUnmodifiableMap(
                             Enum::name,
                             Function.identity()
                     ));
 
-    public static DefaultLocation from(String name) {
+    public static DefaultLocationType from(String name) {
         return name == null
-                ? ALIAS
-                : locations.getOrDefault(name.toUpperCase(), ALIAS);
+                ? UNKNOWN
+                : locations.getOrDefault(name.toUpperCase(), UNKNOWN);
     }
 }

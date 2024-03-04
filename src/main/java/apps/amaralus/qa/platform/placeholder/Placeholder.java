@@ -16,7 +16,7 @@ public class Placeholder {
 
     private final String path;
     private final String location;
-    private final PlaceholderLocation locationType;
+    private final PlaceholderLocationType locationType;
     private final Long id;
     private final String variable;
 
@@ -50,7 +50,7 @@ public class Placeholder {
         } else
             throw new InvalidPlaceholderException(placeholderString);
 
-        locationType = PlaceholderLocation.from(location);
+        locationType = PlaceholderLocationType.from(location);
     }
 
     @Override
