@@ -1,7 +1,6 @@
 package apps.amaralus.qa.platform.placeholder;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -14,12 +13,11 @@ public enum DefaultLocation implements PlaceholderLocation {
     TESTCASE,
     ENVIRONMENT,
     SERVICE,
-    ALIAS,
-    LOCAL_VARIABLE;
+    ALIAS;
 
     private static final Map<String, DefaultLocation> locations =
             Stream.of(values())
-                    .filter(location -> !Set.of(ALIAS, LOCAL_VARIABLE).contains(location))
+                    .filter(location -> location != ALIAS)
                     .collect(toUnmodifiableMap(
                             Enum::name,
                             Function.identity()
@@ -27,7 +25,7 @@ public enum DefaultLocation implements PlaceholderLocation {
 
     public static DefaultLocation from(String name) {
         return name == null
-                ? LOCAL_VARIABLE
+                ? ALIAS
                 : locations.getOrDefault(name.toUpperCase(), ALIAS);
     }
 }
