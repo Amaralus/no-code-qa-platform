@@ -20,7 +20,7 @@ public enum GeneratedPlaceholderType implements PlaceholderType {
     NUMBER(LOCATION_ONLY),
     STRING(LOCATION_ONLY);
 
-    private static final Map<String, GeneratedPlaceholderType> locations =
+    private static final Map<String, GeneratedPlaceholderType> placeholderTypes =
             Stream.of(values())
                     .collect(toUnmodifiableMap(
                             Enum::name,
@@ -30,7 +30,7 @@ public enum GeneratedPlaceholderType implements PlaceholderType {
     private final ValidationRules validationRules;
 
     public static GeneratedPlaceholderType from(String name) {
-        return name == null ? null : locations.get(name.toUpperCase());
+        return name == null ? null : placeholderTypes.get(name.toUpperCase());
     }
 
     @Override

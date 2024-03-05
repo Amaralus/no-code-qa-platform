@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.folder.model;
 
+import apps.amaralus.qa.platform.common.DatasetSourceModel;
 import apps.amaralus.qa.platform.label.model.LabelModel;
 import apps.amaralus.qa.platform.rocksdb.sequence.GeneratedSequence;
 import lombok.Data;
@@ -12,14 +13,15 @@ import java.util.List;
 @KeySpace("folder")
 @Data
 @NoArgsConstructor
-public class FolderModel {
+public class FolderModel implements DatasetSourceModel<Long> {
     @Id
     @GeneratedSequence("folder-id")
-    private long id;
+    private Long id;
     private String name;
     private String description;
     private List<LabelModel> labels;
     private Long parent;
+    private long dataset;
     private String project;
 
     public FolderModel(String name, String project) {

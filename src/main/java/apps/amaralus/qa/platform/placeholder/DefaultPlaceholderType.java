@@ -20,9 +20,9 @@ public enum DefaultPlaceholderType implements PlaceholderType {
     SERVICE(FULL_PATH),
     UNKNOWN(new ValidationRules(EXCLUDE, OPTIONAL));
 
-    private static final Map<String, DefaultPlaceholderType> locations =
+    private static final Map<String, DefaultPlaceholderType> placeholderTypes =
             Stream.of(values())
-                    .filter(location -> location != UNKNOWN)
+                    .filter(placeholderType -> placeholderType != UNKNOWN)
                     .collect(toUnmodifiableMap(
                             Enum::name,
                             Function.identity()
@@ -33,7 +33,7 @@ public enum DefaultPlaceholderType implements PlaceholderType {
     public static DefaultPlaceholderType from(String name) {
         return name == null
                 ? UNKNOWN
-                : locations.getOrDefault(name.toUpperCase(), UNKNOWN);
+                : placeholderTypes.getOrDefault(name.toUpperCase(), UNKNOWN);
     }
 
     @Override

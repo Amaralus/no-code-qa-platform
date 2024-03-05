@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.testcase;
 
+import apps.amaralus.qa.platform.common.DatasetSourceModel;
 import apps.amaralus.qa.platform.label.model.LabelModel;
 import apps.amaralus.qa.platform.rocksdb.sequence.GeneratedSequence;
 import apps.amaralus.qa.platform.runtime.ExecutionProperties;
@@ -12,10 +13,10 @@ import java.util.List;
 
 @KeySpace("testCase")
 @Data
-public class TestCaseModel {
+public class TestCaseModel implements DatasetSourceModel<Long> {
     @Id
     @GeneratedSequence("test-case-id")
-    private long id;
+    private Long id;
     private String name;
     private String description;
     private Status status;
@@ -24,5 +25,6 @@ public class TestCaseModel {
     private ExecutionProperties executionProperties;
 
     private long folder;
+    private long dataset;
     private String project;
 }
