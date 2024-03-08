@@ -1,6 +1,6 @@
 package apps.amaralus.qa.platform.runtime.action.debug;
 
-import apps.amaralus.qa.platform.exception.EntityNotFoundException;
+import apps.amaralus.qa.platform.common.exception.EntityNotFoundException;
 import apps.amaralus.qa.platform.runtime.StepExecutionProperties;
 import apps.amaralus.qa.platform.runtime.TestContext;
 import apps.amaralus.qa.platform.runtime.action.ActionFactory;

@@ -16,8 +16,8 @@ public class PlaceholderResolver {
         if (placeholderType instanceof GeneratedPlaceholderType generatedType)
             return generatorsProvider.getGenerator(generatedType).generateValue();
 
-        return resolvingContext.getDatasetById(placeholderType, placeholder.getId(), project)
-                .map(datasetModel -> datasetModel.getVariables().get(placeholder.getVariable()))
+        return resolvingContext.findDataset(placeholderType, placeholder.getId(), project)
+                .map(datasetModel -> datasetModel.getVariable(placeholder.getVariable()))
                 .orElse(null);
     }
 }

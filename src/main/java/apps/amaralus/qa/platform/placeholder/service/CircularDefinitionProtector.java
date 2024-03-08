@@ -1,6 +1,6 @@
 package apps.amaralus.qa.platform.placeholder.service;
 
-import apps.amaralus.qa.platform.exception.PropertyCircularDefinitionException;
+import apps.amaralus.qa.platform.common.exception.PropertyCircularDefinitionException;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

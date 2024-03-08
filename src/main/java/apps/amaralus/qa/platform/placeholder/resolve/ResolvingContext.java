@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface ResolvingContext {
 
-    Optional<DatasetModel> getDatasetById(PlaceholderType placeholderType, Long id, String project);
+    Optional<DatasetModel> findDataset(PlaceholderType placeholderType, Long id, String project);
 }

@@ -8,10 +8,7 @@ import java.util.function.Function;
 import static apps.amaralus.qa.platform.placeholder.ValidationRules.Rule.EXCLUDE;
 import static apps.amaralus.qa.platform.placeholder.ValidationRules.Rule.INCLUDE;
 
-public record ValidationRules(
-        Rule id,
-        Rule variable
-) {
+public record ValidationRules(Rule id, Rule variable) {
     public static final ValidationRules LOCATION_ONLY = new ValidationRules(EXCLUDE, EXCLUDE);
     public static final ValidationRules FULL_PATH = new ValidationRules(INCLUDE, INCLUDE);
 

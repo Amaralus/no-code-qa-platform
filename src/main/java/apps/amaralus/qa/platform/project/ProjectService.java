@@ -1,14 +1,13 @@
 package apps.amaralus.qa.platform.project;
 
-import apps.amaralus.qa.platform.dataset.service.AliasService;
-import apps.amaralus.qa.platform.dataset.service.DatasetService;
+import apps.amaralus.qa.platform.dataset.alias.AliasService;
+import apps.amaralus.qa.platform.dataset.DatasetService;
 import apps.amaralus.qa.platform.environment.EnvironmentService;
 import apps.amaralus.qa.platform.folder.FolderService;
 import apps.amaralus.qa.platform.label.LabelService;
-import apps.amaralus.qa.platform.mapper.project.ProjectMapper;
 import apps.amaralus.qa.platform.project.model.ProjectModel;
 import apps.amaralus.qa.platform.project.model.api.Project;
-import apps.amaralus.qa.platform.service.ITServiceService;
+import apps.amaralus.qa.platform.itservice.ITServiceService;
 import apps.amaralus.qa.platform.testcase.TestCaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

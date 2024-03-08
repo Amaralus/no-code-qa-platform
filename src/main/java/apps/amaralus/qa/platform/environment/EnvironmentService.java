@@ -1,8 +1,7 @@
 package apps.amaralus.qa.platform.environment;
 
 import apps.amaralus.qa.platform.environment.model.EnvironmentModel;
-import apps.amaralus.qa.platform.exception.EntityNotFoundException;
-import apps.amaralus.qa.platform.mapper.environment.EnvironmentMapper;
+import apps.amaralus.qa.platform.common.exception.EntityNotFoundException;
 import apps.amaralus.qa.platform.project.ProjectRepository;
 import apps.amaralus.qa.platform.project.model.ProjectModel;
 import lombok.RequiredArgsConstructor;

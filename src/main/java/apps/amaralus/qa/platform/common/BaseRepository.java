@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.common;
 
+import apps.amaralus.qa.platform.common.model.BaseModel;
 import org.springframework.data.keyvalue.repository.KeyValueRepository;
 
 import java.util.List;

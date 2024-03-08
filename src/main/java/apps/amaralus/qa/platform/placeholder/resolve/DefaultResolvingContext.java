@@ -1,9 +1,9 @@
 package apps.amaralus.qa.platform.placeholder.resolve;
 
 import apps.amaralus.qa.platform.common.BaseRepository;
-import apps.amaralus.qa.platform.common.DatasetSourceModel;
+import apps.amaralus.qa.platform.common.model.DatasetSourceModel;
 import apps.amaralus.qa.platform.dataset.model.DatasetModel;
-import apps.amaralus.qa.platform.dataset.repository.DatasetRepository;
+import apps.amaralus.qa.platform.dataset.DatasetRepository;
 import apps.amaralus.qa.platform.folder.FolderRepository;
 import apps.amaralus.qa.platform.placeholder.PlaceholderType;
 import apps.amaralus.qa.platform.testcase.TestCaseRepository;
@@ -23,7 +23,7 @@ public class DefaultResolvingContext implements ResolvingContext {
     private final TestCaseRepository testCaseRepository;
 
     @Override
-    public Optional<DatasetModel> getDatasetById(PlaceholderType placeholderType, Long id, String project) {
+    public Optional<DatasetModel> findDataset(PlaceholderType placeholderType, Long id, String project) {
 
         if (placeholderType == DATASET) {
             return datasetRepository.findByIdAndProject(id, project);
