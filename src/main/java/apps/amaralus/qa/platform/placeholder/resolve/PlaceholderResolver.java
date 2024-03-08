@@ -11,12 +11,12 @@ public class PlaceholderResolver {
     private final ResolvingContext resolvingContext;
     private final PlaceholderGeneratorsProvider generatorsProvider;
 
-    public Object resolve(Placeholder placeholder, String project) {
+    public Object resolve(Placeholder placeholder) {
         var placeholderType = placeholder.getPlaceholderType();
         if (placeholderType instanceof GeneratedPlaceholderType generatedType)
             return generatorsProvider.getGenerator(generatedType).generateValue();
 
-        return resolvingContext.findDataset(placeholderType, placeholder.getId(), project)
+        return resolvingContext.findDataset(placeholderType, placeholder.getId())
                 .map(datasetModel -> datasetModel.getVariable(placeholder.getVariable()))
                 .orElse(null);
     }
