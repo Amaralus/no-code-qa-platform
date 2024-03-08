@@ -23,25 +23,17 @@ public class DatasetService extends ProjectLinked {
     }
 
     public Dataset create(Dataset dataset) {
+        if (datasetRepository.existsById(dataset.id()))
+            throw new EntityAlreadyExistsException(dataset.id());
 
-        var optional = datasetRepository.findByPathAndProject(dataset.path(), dataset.project());
-
-        if (optional.isPresent()) {
-            throw new EntityAlreadyExistsException(dataset.path());
-        }
-
-        var datasetModel = datasetMapper.mapToM(dataset);
-        return datasetMapper.mapToD(datasetRepository.save(datasetModel));
-    }
-
-    public Optional<Dataset> getByPath(String path, String project) {
-        return datasetRepository.findByPathAndProject(path, project)
-                .map(datasetMapper::mapToD);
+        var datasetModel = datasetMapper.toModel(dataset);
+        return datasetMapper.toEntity(datasetRepository.save(datasetModel));
     }
 
     public Optional<Dataset> getById(Long id) {
         return datasetRepository.findById(id)
-                .map(datasetMapper::mapToD);
+                .filter(model -> model.getProject().equals(projectContext.getProjectId()))
+                .map(datasetMapper::toEntity);
     }
 
     public Dataset updateDataset(Long id, Dataset dataset) {
@@ -50,6 +42,6 @@ public class DatasetService extends ProjectLinked {
 
         var updated = datasetMapper.update(datasetModel, dataset);
 
-        return datasetMapper.mapToD(updated);
+        return datasetMapper.toEntity(updated);
     }
 }

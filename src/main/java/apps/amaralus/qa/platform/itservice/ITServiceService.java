@@ -18,7 +18,7 @@ public class ITServiceService extends ProjectLinked {
     private final ITServiceMapper itServiceMapper;
 
     public List<ITService> findAllByProject(String project) {
-        return itServiceMapper.mapToListD(itServiceRepository.findAllByProject(project));
+        return itServiceMapper.toEntityList(itServiceRepository.findAllByProject(project));
     }
 
     @Override
@@ -32,9 +32,9 @@ public class ITServiceService extends ProjectLinked {
             throw new EntityNotFoundException(ProjectModel.class, itService.project());
         }
 
-        var itServiceModel = itServiceMapper.mapToM(itService);
+        var itServiceModel = itServiceMapper.toModel(itService);
 
-        return itServiceMapper.mapToD(itServiceRepository.save(itServiceModel));
+        return itServiceMapper.toEntity(itServiceRepository.save(itServiceModel));
     }
 
     public ITService updateService(Long id, ITService itService) {
@@ -44,7 +44,7 @@ public class ITServiceService extends ProjectLinked {
 
         var updated = itServiceMapper.update(itServiceModel, itService);
 
-        return itServiceMapper.mapToD(itServiceRepository.save(updated));
+        return itServiceMapper.toEntity(itServiceRepository.save(updated));
     }
 
     public void deleteService(Long id) {

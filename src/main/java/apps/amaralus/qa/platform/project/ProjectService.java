@@ -31,7 +31,7 @@ public class ProjectService {
             throw new IllegalArgumentException(PROJECT_TEXT + project.id() + "] already exists!");
 
         var rootFolder = folderService.createProjectRoot(project.id());
-        ProjectModel projectModel = projectMapper.mapToM(project);
+        ProjectModel projectModel = projectMapper.toModel(project);
         projectModel.setRootFolder(rootFolder.getId());
 
         return projectRepository.save(projectModel);

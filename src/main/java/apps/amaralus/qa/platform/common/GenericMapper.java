@@ -2,12 +2,12 @@ package apps.amaralus.qa.platform.common;
 
 import java.util.List;
 
-public interface GenericMapper<D, M> {
-    D mapToD(M m);
+public interface GenericMapper<E, M> {
+    E toEntity(M model);
 
-    M mapToM(D d);
+    M toModel(E entity);
 
-    List<M> mapToListM(List<D> dList);
+    List<M> toModelList(List<E> entityList);
 
-    List<D> mapToListD(List<M> mList);
+    List<E> toEntityList(List<M> modelList);
 }

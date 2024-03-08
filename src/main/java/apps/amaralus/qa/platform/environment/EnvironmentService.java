@@ -18,7 +18,7 @@ public class EnvironmentService extends ProjectLinked {
     private final EnvironmentMapper environmentMapper;
 
     public List<Environment> findAllByProject(String project) {
-        return environmentMapper.mapToListD(environmentRepository.findAllByProject(project));
+        return environmentMapper.toEntityList(environmentRepository.findAllByProject(project));
     }
 
     @Override
@@ -32,8 +32,8 @@ public class EnvironmentService extends ProjectLinked {
             throw new EntityNotFoundException(ProjectModel.class, environment.project());
         }
 
-        var environmentModel = environmentMapper.mapToM(environment);
-        return environmentMapper.mapToD(environmentRepository.save(environmentModel));
+        var environmentModel = environmentMapper.toModel(environment);
+        return environmentMapper.toEntity(environmentRepository.save(environmentModel));
     }
 
     public Environment updateEnvironment(Long id, Environment environment) {
@@ -44,7 +44,7 @@ public class EnvironmentService extends ProjectLinked {
 
         var updated = environmentMapper.update(environmentModel, environment);
 
-        return environmentMapper.mapToD(environmentRepository.save(updated));
+        return environmentMapper.toEntity(environmentRepository.save(updated));
     }
 
     public void deleteEnvironment(Long id) {

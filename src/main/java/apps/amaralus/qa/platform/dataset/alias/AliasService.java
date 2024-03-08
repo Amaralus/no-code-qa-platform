@@ -25,8 +25,8 @@ public class AliasService extends ProjectLinked {
             throw new EntityNotFoundException(ProjectModel.class, alias.project());
         }
 
-        var aliasModel = aliasMapper.mapToM(alias);
-        return aliasMapper.mapToD(aliasRepository.save(aliasModel));
+        var aliasModel = aliasMapper.toModel(alias);
+        return aliasMapper.toEntity(aliasRepository.save(aliasModel));
     }
 
     public Alias updateAliasName(String newName, String oldName, String project) {
@@ -38,7 +38,7 @@ public class AliasService extends ProjectLinked {
                 })
                 .orElseThrow(() -> new EntityNotFoundException(AliasModel.class));
 
-        return aliasMapper.mapToD(alias);
+        return aliasMapper.toEntity(alias);
     }
 
     public void deleteAliasByName(String name, String project) {
@@ -52,6 +52,6 @@ public class AliasService extends ProjectLinked {
 
     public Optional<Alias> getAliasByName(String aliasName, String project) {
         return aliasRepository.findByNameAndProject(aliasName, project)
-                .map(aliasMapper::mapToD);
+                .map(aliasMapper::toEntity);
     }
 }

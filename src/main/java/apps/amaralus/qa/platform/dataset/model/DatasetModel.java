@@ -16,8 +16,8 @@ public class DatasetModel implements BaseModel<Long> {
     @GeneratedSequence("dataset-id")
     private Long id;
     private String name;
-    private String path;
     private String description;
+    private boolean linked;
     private String project;
     private Map<String, Object> variables = new HashMap<>();
 

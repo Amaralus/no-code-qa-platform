@@ -14,8 +14,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.annotation.*;
 
+import static apps.amaralus.qa.platform.common.api.Routes.PROJECTS;
+
 @RestController
-@RequestMapping("/api/projects")
+@RequestMapping(PROJECTS)
 @RequiredArgsConstructor
 @Validated
 public class ProjectController extends ProjectContextLinked {
@@ -32,20 +34,20 @@ public class ProjectController extends ProjectContextLinked {
         }
     }
 
-    @PatchMapping("/{id}/description")
-    public ProjectModel updateDescription(@PathVariable String id, @RequestParam String description) {
-        return projectService.updateDescription(id, description);
+    @PatchMapping("/{project}/description")
+    public ProjectModel updateDescription(@PathVariable String project, @RequestParam String description) {
+        return projectService.updateDescription(project, description);
     }
 
-    @PatchMapping("/{id}/name")
-    public ProjectModel updateName(@PathVariable String id, @RequestParam @NotBlank String name) {
-        return projectService.updateName(id, name);
+    @PatchMapping("/{project}/name")
+    public ProjectModel updateName(@PathVariable String project, @RequestParam @NotBlank String name) {
+        return projectService.updateName(project, name);
     }
 
-    @DeleteMapping("/{id}")
-    @InterceptProjectId(parameterName = "id")
-    public void deleteProject(@PathVariable String id) {
-        projectService.delete(id);
+    @DeleteMapping("/{project}")
+    @InterceptProjectId
+    public void deleteProject(@PathVariable String project) {
+        projectService.delete(project);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
