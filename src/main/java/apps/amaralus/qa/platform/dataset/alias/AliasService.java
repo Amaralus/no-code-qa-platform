@@ -1,9 +1,10 @@
 package apps.amaralus.qa.platform.dataset.alias;
 
-import apps.amaralus.qa.platform.dataset.alias.model.AliasModel;
 import apps.amaralus.qa.platform.common.exception.EntityNotFoundException;
+import apps.amaralus.qa.platform.dataset.alias.model.AliasModel;
 import apps.amaralus.qa.platform.dataset.alias.model.api.Alias;
 import apps.amaralus.qa.platform.project.ProjectRepository;
+import apps.amaralus.qa.platform.project.context.ProjectLinked;
 import apps.amaralus.qa.platform.project.model.ProjectModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class AliasService {
+public class AliasService extends ProjectLinked {
 
     private final AliasRepository aliasRepository;
     private final ProjectRepository projectRepository;
@@ -44,8 +45,9 @@ public class AliasService {
         aliasRepository.deleteAll(aliasRepository.findAllByNameAndProject(name, project));
     }
 
-    public void deleteAllByProject(String project) {
-        aliasRepository.deleteAll(aliasRepository.findAllByProject(project));
+    @Override
+    public void deleteAllByProject() {
+        aliasRepository.deleteAll(aliasRepository.findAllByProject(projectContext.getProjectId()));
     }
 
     public Optional<Alias> getAliasByName(String aliasName, String project) {

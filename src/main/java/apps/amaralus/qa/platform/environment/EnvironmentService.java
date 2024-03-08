@@ -1,8 +1,9 @@
 package apps.amaralus.qa.platform.environment;
 
-import apps.amaralus.qa.platform.environment.model.EnvironmentModel;
 import apps.amaralus.qa.platform.common.exception.EntityNotFoundException;
+import apps.amaralus.qa.platform.environment.model.EnvironmentModel;
 import apps.amaralus.qa.platform.project.ProjectRepository;
+import apps.amaralus.qa.platform.project.context.ProjectLinked;
 import apps.amaralus.qa.platform.project.model.ProjectModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class EnvironmentService {
+public class EnvironmentService extends ProjectLinked {
     private final EnvironmentRepository environmentRepository;
     private final ProjectRepository projectRepository;
     private final EnvironmentMapper environmentMapper;
@@ -20,8 +21,9 @@ public class EnvironmentService {
         return environmentMapper.mapToListD(environmentRepository.findAllByProject(project));
     }
 
-    public void deleteAllByProject(String project) {
-        environmentRepository.deleteAll(environmentRepository.findAllByProject(project));
+    @Override
+    public void deleteAllByProject() {
+        environmentRepository.deleteAll(environmentRepository.findAllByProject(projectContext.getProjectId()));
     }
 
     public Environment createEnvironment(Environment environment) {

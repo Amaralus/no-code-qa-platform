@@ -1,5 +1,7 @@
 package apps.amaralus.qa.platform.project;
 
+import apps.amaralus.qa.platform.project.context.InterceptProjectId;
+import apps.amaralus.qa.platform.project.context.ProjectContextLinked;
 import apps.amaralus.qa.platform.project.model.ProjectModel;
 import apps.amaralus.qa.platform.project.model.api.Project;
 import jakarta.validation.Valid;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/projects")
 @RequiredArgsConstructor
 @Validated
-public class ProjectController {
+public class ProjectController extends ProjectContextLinked {
 
     private final ProjectService projectService;
 
@@ -41,6 +43,7 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{id}")
+    @InterceptProjectId(parameterName = "id")
     public void deleteProject(@PathVariable String id) {
         projectService.delete(id);
     }

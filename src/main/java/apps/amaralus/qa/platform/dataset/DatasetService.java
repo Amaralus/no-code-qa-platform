@@ -1,9 +1,10 @@
 package apps.amaralus.qa.platform.dataset;
 
-import apps.amaralus.qa.platform.dataset.model.api.Dataset;
-import apps.amaralus.qa.platform.dataset.model.DatasetModel;
 import apps.amaralus.qa.platform.common.exception.EntityAlreadyExistsException;
 import apps.amaralus.qa.platform.common.exception.EntityNotFoundException;
+import apps.amaralus.qa.platform.dataset.model.DatasetModel;
+import apps.amaralus.qa.platform.dataset.model.api.Dataset;
+import apps.amaralus.qa.platform.project.context.ProjectLinked;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,13 +12,14 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class DatasetService {
+public class DatasetService extends ProjectLinked {
 
     private final DatasetRepository datasetRepository;
     private final DatasetMapper datasetMapper;
 
-    public void deleteAllByProject(String project) {
-        datasetRepository.deleteAll(datasetRepository.findAllByProject(project));
+    @Override
+    public void deleteAllByProject() {
+        datasetRepository.deleteAll(datasetRepository.findAllByProject(projectContext.getProjectId()));
     }
 
     public Dataset create(Dataset dataset) {

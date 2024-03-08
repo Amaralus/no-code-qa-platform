@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.testcase;
 
+import apps.amaralus.qa.platform.project.context.ProjectLinked;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -7,7 +8,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class TestCaseService {
+public class TestCaseService extends ProjectLinked {
 
     private final TestCaseRepository testCaseRepository;
 
@@ -15,7 +16,8 @@ public class TestCaseService {
         return testCaseRepository.findAllByProject(project);
     }
 
-    public void deleteAllByProject(String project) {
-        testCaseRepository.deleteAll(testCaseRepository.findAllByProject(project));
+    @Override
+    public void deleteAllByProject() {
+        testCaseRepository.deleteAll(testCaseRepository.findAllByProject(projectContext.getProjectId()));
     }
 }

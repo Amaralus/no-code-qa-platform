@@ -1,14 +1,9 @@
 package apps.amaralus.qa.platform.project;
 
-import apps.amaralus.qa.platform.dataset.alias.AliasService;
-import apps.amaralus.qa.platform.dataset.DatasetService;
-import apps.amaralus.qa.platform.environment.EnvironmentService;
 import apps.amaralus.qa.platform.folder.FolderService;
-import apps.amaralus.qa.platform.label.LabelService;
+import apps.amaralus.qa.platform.project.context.ProjectLinked;
 import apps.amaralus.qa.platform.project.model.ProjectModel;
 import apps.amaralus.qa.platform.project.model.api.Project;
-import apps.amaralus.qa.platform.itservice.ITServiceService;
-import apps.amaralus.qa.platform.testcase.TestCaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -27,12 +22,7 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
     private final FolderService folderService;
-    private final TestCaseService testCaseService;
-    private final LabelService labelService;
-    private final EnvironmentService environmentService;
-    private final ITServiceService itService;
-    private final DatasetService datasetService;
-    private final AliasService aliasService;
+    private final List<? extends ProjectLinked> projectLinked;
 
     public @NotNull ProjectModel create(@NotNull Project project) {
         Assert.notNull(project, "project must not be null!");
@@ -76,14 +66,7 @@ public class ProjectService {
         if (!projectRepository.existsById(id))
             return;
 
-        // возможно стоит ввести общий интерфейс для операций с привязкой к проекту
-        labelService.deleteAllByProject(id);
-        testCaseService.deleteAllByProject(id);
-        folderService.deleteAllByProject(id);
-        environmentService.deleteAllByProject(id);
-        itService.deleteAllByProject(id);
-        datasetService.deleteAllByProject(id);
-        aliasService.deleteAllByProject(id);
+        projectLinked.forEach(ProjectLinked::deleteAllByProject);
 
         projectRepository.deleteById(id);
     }
