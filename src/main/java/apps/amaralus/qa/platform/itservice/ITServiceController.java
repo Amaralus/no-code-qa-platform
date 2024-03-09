@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.itservice;
 
+import apps.amaralus.qa.platform.project.context.InterceptProjectId;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,8 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static apps.amaralus.qa.platform.common.api.Routes.IT_SERVICES;
+
 @RestController
-@RequestMapping("/api/it-services")
+@RequestMapping(IT_SERVICES)
 @RequiredArgsConstructor
 @Validated
 public class ITServiceController {
@@ -18,23 +21,29 @@ public class ITServiceController {
     private final ITServiceService itServiceService;
 
     @GetMapping
-    public List<ITService> findAll(@RequestParam String project) {
+    @InterceptProjectId
+    public List<ITService> findAll(@PathVariable String project) {
         return itServiceService.findAllByProject(project);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ITService createService(@Valid @RequestBody ITService itService) {
+    @InterceptProjectId
+    public ITService createService(@PathVariable String project, @Valid @RequestBody ITService itService) {
         return itServiceService.createService(itService);
     }
 
     @PatchMapping("/{id}")
-    public ITService updateService(@PathVariable Long id, @RequestBody ITService itService) {
+    @InterceptProjectId
+    public ITService updateService(@PathVariable String project,
+                                   @PathVariable Long id,
+                                   @RequestBody ITService itService) {
         return itServiceService.updateService(id, itService);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteService(@PathVariable Long id) {
+    @InterceptProjectId
+    public void deleteService(@PathVariable String project, @PathVariable Long id) {
         itServiceService.deleteService(id);
     }
 }

@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.environment;
 
+import apps.amaralus.qa.platform.project.context.InterceptProjectId;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,8 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static apps.amaralus.qa.platform.common.api.Routes.ENVIRONMENTS;
+
 @RestController
-@RequestMapping("/api/environments")
+@RequestMapping(ENVIRONMENTS)
 @RequiredArgsConstructor
 @Validated
 public class EnvironmentController {
@@ -18,23 +21,29 @@ public class EnvironmentController {
     private final EnvironmentService environmentService;
 
     @GetMapping
-    public List<Environment> findAll(@RequestParam String project) {
+    @InterceptProjectId
+    public List<Environment> findAll(@PathVariable String project) {
         return environmentService.findAllByProject(project);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Environment createEnvironment(@Valid @RequestBody Environment environment) {
+    @InterceptProjectId
+    public Environment createEnvironment(@PathVariable String project, @Valid @RequestBody Environment environment) {
         return environmentService.createEnvironment(environment);
     }
 
     @PatchMapping("/{id}")
-    public Environment updateEnvironment(@PathVariable Long id, @RequestBody Environment environment) {
+    @InterceptProjectId
+    public Environment updateEnvironment(@PathVariable String project,
+                                         @PathVariable Long id,
+                                         @RequestBody Environment environment) {
         return environmentService.updateEnvironment(id, environment);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteEnvironment(@PathVariable Long id) {
+    @InterceptProjectId
+    public void deleteEnvironment(@PathVariable String project, @PathVariable Long id) {
         environmentService.deleteEnvironment(id);
     }
 }
