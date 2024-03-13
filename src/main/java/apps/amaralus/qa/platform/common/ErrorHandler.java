@@ -2,7 +2,6 @@ package apps.amaralus.qa.platform.common;
 
 import apps.amaralus.qa.platform.common.exception.EntityAlreadyExistsException;
 import apps.amaralus.qa.platform.common.exception.EntityNotFoundException;
-import apps.amaralus.qa.platform.common.exception.PropertyCircularDefinitionException;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -40,11 +39,6 @@ public class ErrorHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     public Object captureEntityNotFoundException(EntityNotFoundException e) {
         return new ErrorResponseException(HttpStatus.NOT_FOUND, ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage()), e);
-    }
-
-    @ExceptionHandler(PropertyCircularDefinitionException.class)
-    public Object capturePropertyCircularDefinitionException(PropertyCircularDefinitionException e) {
-        return new ErrorResponseException(HttpStatus.BAD_REQUEST, ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage()), e);
     }
 
     @ExceptionHandler(EntityAlreadyExistsException.class)

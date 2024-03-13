@@ -16,4 +16,8 @@ public interface ResolvingContext {
     Optional<AliasModel> findAlias(String name);
 
     void setProjectContext(ProjectContext projectContext);
+
+    default boolean isGlobalContext() {
+        return true;
+    }
 }

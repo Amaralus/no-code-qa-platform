@@ -18,7 +18,7 @@ public class AliasModel {
     private String project;
 
 
-    public boolean isDatasetAlias() {
-        return variable == null;
+    public boolean isVariableAlias() {
+        return variable != null;
     }
 }
