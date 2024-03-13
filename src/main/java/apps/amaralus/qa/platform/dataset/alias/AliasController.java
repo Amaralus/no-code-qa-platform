@@ -20,16 +20,10 @@ public class AliasController {
         return aliasService.save(alias);
     }
 
-    @PatchMapping("/{aliasName}")
-    @InterceptProjectId
-    public Alias updateAliasName(@PathVariable String aliasName, @PathVariable String project, @RequestParam String newAlias) {
-        return aliasService.updateAliasName(newAlias, aliasName, project);
-    }
-
     @DeleteMapping("/{aliasName}")
     @InterceptProjectId
     public void deleteByAliasName(@PathVariable String project, @PathVariable String aliasName) {
-        aliasService.deleteAliasByName(aliasName, project);
+        aliasService.deleteAliasByName(aliasName);
     }
 }
 

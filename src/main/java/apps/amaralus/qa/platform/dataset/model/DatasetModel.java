@@ -17,7 +17,7 @@ public class DatasetModel implements BaseModel<Long> {
     private Long id;
     private String name;
     private String description;
-    private boolean linked;
+    private boolean linked = false;
     private String project;
     private Map<String, Object> variables = new HashMap<>();
 

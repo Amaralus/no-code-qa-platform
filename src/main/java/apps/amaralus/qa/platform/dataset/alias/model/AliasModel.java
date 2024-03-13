@@ -14,6 +14,11 @@ public class AliasModel {
     private long id;
     private String name;
     private long dataset;
-    private String propertyName;
+    private String variable;
     private String project;
+
+
+    public boolean isDatasetAlias() {
+        return variable == null;
+    }
 }

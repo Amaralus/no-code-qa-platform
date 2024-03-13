@@ -7,7 +7,14 @@ public record Alias(
         long id,
         @NotBlank String name,
         @NotNull Long dataset,
-        @NotBlank String propertyName,
-        @NotBlank String project
+        @NotBlank String variable
 ) {
+
+    public Alias(String name, Long dataset, String variable) {
+        this(0, name, dataset, variable);
+    }
+
+    public Alias(String name, Long dataset) {
+        this(0, name, dataset, null);
+    }
 }

@@ -27,6 +27,7 @@ public class DatasetService extends ProjectLinked {
             throw new EntityAlreadyExistsException(dataset.id());
 
         var datasetModel = datasetMapper.toModel(dataset);
+        datasetModel.setProject(projectContext.getProjectId());
         return datasetMapper.toEntity(datasetRepository.save(datasetModel));
     }
 

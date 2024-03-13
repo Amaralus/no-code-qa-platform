@@ -7,12 +7,12 @@ public record Dataset(
         long id,
         String name,
         String description,
-        boolean linkedToEntity,
+        boolean linked,
         Map<String, Object> variables
 ) {
 
-    public Dataset(String name, String description, boolean linkedToEntity) {
-        this(0, name, description, linkedToEntity, new HashMap<>());
+    public Dataset(String name, String description, boolean linked) {
+        this(0, name, description, linked, new HashMap<>());
     }
 
     public void addVariable(String key, Object value) {
