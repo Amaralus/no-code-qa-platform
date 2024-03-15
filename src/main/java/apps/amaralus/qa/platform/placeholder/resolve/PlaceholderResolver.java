@@ -3,7 +3,6 @@ package apps.amaralus.qa.platform.placeholder.resolve;
 import apps.amaralus.qa.platform.dataset.model.DatasetModel;
 import apps.amaralus.qa.platform.placeholder.DefaultPlaceholderType;
 import apps.amaralus.qa.platform.placeholder.Placeholder;
-import apps.amaralus.qa.platform.placeholder.RecursivePlaceholderException;
 import apps.amaralus.qa.platform.placeholder.generate.GeneratedPlaceholderType;
 import apps.amaralus.qa.platform.placeholder.generate.PlaceholderGeneratorsProvider;
 import lombok.EqualsAndHashCode;
