@@ -1,11 +1,7 @@
 package apps.amaralus.qa.platform.folder;
 
 import apps.amaralus.qa.platform.folder.model.FolderModel;
-import org.springframework.data.keyvalue.repository.KeyValueRepository;
+import apps.amaralus.qa.platform.project.linked.ProjectLinkedRepository;
 
-import java.util.List;
-
-public interface FolderRepository extends KeyValueRepository<FolderModel, Long> {
-
-    List<FolderModel> findAllByProject(String project);
+public interface FolderRepository extends ProjectLinkedRepository<FolderModel, Long> {
 }

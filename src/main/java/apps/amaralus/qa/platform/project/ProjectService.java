@@ -1,15 +1,12 @@
 package apps.amaralus.qa.platform.project;
 
-import apps.amaralus.qa.platform.dataset.service.AliasService;
-import apps.amaralus.qa.platform.dataset.service.DatasetService;
-import apps.amaralus.qa.platform.environment.EnvironmentService;
+import apps.amaralus.qa.platform.common.CrudService;
+import apps.amaralus.qa.platform.dataset.DatasetService;
+import apps.amaralus.qa.platform.dataset.model.api.Dataset;
 import apps.amaralus.qa.platform.folder.FolderService;
-import apps.amaralus.qa.platform.label.LabelService;
-import apps.amaralus.qa.platform.mapper.project.ProjectMapper;
-import apps.amaralus.qa.platform.project.model.ProjectModel;
-import apps.amaralus.qa.platform.project.model.api.Project;
-import apps.amaralus.qa.platform.service.ITServiceService;
-import apps.amaralus.qa.platform.testcase.TestCaseService;
+import apps.amaralus.qa.platform.project.api.Project;
+import apps.amaralus.qa.platform.project.database.ProjectModel;
+import apps.amaralus.qa.platform.project.linked.ProjectLinkedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -22,74 +19,52 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ProjectService {
-    private static final String ID_NOT_NULL_MESSAGE = "id must not be null!";
+public class ProjectService extends CrudService<Project, ProjectModel, String> {
     private static final String PROJECT_TEXT = "Project [";
-    private final ProjectRepository projectRepository;
-    private final ProjectMapper projectMapper;
     private final FolderService folderService;
-    private final TestCaseService testCaseService;
-    private final LabelService labelService;
-    private final EnvironmentService environmentService;
-    private final ITServiceService itService;
     private final DatasetService datasetService;
-    private final AliasService aliasService;
+    private final List<? extends ProjectLinkedService<?, ?, ?>> projectLinked;
 
-    public @NotNull ProjectModel create(@NotNull Project project) {
-        Assert.notNull(project, "project must not be null!");
-
-        if (projectRepository.existsById(project.id()))
-            throw new IllegalArgumentException(PROJECT_TEXT + project.id() + "] already exists!");
-
-        var rootFolder = folderService.createProjectRoot(project.id());
-        ProjectModel projectModel = projectMapper.mapToM(project);
-        projectModel.setRootFolder(rootFolder.getId());
-
-        return projectRepository.save(projectModel);
+    @Override
+    protected void beforeCreate(ProjectModel model) {
+        var dataset = datasetService.create(new Dataset("System dataset for Project#" + model.getId(), null, true));
+        model.setDataset(dataset.getId());
+        var rootFolder = folderService.createProjectRoot(model.getId());
+        model.setRootFolder(rootFolder.getId());
     }
 
-    public @NotNull ProjectModel updateDescription(@NotNull String id, @Nullable String description) {
+    public @NotNull Project updateDescription(@NotNull String id, @Nullable String description) {
         Assert.notNull(id, ID_NOT_NULL_MESSAGE);
 
-        var project = projectRepository.findById(id)
+        var project = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(PROJECT_TEXT + id + "] not exists!"));
 
         project.setDescription(description);
 
-        return projectRepository.save(project);
+        return mapper.toEntity(repository.save(project));
     }
 
-    public @NotNull ProjectModel updateName(@NotNull String id, @NotNull String name) {
+    public @NotNull Project updateName(@NotNull String id, @NotNull String name) {
         Assert.notNull(id, ID_NOT_NULL_MESSAGE);
         Assert.notNull(name, "name must not be null!");
 
-        var project = projectRepository.findById(id)
+        var project = repository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(PROJECT_TEXT + id + "] not exists!"));
 
         project.setName(name);
 
-        return projectRepository.save(project);
+        return mapper.toEntity(repository.save(project));
     }
 
+    @Override
     public void delete(@NotNull String id) {
         Assert.notNull(id, ID_NOT_NULL_MESSAGE);
 
-        if (!projectRepository.existsById(id))
+        if (!repository.existsById(id))
             return;
 
-        // возможно стоит ввести общий интерфейс для операций с привязкой к проекту
-        labelService.deleteAllByProject(id);
-        testCaseService.deleteAllByProject(id);
-        folderService.deleteAllByProject(id);
-        environmentService.deleteAllByProject(id);
-        itService.deleteAllByProject(id);
-        datasetService.deleteAllByProject(id);
-        aliasService.deleteAllByProject(id);
+        projectLinked.forEach(ProjectLinkedService::deleteAllByProject);
 
-        projectRepository.deleteById(id);
-    }
-
-    public List<ProjectModel> findAll() {
-        return projectRepository.findAll();
+        repository.deleteById(id);
     }
 }

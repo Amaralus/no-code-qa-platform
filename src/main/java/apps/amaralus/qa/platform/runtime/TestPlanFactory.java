@@ -3,7 +3,7 @@ package apps.amaralus.qa.platform.runtime;
 import apps.amaralus.qa.platform.runtime.action.ActionType;
 import apps.amaralus.qa.platform.runtime.execution.SimpleTask;
 import apps.amaralus.qa.platform.runtime.schedule.ExecutionScheduler;
-import apps.amaralus.qa.platform.testcase.TestCaseModel;
+import apps.amaralus.qa.platform.testcase.TestCase;
 import apps.amaralus.qa.platform.testcase.TestCaseService;
 import apps.amaralus.qa.platform.testplan.TestPlanModel;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class TestPlanFactory {
 
     public ExecutableTestPlan produce(TestPlanModel testPlanModel) {
 
-        var testCases = testCaseService.findAllByProject(testPlanModel.getProject())
+        var testCases = testCaseService.findAll()
                 .stream()
                 .filter(this::allAutoStepsFilter)
                 .map(testCaseFactory::produce)
@@ -37,11 +37,11 @@ public class TestPlanFactory {
         return testPlan;
     }
 
-    private boolean allAutoStepsFilter(TestCaseModel testCaseModel) {
-        if (testCaseModel.getTestSteps().isEmpty())
+    private boolean allAutoStepsFilter(TestCase testCase) {
+        if (testCase.getTestSteps().isEmpty())
             return false;
 
-        return testCaseModel.getTestSteps().stream()
+        return testCase.getTestSteps().stream()
                 .map(testStep -> testStep.getStepExecutionProperties().getActionType())
                 .allMatch(actionType -> actionType != ActionType.NONE);
     }

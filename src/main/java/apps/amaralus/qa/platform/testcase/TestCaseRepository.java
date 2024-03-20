@@ -1,10 +1,7 @@
 package apps.amaralus.qa.platform.testcase;
 
-import org.springframework.data.keyvalue.repository.KeyValueRepository;
+import apps.amaralus.qa.platform.project.linked.ProjectLinkedRepository;
 
-import java.util.List;
+public interface TestCaseRepository extends ProjectLinkedRepository<TestCaseModel, Long> {
 
-public interface TestCaseRepository extends KeyValueRepository<TestCaseModel, Long> {
-
-    List<TestCaseModel> findAllByProject(String project);
 }

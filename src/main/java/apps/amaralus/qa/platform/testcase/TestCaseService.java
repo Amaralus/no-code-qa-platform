@@ -1,21 +1,8 @@
 package apps.amaralus.qa.platform.testcase;
 
-import lombok.AllArgsConstructor;
+import apps.amaralus.qa.platform.dataset.linked.DatasetLinkedService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
-@AllArgsConstructor
-public class TestCaseService {
-
-    private final TestCaseRepository testCaseRepository;
-
-    public List<TestCaseModel> findAllByProject(String project) {
-        return testCaseRepository.findAllByProject(project);
-    }
-
-    public void deleteAllByProject(String project) {
-        testCaseRepository.deleteAll(testCaseRepository.findAllByProject(project));
-    }
+public class TestCaseService extends DatasetLinkedService<TestCase, TestCaseModel, Long> {
 }
