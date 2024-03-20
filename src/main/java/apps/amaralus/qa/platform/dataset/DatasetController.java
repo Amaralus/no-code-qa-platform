@@ -2,6 +2,7 @@ package apps.amaralus.qa.platform.dataset;
 
 import apps.amaralus.qa.platform.dataset.model.api.Dataset;
 import apps.amaralus.qa.platform.project.context.InterceptProjectId;
+import apps.amaralus.qa.platform.project.context.ProjectContextLinked;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,7 +16,7 @@ import static apps.amaralus.qa.platform.common.api.Routes.DATASETS;
 @RequestMapping(DATASETS)
 @RequiredArgsConstructor
 @Validated
-public class DatasetController {
+public class DatasetController extends ProjectContextLinked {
 
     private final DatasetService datasetService;
 
@@ -28,14 +29,8 @@ public class DatasetController {
     @GetMapping("/{id}")
     @InterceptProjectId
     public ResponseEntity<Dataset> findById(@PathVariable String project, @PathVariable Long id) {
-        return datasetService.getById(id)
+        return datasetService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).build());
-    }
-
-    @PatchMapping("/{id}")
-    @InterceptProjectId
-    public Dataset updateDataset(@PathVariable String project, @PathVariable Long id, @RequestBody Dataset dataset) {
-        return datasetService.updateDataset(id, dataset);
     }
 }

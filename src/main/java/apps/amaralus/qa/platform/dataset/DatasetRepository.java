@@ -1,7 +1,7 @@
 package apps.amaralus.qa.platform.dataset;
 
-import apps.amaralus.qa.platform.common.BaseRepository;
 import apps.amaralus.qa.platform.dataset.model.DatasetModel;
+import apps.amaralus.qa.platform.project.linked.ProjectLinkedRepository;
 
-public interface DatasetRepository extends BaseRepository<DatasetModel, Long> {
+public interface DatasetRepository extends ProjectLinkedRepository<DatasetModel, Long> {
 }

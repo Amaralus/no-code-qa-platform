@@ -1,6 +1,6 @@
 package apps.amaralus.qa.platform.dataset.model;
 
-import apps.amaralus.qa.platform.common.model.BaseModel;
+import apps.amaralus.qa.platform.project.linked.ProjectLinkedModel;
 import apps.amaralus.qa.platform.rocksdb.sequence.GeneratedSequence;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Data
 @KeySpace("dataset")
-public class DatasetModel implements BaseModel<Long> {
+public class DatasetModel implements ProjectLinkedModel<Long> {
     @Id
     @GeneratedSequence("dataset-id")
     private Long id;

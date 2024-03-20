@@ -1,6 +1,6 @@
 package apps.amaralus.qa.platform.common.model;
 
-public interface DatasetSourceModel<I> extends BaseModel<I> {
+public interface DatasetSource {
 
     long getDataset();
 }

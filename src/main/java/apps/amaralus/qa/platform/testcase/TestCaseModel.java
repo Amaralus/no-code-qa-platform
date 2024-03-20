@@ -1,7 +1,8 @@
 package apps.amaralus.qa.platform.testcase;
 
-import apps.amaralus.qa.platform.common.model.DatasetSourceModel;
+import apps.amaralus.qa.platform.common.model.DatasetSource;
 import apps.amaralus.qa.platform.label.model.LabelModel;
+import apps.amaralus.qa.platform.project.linked.ProjectLinkedModel;
 import apps.amaralus.qa.platform.rocksdb.sequence.GeneratedSequence;
 import apps.amaralus.qa.platform.runtime.ExecutionProperties;
 import lombok.Data;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @KeySpace("testCase")
 @Data
-public class TestCaseModel implements DatasetSourceModel<Long> {
+public class TestCaseModel implements ProjectLinkedModel<Long>, DatasetSource {
     @Id
     @GeneratedSequence("test-case-id")
     private Long id;

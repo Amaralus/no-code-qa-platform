@@ -1,16 +1,11 @@
 package apps.amaralus.qa.platform.dataset.alias;
 
 import apps.amaralus.qa.platform.dataset.alias.model.AliasModel;
-import org.springframework.data.keyvalue.repository.KeyValueRepository;
+import apps.amaralus.qa.platform.project.linked.ProjectLinkedRepository;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface AliasRepository extends KeyValueRepository<AliasModel, Long> {
-
-    List<AliasModel> findAllByProject(String project);
+public interface AliasRepository extends ProjectLinkedRepository<AliasModel, Long> {
 
     Optional<AliasModel> findByNameAndProject(String name, String project);
-
-    List<AliasModel> findAllByNameAndProject(String name, String project);
 }

@@ -1,15 +1,12 @@
 package apps.amaralus.qa.platform.project.context;
 
 import org.jetbrains.annotations.NotNull;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-
-import static org.springframework.context.annotation.ScopedProxyMode.TARGET_CLASS;
-import static org.springframework.web.context.WebApplicationContext.SCOPE_REQUEST;
+import org.springframework.web.context.annotation.RequestScope;
 
 @Component
-@Scope(scopeName = SCOPE_REQUEST, proxyMode = TARGET_CLASS)
+@RequestScope
 public class DefaultProjectContext implements ProjectContext {
 
     private String projectId = "";

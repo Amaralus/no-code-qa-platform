@@ -1,17 +1,12 @@
 package apps.amaralus.qa.platform.label;
 
-import apps.amaralus.qa.platform.project.context.ProjectLinked;
+import apps.amaralus.qa.platform.label.model.LabelModel;
+import apps.amaralus.qa.platform.label.model.api.Label;
+import apps.amaralus.qa.platform.project.linked.AbstractProjectLinkedService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class LabelService extends ProjectLinked {
-
-    private final LabelRepository labelRepository;
-
-    @Override
-    public void deleteAllByProject() {
-        labelRepository.deleteAll(labelRepository.findAllByProject(projectContext.getProjectId()));
-    }
+public class LabelService extends AbstractProjectLinkedService<Label, LabelModel, Long> {
 }

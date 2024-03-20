@@ -2,7 +2,6 @@ package apps.amaralus.qa.platform.project;
 
 import apps.amaralus.qa.platform.project.context.InterceptProjectId;
 import apps.amaralus.qa.platform.project.context.ProjectContextLinked;
-import apps.amaralus.qa.platform.project.model.ProjectModel;
 import apps.amaralus.qa.platform.project.model.api.Project;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -35,12 +34,12 @@ public class ProjectController extends ProjectContextLinked {
     }
 
     @PatchMapping("/{project}/description")
-    public ProjectModel updateDescription(@PathVariable String project, @RequestParam String description) {
+    public Project updateDescription(@PathVariable String project, @RequestParam String description) {
         return projectService.updateDescription(project, description);
     }
 
     @PatchMapping("/{project}/name")
-    public ProjectModel updateName(@PathVariable String project, @RequestParam @NotBlank String name) {
+    public Project updateName(@PathVariable String project, @RequestParam @NotBlank String name) {
         return projectService.updateName(project, name);
     }
 

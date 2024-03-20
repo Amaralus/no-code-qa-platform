@@ -1,8 +1,8 @@
 package apps.amaralus.qa.platform.common.model;
 
-public interface BaseModel<I> {
+public interface IdSource<I> {
 
     I getId();
 
-    String getProject();
+    void setId(I id);
 }

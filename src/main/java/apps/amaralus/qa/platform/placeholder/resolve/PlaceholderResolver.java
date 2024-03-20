@@ -76,7 +76,7 @@ public class PlaceholderResolver {
                         .flatMap(alias -> {
                             if (alias.isVariableAlias())
                                 datasetVariable.variable = alias.getVariable();
-                            return resolvingContext.findDataset(alias.getDataset());
+                            return resolvingContext.findDataset(alias.getEntityId());
                         });
             else
                 dataset = resolvingContext.findDataset((DefaultPlaceholderType) placeholder.getPlaceholderType(), placeholder.getId());
