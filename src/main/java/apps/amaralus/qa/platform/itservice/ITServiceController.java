@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.itservice;
 
+import apps.amaralus.qa.platform.itservice.model.ITService;
 import apps.amaralus.qa.platform.project.context.InterceptProjectId;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,27 +24,19 @@ public class ITServiceController {
     @GetMapping
     @InterceptProjectId
     public List<ITService> findAll(@PathVariable String project) {
-        return itServiceService.findAllByProject(project);
+        return itServiceService.findAll();
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @InterceptProjectId
     public ITService createService(@PathVariable String project, @Valid @RequestBody ITService itService) {
-        return itServiceService.createService(itService);
-    }
-
-    @PatchMapping("/{id}")
-    @InterceptProjectId
-    public ITService updateService(@PathVariable String project,
-                                   @PathVariable Long id,
-                                   @RequestBody ITService itService) {
-        return itServiceService.updateService(id, itService);
+        return itServiceService.create(itService);
     }
 
     @DeleteMapping("/{id}")
     @InterceptProjectId
     public void deleteService(@PathVariable String project, @PathVariable Long id) {
-        itServiceService.deleteService(id);
+        itServiceService.delete(id);
     }
 }

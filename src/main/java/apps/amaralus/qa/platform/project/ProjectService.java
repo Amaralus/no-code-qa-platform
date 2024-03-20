@@ -1,10 +1,12 @@
 package apps.amaralus.qa.platform.project;
 
 import apps.amaralus.qa.platform.common.CrudService;
+import apps.amaralus.qa.platform.dataset.DatasetService;
+import apps.amaralus.qa.platform.dataset.model.api.Dataset;
 import apps.amaralus.qa.platform.folder.FolderService;
+import apps.amaralus.qa.platform.project.api.Project;
+import apps.amaralus.qa.platform.project.database.ProjectModel;
 import apps.amaralus.qa.platform.project.linked.ProjectLinkedService;
-import apps.amaralus.qa.platform.project.model.ProjectModel;
-import apps.amaralus.qa.platform.project.model.api.Project;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -20,10 +22,13 @@ import java.util.List;
 public class ProjectService extends CrudService<Project, ProjectModel, String> {
     private static final String PROJECT_TEXT = "Project [";
     private final FolderService folderService;
-    private final List<? extends ProjectLinkedService> projectLinked;
+    private final DatasetService datasetService;
+    private final List<? extends ProjectLinkedService<?, ?, ?>> projectLinked;
 
     @Override
     protected void beforeCreate(ProjectModel model) {
+        var dataset = datasetService.create(new Dataset("System dataset for Project#" + model.getId(), null, true));
+        model.setDataset(dataset.getId());
         var rootFolder = folderService.createProjectRoot(model.getId());
         model.setRootFolder(rootFolder.getId());
     }

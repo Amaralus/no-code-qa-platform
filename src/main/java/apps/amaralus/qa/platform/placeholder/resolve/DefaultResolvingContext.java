@@ -1,14 +1,14 @@
 package apps.amaralus.qa.platform.placeholder.resolve;
 
-import apps.amaralus.qa.platform.common.model.DatasetSource;
 import apps.amaralus.qa.platform.dataset.DatasetRepository;
 import apps.amaralus.qa.platform.dataset.alias.AliasRepository;
 import apps.amaralus.qa.platform.dataset.alias.model.AliasModel;
+import apps.amaralus.qa.platform.dataset.linked.DatasetSource;
 import apps.amaralus.qa.platform.dataset.model.DatasetModel;
 import apps.amaralus.qa.platform.folder.FolderRepository;
 import apps.amaralus.qa.platform.placeholder.DefaultPlaceholderType;
-import apps.amaralus.qa.platform.project.ProjectRepository;
 import apps.amaralus.qa.platform.project.context.ProjectContext;
+import apps.amaralus.qa.platform.project.database.ProjectRepository;
 import apps.amaralus.qa.platform.project.linked.ProjectLinkedModel;
 import apps.amaralus.qa.platform.project.linked.ProjectLinkedRepository;
 import apps.amaralus.qa.platform.testcase.TestCaseRepository;

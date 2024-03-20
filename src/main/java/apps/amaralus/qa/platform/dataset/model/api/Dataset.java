@@ -13,7 +13,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class Dataset implements IdSource<Long> {
 
-    private Long id;
+    private Long id = 0L;
     private String name;
     private String description;
     private boolean linked;

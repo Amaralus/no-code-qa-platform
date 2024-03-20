@@ -23,27 +23,19 @@ public class EnvironmentController {
     @GetMapping
     @InterceptProjectId
     public List<Environment> findAll(@PathVariable String project) {
-        return environmentService.findAllByProject(project);
+        return environmentService.findAll();
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @InterceptProjectId
     public Environment createEnvironment(@PathVariable String project, @Valid @RequestBody Environment environment) {
-        return environmentService.createEnvironment(environment);
-    }
-
-    @PatchMapping("/{id}")
-    @InterceptProjectId
-    public Environment updateEnvironment(@PathVariable String project,
-                                         @PathVariable Long id,
-                                         @RequestBody Environment environment) {
-        return environmentService.updateEnvironment(id, environment);
+        return environmentService.create(environment);
     }
 
     @DeleteMapping("/{id}")
     @InterceptProjectId
     public void deleteEnvironment(@PathVariable String project, @PathVariable Long id) {
-        environmentService.deleteEnvironment(id);
+        environmentService.delete(id);
     }
 }

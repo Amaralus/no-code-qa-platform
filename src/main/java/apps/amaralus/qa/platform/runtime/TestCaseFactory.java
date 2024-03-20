@@ -3,7 +3,7 @@ package apps.amaralus.qa.platform.runtime;
 import apps.amaralus.qa.platform.runtime.action.ActionsService;
 import apps.amaralus.qa.platform.runtime.execution.SimpleTask;
 import apps.amaralus.qa.platform.runtime.schedule.ExecutionScheduler;
-import apps.amaralus.qa.platform.testcase.TestCaseModel;
+import apps.amaralus.qa.platform.testcase.TestCase;
 import apps.amaralus.qa.platform.testcase.TestStep;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,18 +18,18 @@ public class TestCaseFactory {
     private final ExecutionScheduler parallelExecutionScheduler;
     private final ActionsService actionsService;
 
-    public ExecutableTestCase produce(TestCaseModel testCaseModel) {
+    public ExecutableTestCase produce(TestCase testCase) {
 
         var testSteps = new ArrayList<ExecutableTestStep>();
-        for (int i = 0; i < testCaseModel.getTestSteps().size(); i++)
-            testSteps.add(produce(testCaseModel.getTestSteps().get(i), i));
+        for (int i = 0; i < testCase.getTestSteps().size(); i++)
+            testSteps.add(produce(testCase.getTestSteps().get(i), i));
 
-        var testCase = new ExecutableTestCase(new TestInfo(testCaseModel.getId(), testCaseModel.getName()));
-        var graph = getScheduler(testCaseModel.getExecutionProperties().parallelExecution())
-                .schedule(testSteps, new SimpleTask(), new SimpleTask(testCase::executionGraphFinishedCallback));
-        testCase.setExecutionGraph(graph);
+        var executableTestCase = new ExecutableTestCase(new TestInfo(testCase.getId(), testCase.getName()));
+        var graph = getScheduler(testCase.getExecutionProperties().parallelExecution())
+                .schedule(testSteps, new SimpleTask(), new SimpleTask(executableTestCase::executionGraphFinishedCallback));
+        executableTestCase.setExecutionGraph(graph);
 
-        return testCase;
+        return executableTestCase;
     }
 
     private ExecutableTestStep produce(TestStep testStep, int orderNumber) {

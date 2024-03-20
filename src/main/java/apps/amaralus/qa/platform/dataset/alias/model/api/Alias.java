@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Alias implements IdSource<Long> {
 
-    private Long id;
+    private Long id = 0L;
     @Pattern(regexp = "(^[a-zA-Z0-9-]+$)", message = "Must be in kebab-case")
     private String name;
     private String description;

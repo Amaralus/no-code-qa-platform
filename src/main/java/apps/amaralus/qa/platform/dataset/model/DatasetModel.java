@@ -24,4 +24,8 @@ public class DatasetModel implements ProjectLinkedModel<Long> {
     public Object getVariable(String key) {
         return variables.get(key);
     }
+
+    public Object setVariable(String key, Object value) {
+        return variables.put(key, value);
+    }
 }

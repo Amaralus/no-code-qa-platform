@@ -1,6 +1,5 @@
-package apps.amaralus.qa.platform.project;
+package apps.amaralus.qa.platform.project.database;
 
-import apps.amaralus.qa.platform.project.model.ProjectModel;
 import org.springframework.data.keyvalue.repository.KeyValueRepository;
 
 public interface ProjectRepository extends KeyValueRepository<ProjectModel, String> {

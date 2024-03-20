@@ -1,8 +1,8 @@
-package apps.amaralus.qa.platform.project;
+package apps.amaralus.qa.platform.project.api;
 
+import apps.amaralus.qa.platform.project.ProjectService;
 import apps.amaralus.qa.platform.project.context.InterceptProjectId;
 import apps.amaralus.qa.platform.project.context.ProjectContextLinked;
-import apps.amaralus.qa.platform.project.model.api.Project;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;

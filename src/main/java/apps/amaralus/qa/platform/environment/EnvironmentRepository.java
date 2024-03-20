@@ -1,10 +1,7 @@
 package apps.amaralus.qa.platform.environment;
 
 import apps.amaralus.qa.platform.environment.model.EnvironmentModel;
-import org.springframework.data.keyvalue.repository.KeyValueRepository;
+import apps.amaralus.qa.platform.project.linked.ProjectLinkedRepository;
 
-import java.util.List;
-
-public interface EnvironmentRepository extends KeyValueRepository<EnvironmentModel, Long> {
-    List<EnvironmentModel> findAllByProject(String project);
+public interface EnvironmentRepository extends ProjectLinkedRepository<EnvironmentModel, Long> {
 }

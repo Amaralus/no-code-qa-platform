@@ -1,6 +1,6 @@
 package apps.amaralus.qa.platform.testcase;
 
-import apps.amaralus.qa.platform.common.model.DatasetSource;
+import apps.amaralus.qa.platform.dataset.linked.DatasetSource;
 import apps.amaralus.qa.platform.label.model.LabelModel;
 import apps.amaralus.qa.platform.project.linked.ProjectLinkedModel;
 import apps.amaralus.qa.platform.rocksdb.sequence.GeneratedSequence;

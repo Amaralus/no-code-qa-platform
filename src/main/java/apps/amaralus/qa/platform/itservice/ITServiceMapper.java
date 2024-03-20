@@ -1,11 +1,12 @@
 package apps.amaralus.qa.platform.itservice;
 
 import apps.amaralus.qa.platform.common.GenericMapper;
+import apps.amaralus.qa.platform.itservice.model.ITService;
 import apps.amaralus.qa.platform.itservice.model.ITServiceModel;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
+
+@Mapper(componentModel = SPRING)
 public interface ITServiceMapper extends GenericMapper<ITService, ITServiceModel> {
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    ITServiceModel update(@MappingTarget ITServiceModel serviceModel, ITService itService);
 }

@@ -1,4 +1,4 @@
-package apps.amaralus.qa.platform.project.model.api;
+package apps.amaralus.qa.platform.project.api;
 
 import apps.amaralus.qa.platform.common.model.IdSource;
 import jakarta.validation.constraints.NotBlank;
@@ -17,5 +17,6 @@ public class Project implements IdSource<String> {
     @NotBlank
     private String name;
     private String description;
+    private long rootFolder;
     private long dataset;
 }

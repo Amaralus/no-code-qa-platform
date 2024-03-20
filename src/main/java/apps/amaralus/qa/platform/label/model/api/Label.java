@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class Label implements IdSource<Long> {
-    private Long id;
+    private Long id = 0L;
     private @NotBlank String name;
     private String description;
     private @NotBlank String project;
