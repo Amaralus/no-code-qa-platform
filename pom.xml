@@ -42,8 +42,8 @@
     </developers>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <rocksdb.version>8.5.3</rocksdb.version>
         <guava.version>32.0.0-jre</guava.version>
@@ -146,8 +146,8 @@
                             <version>1.5.5.Final</version>
                         </path>
                     </annotationProcessorPaths>
-                    <source>17</source>
-                    <target>17</target>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -156,7 +156,7 @@
                 <version>${jib.version}</version>
                 <configuration>
                     <from>
-                        <image>eclipse-temurin:17-jre</image>
+                        <image>eclipse-temurin:21-jre</image>
                     </from>
                     <to>
                         <image>amaralus/qa-platform</image>
