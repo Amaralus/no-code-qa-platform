@@ -5,7 +5,7 @@ import apps.amaralus.qa.platform.runtime.execution.SimpleTask;
 import apps.amaralus.qa.platform.runtime.schedule.ExecutionScheduler;
 import apps.amaralus.qa.platform.testcase.TestCase;
 import apps.amaralus.qa.platform.testcase.TestCaseService;
-import apps.amaralus.qa.platform.testplan.TestPlanModel;
+import apps.amaralus.qa.platform.testplan.TestPlan;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class TestPlanFactory {
     private final TestCaseService testCaseService;
     private final TestCaseFactory testCaseFactory;
 
-    public ExecutableTestPlan produce(TestPlanModel testPlanModel) {
+    public ExecutableTestPlan produce(TestPlan testPlan) {
 
         var testCases = testCaseService.findAll()
                 .stream()
@@ -26,15 +26,15 @@ public class TestPlanFactory {
                 .map(testCaseFactory::produce)
                 .toList();
 
-        var testPlan = new ExecutableTestPlan(new TestInfo(testPlanModel.getId(), testPlanModel.getName()));
+        var executableTestPlan = new ExecutableTestPlan(new TestInfo(testPlan.getId(), testPlan.getName()));
 
-        var executionGraph = getScheduler(testPlanModel.getExecutionProperties().parallelExecution())
-                .schedule(testCases, new SimpleTask(), new SimpleTask(testPlan::executionGraphFinishedCallback));
-        testPlan.setExecutionGraph(executionGraph);
+        var executionGraph = getScheduler(testPlan.getExecutionProperties().parallelExecution())
+                .schedule(testCases, new SimpleTask(), new SimpleTask(executableTestPlan::executionGraphFinishedCallback));
+        executableTestPlan.setExecutionGraph(executionGraph);
 
-        initializeTestContext(testPlan);
+        initializeTestContext(executableTestPlan);
 
-        return testPlan;
+        return executableTestPlan;
     }
 
     private boolean allAutoStepsFilter(TestCase testCase) {

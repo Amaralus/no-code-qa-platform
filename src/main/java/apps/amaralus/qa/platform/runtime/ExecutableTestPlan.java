@@ -7,12 +7,15 @@ import apps.amaralus.qa.platform.runtime.report.TestReport;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static apps.amaralus.qa.platform.runtime.TestState.*;
 
 public class ExecutableTestPlan extends ExecutableTestSupport implements ExecutionGraphDelegate {
     @Setter
     private ExecutionGraph executionGraph;
+    @Setter
+    private Consumer<ExecutableTestPlan> finishCallback;
 
     public ExecutableTestPlan(TestInfo testInfo) {
         super(testInfo);
@@ -33,11 +36,14 @@ public class ExecutableTestPlan extends ExecutableTestSupport implements Executi
         super.cancel();
         setState(CANCELED);
         executionGraph.cancel();
+        timer.stop();
     }
 
     @Override
     public void executionGraphFinishedCallback() {
         setState(COMPLETED);
+        timer.stop();
+        finishCallback.accept(this);
     }
 
     public List<ExecutableTestCase> getTestCases() {

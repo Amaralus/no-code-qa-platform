@@ -6,5 +6,6 @@ public enum TestState {
     CANCELED,
     COMPLETED,
     FAILED,
-    ERROR
+    ERROR,
+    UNKNOWN
 }

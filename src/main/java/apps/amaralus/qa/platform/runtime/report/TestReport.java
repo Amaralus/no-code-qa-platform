@@ -26,8 +26,8 @@ public class TestReport {
 
     @Override
     public String toString() {
-        return String.format("%s#%d \"%s\" finished as %s, message: \"%s\", time: %s%s",
-                deepShift(), testInfo.id(), testInfo.name(), state, message, executionTime, subReports.stream()
+        return String.format("%s%s finished as %s, message: \"%s\", time: %s%s",
+                deepShift(), testInfo, state, message, executionTime, subReports.stream()
                         .map(testReport -> "\n" + testReport)
                         .collect(Collectors.joining()));
     }

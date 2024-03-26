@@ -15,7 +15,8 @@ import apps.amaralus.qa.platform.runtime.action.debug.DebugActionRepository;
 import apps.amaralus.qa.platform.testcase.TestCaseModel;
 import apps.amaralus.qa.platform.testcase.TestCaseRepository;
 import apps.amaralus.qa.platform.testcase.TestStep;
-import apps.amaralus.qa.platform.testplan.TestPlanModel;
+import apps.amaralus.qa.platform.testplan.TestPlan;
+import apps.amaralus.qa.platform.testplan.TestPlanService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FunctionalManualTest {
 
     @Autowired
-    TestPlanFactory testPlanFactory;
+    TestPlanService testPlanService;
+    @Autowired
+    ExecutionManager executionManager;
     @Autowired
     TestCaseRepository testCaseRepository;
     @Autowired
@@ -57,25 +60,24 @@ class FunctionalManualTest {
 
     @Test
     void runtime() throws InterruptedException {
-
         ((DefaultProjectContext) projectContext).setProjectId("myProject");
+        debugActionRepository.deleteAll();
+        testCaseRepository.deleteAll();
+
         createTestCase(false, "TestCase1");
         createTestCase(false, "TestCase2");
         saveTestActions();
 
-        var testPlan = new TestPlanModel();
-        testPlan.setId(1L);
+        var testPlan = new TestPlan();
         testPlan.setName("My test plan");
-        testPlan.setProject("myProject");
         testPlan.setExecutionProperties(new ExecutionProperties(false));
-        var executableTestPlan = testPlanFactory.produce(testPlan);
+        testPlan = testPlanService.create(testPlan);
 
-        executableTestPlan.execute();
+        executionManager.run(testPlan.getId());
 //        Thread.sleep(4000);
-//        testPlan.cancel();
+//        executionManager.stop(testPlan.getId());
         Thread.sleep(2000);
 
-        System.out.println(executableTestPlan.getReport());
 
         debugActionRepository.deleteAll();
         testCaseRepository.deleteAll();

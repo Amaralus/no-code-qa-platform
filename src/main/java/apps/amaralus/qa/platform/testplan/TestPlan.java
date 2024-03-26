@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class TestPlan implements IdSource<Long> {
-    private Long id;
+    private Long id = 0L;
     private String name;
     private long environment;
     private ExecutionProperties executionProperties;

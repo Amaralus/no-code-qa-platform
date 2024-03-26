@@ -61,8 +61,8 @@ public class ExecutableTestCase extends ExecutableTestSupport implements StageTa
             return;
         super.cancel();
         setState(CANCELED);
-        timer.stop();
         executionGraph.cancel();
+        timer.stop();
     }
 
     public boolean isFailed() {

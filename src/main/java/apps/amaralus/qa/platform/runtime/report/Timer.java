@@ -13,12 +13,12 @@ public class Timer {
     }
 
     public synchronized void stop() {
-        elapsedTime = System.nanoTime() - startTime;
+        elapsedTime = startTime == 0 ? startTime : System.nanoTime() - startTime;
         startTime = 0;
     }
 
     public synchronized long getElapsedNanoTime() {
-        return elapsedTime == 0 ? System.nanoTime() - startTime : elapsedTime;
+        return elapsedTime;
     }
 
     public synchronized LocalTime getElapsedAsLocalTime() {
