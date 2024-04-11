@@ -1,4 +1,4 @@
-package apps.amaralus.qa.platform.runtime.result;
+package apps.amaralus.qa.platform.runtime.execution.result;
 
 import java.util.concurrent.TimeUnit;
 

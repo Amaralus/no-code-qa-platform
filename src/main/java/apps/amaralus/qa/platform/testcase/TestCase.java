@@ -3,7 +3,7 @@ package apps.amaralus.qa.platform.testcase;
 import apps.amaralus.qa.platform.common.model.IdSource;
 import apps.amaralus.qa.platform.dataset.linked.DatasetSource;
 import apps.amaralus.qa.platform.label.model.api.Label;
-import apps.amaralus.qa.platform.runtime.ExecutionProperties;
+import apps.amaralus.qa.platform.runtime.execution.ExecutionProperties;
 import lombok.Data;
 
 import java.util.ArrayList;

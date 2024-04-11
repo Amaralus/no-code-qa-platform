@@ -2,6 +2,7 @@ package apps.amaralus.qa.platform.project;
 
 import apps.amaralus.qa.platform.common.CrudService;
 import apps.amaralus.qa.platform.dataset.DatasetService;
+import apps.amaralus.qa.platform.dataset.model.Backlink;
 import apps.amaralus.qa.platform.dataset.model.api.Dataset;
 import apps.amaralus.qa.platform.folder.FolderService;
 import apps.amaralus.qa.platform.project.api.Project;
@@ -27,7 +28,8 @@ public class ProjectService extends CrudService<Project, ProjectModel, String> {
 
     @Override
     protected void beforeCreate(ProjectModel model) {
-        var dataset = datasetService.create(new Dataset("System dataset for Project#" + model.getId(), null, true));
+        var dataset = datasetService.create(
+                new Dataset("System dataset for Project#" + model.getId(), null, true, new Backlink<>(modelClass, model.getId())));
         model.setDataset(dataset.getId());
         var rootFolder = folderService.createProjectRoot(model.getId());
         model.setRootFolder(rootFolder.getId());

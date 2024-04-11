@@ -1,14 +1,13 @@
-package apps.amaralus.qa.platform.runtime;
+package apps.amaralus.qa.platform.runtime.execution;
 
 import apps.amaralus.qa.platform.runtime.action.StepAction;
-import apps.amaralus.qa.platform.runtime.execution.RuntimeExecutor;
-import apps.amaralus.qa.platform.runtime.execution.RuntimeExecutorAware;
-import apps.amaralus.qa.platform.runtime.execution.StageTask;
+import apps.amaralus.qa.platform.runtime.execution.context.TestContext;
+import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
+import apps.amaralus.qa.platform.runtime.execution.result.ErrorResult;
+import apps.amaralus.qa.platform.runtime.execution.result.ExecutionResult;
+import apps.amaralus.qa.platform.runtime.execution.result.TestFailedException;
+import apps.amaralus.qa.platform.runtime.execution.result.TimeoutResult;
 import apps.amaralus.qa.platform.runtime.report.TestReport;
-import apps.amaralus.qa.platform.runtime.result.ErrorResult;
-import apps.amaralus.qa.platform.runtime.result.ExecutionResult;
-import apps.amaralus.qa.platform.runtime.result.TestFailedException;
-import apps.amaralus.qa.platform.runtime.result.TimeoutResult;
 import com.google.common.base.Throwables;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import static apps.amaralus.qa.platform.runtime.TestState.*;
+import static apps.amaralus.qa.platform.runtime.execution.context.TestState.*;
 
 @Slf4j
 public class ExecutableTestStep extends ExecutableTestSupport implements StageTask, RuntimeExecutorAware {

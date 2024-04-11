@@ -1,4 +1,4 @@
-package apps.amaralus.qa.platform.runtime;
+package apps.amaralus.qa.platform.runtime.execution;
 
 import apps.amaralus.qa.platform.runtime.action.ActionType;
 import lombok.Data;

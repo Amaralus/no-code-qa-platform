@@ -1,7 +1,7 @@
-package apps.amaralus.qa.platform.runtime;
+package apps.amaralus.qa.platform.runtime.execution;
 
-import apps.amaralus.qa.platform.runtime.execution.Cancelable;
-import apps.amaralus.qa.platform.runtime.execution.Executable;
+import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
+import apps.amaralus.qa.platform.runtime.execution.context.TestState;
 import apps.amaralus.qa.platform.runtime.report.ReportSupplier;
 import apps.amaralus.qa.platform.runtime.report.TestReport;
 import apps.amaralus.qa.platform.runtime.report.Timer;
@@ -11,7 +11,7 @@ import lombok.Setter;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static apps.amaralus.qa.platform.runtime.TestState.CREATED;
+import static apps.amaralus.qa.platform.runtime.execution.context.TestState.CREATED;
 
 @RequiredArgsConstructor
 public abstract class ExecutableTestSupport implements Executable, Cancelable, ReportSupplier {

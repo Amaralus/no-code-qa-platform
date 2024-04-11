@@ -12,18 +12,21 @@ import apps.amaralus.qa.platform.project.context.ProjectContext;
 import apps.amaralus.qa.platform.runtime.action.ActionType;
 import apps.amaralus.qa.platform.runtime.action.debug.DebugAction;
 import apps.amaralus.qa.platform.runtime.action.debug.DebugActionRepository;
+import apps.amaralus.qa.platform.runtime.execution.ExecutionProperties;
+import apps.amaralus.qa.platform.runtime.execution.StepExecutionProperties;
 import apps.amaralus.qa.platform.testcase.TestCaseModel;
 import apps.amaralus.qa.platform.testcase.TestCaseRepository;
 import apps.amaralus.qa.platform.testcase.TestStep;
 import apps.amaralus.qa.platform.testplan.TestPlan;
 import apps.amaralus.qa.platform.testplan.TestPlanService;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -58,15 +61,18 @@ class FunctionalManualTest {
     ProjectContext projectContext;
 
 
-    @Test
-    void runtime() throws InterruptedException {
+    @BeforeEach
+    void before() {
         ((DefaultProjectContext) projectContext).setProjectId("myProject");
         debugActionRepository.deleteAll();
-        testCaseRepository.deleteAll();
+        projectService.delete("myProject");
+    }
 
-        createTestCase(false, "TestCase1");
-        createTestCase(false, "TestCase2");
-        saveTestActions();
+    @Test
+    void runtime() throws InterruptedException {
+
+        createTestCase(false, "TestCase1", 0L, 4, null);
+        createTestCase(false, "TestCase2", 0L, 4, null);
 
         var testPlan = new TestPlan();
         testPlan.setName("My test plan");
@@ -78,60 +84,69 @@ class FunctionalManualTest {
 //        executionManager.stop(testPlan.getId());
         Thread.sleep(2000);
 
-
-        debugActionRepository.deleteAll();
-        testCaseRepository.deleteAll();
         assertTrue(true);
     }
 
     @Test
     void placeholders() {
-        ((DefaultProjectContext) projectContext).setProjectId("myProject");
-        projectService.delete("myProject");
-
         var project = projectService.create(new Project("myProject", null, null, 0L, 0L));
         datasetService.setVariable(folderService.findById(project.getRootFolder()).get().getDataset(), "var", "val");
         log.info("project {}", project);
 
         // act
         var resolve = placeholderResolver
-                .resolve(Placeholder.parse("{{folder#11:var}}"));
+                .resolve(Placeholder.parse("{{folder#18:var}}"));
         log.info("resolved: {}", resolve);
 
         projectService.delete("myProject");
         assertTrue(true);
     }
 
-    void createTestCase(boolean parallelExecution, String name) {
+    @Test
+    void runtimePlaceholders() throws InterruptedException {
+        var project = projectService.create(new Project("myProject", "My Project", null, 0, 0));
+        createTestCase(false, "Runtime placeholders case", project.getRootFolder(), 1,
+                "resolved msg = {{project:var}}");
+
+        datasetService.setVariable(project.getDataset(), "var", "val");
+
+        var testPlan = new TestPlan();
+        testPlan.setName("My test plan");
+        testPlan.setExecutionProperties(new ExecutionProperties(false));
+        testPlan = testPlanService.create(testPlan);
+
+        executionManager.run(testPlan.getId());
+
+        Thread.sleep(1000);
+
+        assertTrue(true);
+    }
+
+    void createTestCase(boolean parallelExecution, String name, Long folder, int stepCount, String debugMessage) {
         var testCase = new TestCaseModel();
         testCase.setProject("myProject");
         testCase.setName(name);
+        testCase.setFolder(folder);
         testCase.setExecutionProperties(new ExecutionProperties(parallelExecution));
 
-        var step1 = new TestStep();
-        step1.setName("step1");
-        step1.setStepExecutionProperties(new StepExecutionProperties(1, ActionType.DEBUG));
+        var steps = new ArrayList<TestStep>();
+        for (int i = 0; i < stepCount; i++) {
+            var testStep = createTestStep(i + 1, debugMessage);
+            steps.add(testStep);
+        }
 
-        var step2 = new TestStep();
-        step2.setName("step2");
-        step2.setStepExecutionProperties(new StepExecutionProperties(2, ActionType.DEBUG));
-
-        var step3 = new TestStep();
-        step3.setName("step3");
-        step3.setStepExecutionProperties(new StepExecutionProperties(3, ActionType.DEBUG));
-
-        var step4 = new TestStep();
-        step4.setName("step4");
-        step4.setStepExecutionProperties(new StepExecutionProperties(4, ActionType.DEBUG));
-
-        testCase.setTestSteps(List.of(step1, step2, step3, step4));
+        testCase.setTestSteps(steps);
         testCaseRepository.save(testCase);
     }
 
-    void saveTestActions() {
-        debugActionRepository.save(new DebugAction(1, "myProject", "step 11"));
-        debugActionRepository.save(new DebugAction(2, "myProject", "step 22"));
-        debugActionRepository.save(new DebugAction(3, "myProject", "step 33"));
-        debugActionRepository.save(new DebugAction(4, "myProject", "step 44"));
+    TestStep createTestStep(int iteration, String debugMessage) {
+        var step = new TestStep();
+        step.setName("step" + iteration);
+        step.setStepExecutionProperties(new StepExecutionProperties(iteration, ActionType.DEBUG));
+
+        debugMessage = debugMessage == null ? step.getName() + " executed" : debugMessage;
+        debugActionRepository.save(new DebugAction(iteration, "myProject", debugMessage));
+
+        return step;
     }
 }

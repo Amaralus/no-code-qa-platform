@@ -1,17 +1,17 @@
 package apps.amaralus.qa.platform.placeholder.resolve;
 
-import apps.amaralus.qa.platform.dataset.DatasetRepository;
-import apps.amaralus.qa.platform.dataset.alias.AliasRepository;
+import apps.amaralus.qa.platform.dataset.DatasetService;
+import apps.amaralus.qa.platform.dataset.alias.AliasService;
 import apps.amaralus.qa.platform.dataset.alias.model.AliasModel;
 import apps.amaralus.qa.platform.dataset.linked.DatasetSource;
 import apps.amaralus.qa.platform.dataset.model.DatasetModel;
-import apps.amaralus.qa.platform.folder.FolderRepository;
+import apps.amaralus.qa.platform.folder.FolderService;
 import apps.amaralus.qa.platform.placeholder.DefaultPlaceholderType;
+import apps.amaralus.qa.platform.project.ProjectService;
 import apps.amaralus.qa.platform.project.context.ProjectContext;
-import apps.amaralus.qa.platform.project.database.ProjectRepository;
 import apps.amaralus.qa.platform.project.linked.ProjectLinkedModel;
-import apps.amaralus.qa.platform.project.linked.ProjectLinkedRepository;
-import apps.amaralus.qa.platform.testcase.TestCaseRepository;
+import apps.amaralus.qa.platform.project.linked.ProjectLinkedService;
+import apps.amaralus.qa.platform.testcase.TestCaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,11 +22,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DefaultResolvingContext implements ResolvingContext {
 
-    private final DatasetRepository datasetRepository;
-    private final FolderRepository folderRepository;
-    private final TestCaseRepository testCaseRepository;
-    private final ProjectRepository projectRepository;
-    private final AliasRepository aliasRepository;
+    private final DatasetService datasetService;
+    private final FolderService folderService;
+    private final TestCaseService testCaseService;
+    private final ProjectService projectService;
+    private final AliasService aliasService;
     private ProjectContext projectContext;
 
     @Override
@@ -34,11 +34,11 @@ public class DefaultResolvingContext implements ResolvingContext {
 
         return switch (placeholderType) {
             case DATASET -> findDataset(id);
-            case FOLDER -> findLinkedDataset(folderRepository, id);
-            case TESTCASE -> findLinkedDataset(testCaseRepository, id);
-            // todo доделать
+            case FOLDER -> findLinkedDataset(folderService, id);
+            case TESTCASE -> findLinkedDataset(testCaseService, id);
+            // todo доделать после доработки окружения
             case SERVICE, ENVIRONMENT -> Optional.empty();
-            case PROJECT -> projectRepository.findById(projectContext.getProjectId())
+            case PROJECT -> projectService.findById(projectContext.getProjectId())
                     .flatMap(model -> findDataset(model.getDataset()));
             default -> Optional.empty();
         };
@@ -46,20 +46,20 @@ public class DefaultResolvingContext implements ResolvingContext {
 
     @Override
     public Optional<DatasetModel> findDataset(Long id) {
-        return datasetRepository.findByIdAndProject(id, projectContext.getProjectId());
+        return datasetService.findModelById(id);
     }
 
     @Override
     public Optional<AliasModel> findAlias(String name) {
-        return aliasRepository.findByNameAndProject(name, projectContext.getProjectId());
+        return aliasService.findModelByName(name);
     }
 
     private <T extends ProjectLinkedModel<I> & DatasetSource, I>
     Optional<DatasetModel> findLinkedDataset(
-            ProjectLinkedRepository<T, I> repository,
+            ProjectLinkedService<?, T, I> service,
             I id) {
-        return repository.findByIdAndProject(id, projectContext.getProjectId())
-                .flatMap(model -> datasetRepository.findByIdAndProject(model.getDataset(), model.getProject()));
+        return service.findModelById(id)
+                .flatMap(model -> datasetService.findModelById(model.getDataset()));
     }
 
     @Autowired

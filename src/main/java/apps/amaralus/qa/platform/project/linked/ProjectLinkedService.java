@@ -5,7 +5,6 @@ import apps.amaralus.qa.platform.common.model.IdSource;
 import apps.amaralus.qa.platform.project.context.ProjectContext;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,17 +22,26 @@ public abstract class ProjectLinkedService<E extends IdSource<I>, M extends Proj
 
     @Override
     public Optional<E> findById(@NotNull I id) {
-        Assert.notNull(id, ID_NOT_NULL_MESSAGE);
-        return repository.findById(id)
-                .filter(model -> model.getProject().equals(projectContext.getProjectId()))
+        return findModelById(id)
                 .map(mapper::toEntity);
     }
 
     @Override
+    public Optional<M> findModelById(@NotNull I id) {
+        return super.findModelById(id)
+                .filter(model -> model.getProject().equals(projectContext.getProjectId()));
+    }
+
+    @Override
     public List<E> findAll() {
-        return linkedRepository.findAllByProject(projectContext.getProjectId()).stream()
+        return findAllModels().stream()
                 .map(mapper::toEntity)
                 .toList();
+    }
+
+    @Override
+    public List<M> findAllModels() {
+        return linkedRepository.findAllByProject(projectContext.getProjectId());
     }
 
     public void deleteAllByProject() {

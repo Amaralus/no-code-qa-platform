@@ -1,6 +1,6 @@
 package apps.amaralus.qa.platform.runtime.action;
 
-import apps.amaralus.qa.platform.runtime.StepExecutionProperties;
+import apps.amaralus.qa.platform.runtime.execution.StepExecutionProperties;
 
 public interface ActionFactory {
 

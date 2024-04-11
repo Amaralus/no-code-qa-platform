@@ -2,7 +2,7 @@ package apps.amaralus.qa.platform.testplan;
 
 import apps.amaralus.qa.platform.project.linked.ProjectLinkedModel;
 import apps.amaralus.qa.platform.rocksdb.sequence.GeneratedSequence;
-import apps.amaralus.qa.platform.runtime.ExecutionProperties;
+import apps.amaralus.qa.platform.runtime.execution.ExecutionProperties;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.keyvalue.annotation.KeySpace;

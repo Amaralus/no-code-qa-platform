@@ -1,6 +1,9 @@
 package apps.amaralus.qa.platform.runtime;
 
 import apps.amaralus.qa.platform.common.exception.EntityNotFoundException;
+import apps.amaralus.qa.platform.runtime.execution.ExecutableTestPlan;
+import apps.amaralus.qa.platform.runtime.execution.context.TestState;
+import apps.amaralus.qa.platform.runtime.schedule.TestPlanFactory;
 import apps.amaralus.qa.platform.testplan.TestPlan;
 import apps.amaralus.qa.platform.testplan.TestPlanService;
 import lombok.AllArgsConstructor;
@@ -12,7 +15,7 @@ import org.springframework.util.Assert;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static apps.amaralus.qa.platform.runtime.TestState.*;
+import static apps.amaralus.qa.platform.runtime.execution.context.TestState.*;
 
 @Service
 @AllArgsConstructor

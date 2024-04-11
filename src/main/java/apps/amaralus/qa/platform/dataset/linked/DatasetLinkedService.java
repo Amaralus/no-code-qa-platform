@@ -2,6 +2,7 @@ package apps.amaralus.qa.platform.dataset.linked;
 
 import apps.amaralus.qa.platform.common.model.IdSource;
 import apps.amaralus.qa.platform.dataset.DatasetService;
+import apps.amaralus.qa.platform.dataset.model.Backlink;
 import apps.amaralus.qa.platform.dataset.model.api.Dataset;
 import apps.amaralus.qa.platform.project.linked.ProjectLinkedModel;
 import apps.amaralus.qa.platform.project.linked.ProjectLinkedService;
@@ -18,9 +19,9 @@ public abstract class DatasetLinkedService<
     protected DatasetService datasetService;
 
     @Override
-    protected void beforeCreate(M model) {
-        super.beforeCreate(model);
-        var dataset = datasetService.create(new Dataset(createDatasetName(model.getId()), null, true));
+    protected void afterCreate(M model) {
+        var dataset = datasetService.create(
+                new Dataset(createDatasetName(model.getId()), null, true, new Backlink<>(modelClass, model.getId())));
         model.setDataset(dataset.getId());
     }
 

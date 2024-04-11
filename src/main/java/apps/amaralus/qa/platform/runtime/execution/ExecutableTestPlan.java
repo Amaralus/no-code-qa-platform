@@ -1,7 +1,6 @@
-package apps.amaralus.qa.platform.runtime;
+package apps.amaralus.qa.platform.runtime.execution;
 
-import apps.amaralus.qa.platform.runtime.execution.ExecutionGraph;
-import apps.amaralus.qa.platform.runtime.execution.ExecutionGraphDelegate;
+import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
 import apps.amaralus.qa.platform.runtime.report.ReportSupplier;
 import apps.amaralus.qa.platform.runtime.report.TestReport;
 import lombok.Setter;
@@ -9,7 +8,7 @@ import lombok.Setter;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static apps.amaralus.qa.platform.runtime.TestState.*;
+import static apps.amaralus.qa.platform.runtime.execution.context.TestState.*;
 
 public class ExecutableTestPlan extends ExecutableTestSupport implements ExecutionGraphDelegate {
     @Setter
