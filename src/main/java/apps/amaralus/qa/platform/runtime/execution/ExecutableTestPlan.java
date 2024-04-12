@@ -1,18 +1,20 @@
-package apps.amaralus.qa.platform.runtime;
+package apps.amaralus.qa.platform.runtime.execution;
 
-import apps.amaralus.qa.platform.runtime.execution.ExecutionGraph;
-import apps.amaralus.qa.platform.runtime.execution.ExecutionGraphDelegate;
+import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
 import apps.amaralus.qa.platform.runtime.report.ReportSupplier;
 import apps.amaralus.qa.platform.runtime.report.TestReport;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-import static apps.amaralus.qa.platform.runtime.TestState.*;
+import static apps.amaralus.qa.platform.runtime.execution.context.TestState.*;
 
 public class ExecutableTestPlan extends ExecutableTestSupport implements ExecutionGraphDelegate {
     @Setter
     private ExecutionGraph executionGraph;
+    @Setter
+    private Consumer<ExecutableTestPlan> finishCallback;
 
     public ExecutableTestPlan(TestInfo testInfo) {
         super(testInfo);
@@ -33,11 +35,14 @@ public class ExecutableTestPlan extends ExecutableTestSupport implements Executi
         super.cancel();
         setState(CANCELED);
         executionGraph.cancel();
+        timer.stop();
     }
 
     @Override
     public void executionGraphFinishedCallback() {
         setState(COMPLETED);
+        timer.stop();
+        finishCallback.accept(this);
     }
 
     public List<ExecutableTestCase> getTestCases() {

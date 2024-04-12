@@ -1,4 +1,4 @@
-package apps.amaralus.qa.platform.runtime;
+package apps.amaralus.qa.platform.runtime.execution.context;
 
 public enum TestState {
     CREATED,
@@ -6,5 +6,6 @@ public enum TestState {
     CANCELED,
     COMPLETED,
     FAILED,
-    ERROR
+    ERROR,
+    UNKNOWN
 }

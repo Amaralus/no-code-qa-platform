@@ -1,4 +1,4 @@
-package apps.amaralus.qa.platform.runtime.result;
+package apps.amaralus.qa.platform.runtime.execution.result;
 
 public class TestFailedException extends RuntimeException {
 

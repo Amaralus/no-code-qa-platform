@@ -14,6 +14,7 @@ public class AliasModel implements ProjectLinkedModel<Long> {
     @GeneratedSequence("alias-sequence")
     private Long id;
     private String name;
+    private String description;
     private long entityId;
     private String variable;
     private String project;

@@ -72,6 +72,7 @@ public class PlaceholderResolver {
         Optional<DatasetModel> findDataset(Placeholder placeholder, DatasetVariable datasetVariable) {
             Optional<DatasetModel> dataset;
             if (placeholder.getPlaceholderType() == UNKNOWN)
+                // todo добавить поиск по локальному тесткейсу
                 dataset = resolvingContext.findAlias(placeholder.getLocation())
                         .flatMap(alias -> {
                             if (alias.isVariableAlias())

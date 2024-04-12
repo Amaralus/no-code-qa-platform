@@ -49,15 +49,22 @@ public abstract class CrudService<E extends IdSource<I>, M extends CrudModel<I>,
     }
 
     public Optional<E> findById(@NotNull I id) {
+        return findModelById(id).map(mapper::toEntity);
+    }
+
+    public Optional<M> findModelById(@NotNull I id) {
         Assert.notNull(id, ID_NOT_NULL_MESSAGE);
-        return repository.findById(id)
-                .map(mapper::toEntity);
+        return repository.findById(id);
     }
 
     public List<E> findAll() {
-        return repository.findAll().stream()
+        return findAllModels().stream()
                 .map(mapper::toEntity)
                 .toList();
+    }
+
+    public List<M> findAllModels() {
+        return repository.findAll();
     }
 
     @SuppressWarnings("unchecked")

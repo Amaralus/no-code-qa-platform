@@ -1,8 +1,10 @@
-package apps.amaralus.qa.platform.runtime;
+package apps.amaralus.qa.platform.runtime.schedule;
 
 import apps.amaralus.qa.platform.runtime.action.ActionsService;
+import apps.amaralus.qa.platform.runtime.execution.ExecutableTestCase;
+import apps.amaralus.qa.platform.runtime.execution.ExecutableTestStep;
 import apps.amaralus.qa.platform.runtime.execution.SimpleTask;
-import apps.amaralus.qa.platform.runtime.schedule.ExecutionScheduler;
+import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
 import apps.amaralus.qa.platform.testcase.TestCase;
 import apps.amaralus.qa.platform.testcase.TestStep;
 import lombok.RequiredArgsConstructor;

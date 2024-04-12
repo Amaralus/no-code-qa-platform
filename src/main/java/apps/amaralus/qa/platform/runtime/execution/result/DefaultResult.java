@@ -1,4 +1,4 @@
-package apps.amaralus.qa.platform.runtime.result;
+package apps.amaralus.qa.platform.runtime.execution.result;
 
 public record DefaultResult(String message, boolean failed, boolean canceled) implements ExecutionResult {
 

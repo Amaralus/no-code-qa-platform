@@ -18,6 +18,7 @@ public class DatasetModel implements ProjectLinkedModel<Long> {
     private String name;
     private String description;
     private boolean linked = false;
+    private Backlink<?, ?> backlink;
     private String project;
     private Map<String, Object> variables = new HashMap<>();
 

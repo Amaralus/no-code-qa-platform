@@ -1,17 +1,16 @@
 package apps.amaralus.qa.platform.runtime.action.debug;
 
 import apps.amaralus.qa.platform.common.exception.EntityNotFoundException;
-import apps.amaralus.qa.platform.runtime.StepExecutionProperties;
-import apps.amaralus.qa.platform.runtime.TestContext;
 import apps.amaralus.qa.platform.runtime.action.ActionFactory;
 import apps.amaralus.qa.platform.runtime.action.ActionType;
 import apps.amaralus.qa.platform.runtime.action.StepAction;
+import apps.amaralus.qa.platform.runtime.execution.StepExecutionProperties;
+import apps.amaralus.qa.platform.runtime.execution.context.TestContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-// todo add Placeholder resolver
 public class DebugActionFactory implements ActionFactory {
 
     private final DebugActionRepository debugActionRepository;
@@ -35,8 +34,7 @@ public class DebugActionFactory implements ActionFactory {
     private record DebugStepAction(String message) implements StepAction {
         @Override
         public void execute(TestContext testContext) {
-            // todo resolve message to possible placeholders
-            testContext.setResultMessage(message);
+            testContext.setResultMessage(testContext.resolvePlaceholdersText(message));
         }
     }
 }

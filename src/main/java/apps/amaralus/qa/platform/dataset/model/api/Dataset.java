@@ -1,6 +1,7 @@
 package apps.amaralus.qa.platform.dataset.model.api;
 
 import apps.amaralus.qa.platform.common.model.IdSource;
+import apps.amaralus.qa.platform.dataset.model.Backlink;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,10 +18,11 @@ public class Dataset implements IdSource<Long> {
     private String name;
     private String description;
     private boolean linked;
+    private Backlink<?, ?> backlink;
     private Map<String, Object> variables;
 
-    public Dataset(String name, String description, boolean linked) {
-        this(0L, name, description, linked, new HashMap<>());
+    public Dataset(String name, String description, boolean linked, Backlink<?, ?> backlink) {
+        this(0L, name, description, linked, backlink, new HashMap<>());
     }
 
     public void addVariable(String key, Object value) {

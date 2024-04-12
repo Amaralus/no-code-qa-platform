@@ -1,8 +1,6 @@
-package apps.amaralus.qa.platform.runtime;
+package apps.amaralus.qa.platform.runtime.execution;
 
-import apps.amaralus.qa.platform.runtime.execution.ExecutionGraph;
-import apps.amaralus.qa.platform.runtime.execution.ExecutionGraphDelegate;
-import apps.amaralus.qa.platform.runtime.execution.StageTask;
+import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
 import apps.amaralus.qa.platform.runtime.report.ReportSupplier;
 import apps.amaralus.qa.platform.runtime.report.TestReport;
 import lombok.Setter;
@@ -11,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static apps.amaralus.qa.platform.runtime.TestState.*;
+import static apps.amaralus.qa.platform.runtime.execution.context.TestState.*;
 
 @Slf4j
 public class ExecutableTestCase extends ExecutableTestSupport implements StageTask, ExecutionGraphDelegate {
@@ -61,8 +59,8 @@ public class ExecutableTestCase extends ExecutableTestSupport implements StageTa
             return;
         super.cancel();
         setState(CANCELED);
-        timer.stop();
         executionGraph.cancel();
+        timer.stop();
     }
 
     public boolean isFailed() {

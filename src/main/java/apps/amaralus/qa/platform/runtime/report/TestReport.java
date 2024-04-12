@@ -1,7 +1,7 @@
 package apps.amaralus.qa.platform.runtime.report;
 
-import apps.amaralus.qa.platform.runtime.TestInfo;
-import apps.amaralus.qa.platform.runtime.TestState;
+import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
+import apps.amaralus.qa.platform.runtime.execution.context.TestState;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -26,8 +26,8 @@ public class TestReport {
 
     @Override
     public String toString() {
-        return String.format("%s#%d \"%s\" finished as %s, message: \"%s\", time: %s%s",
-                deepShift(), testInfo.id(), testInfo.name(), state, message, executionTime, subReports.stream()
+        return String.format("%s%s finished as %s, message: \"%s\", time: %s%s",
+                deepShift(), testInfo, state, message, executionTime, subReports.stream()
                         .map(testReport -> "\n" + testReport)
                         .collect(Collectors.joining()));
     }

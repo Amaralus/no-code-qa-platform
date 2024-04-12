@@ -5,10 +5,10 @@ import org.springframework.data.keyvalue.repository.KeyValueRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface ProjectLinkedRepository<T extends ProjectLinkedModel<I>, I>
-        extends KeyValueRepository<T, I> {
+public interface ProjectLinkedRepository<M extends ProjectLinkedModel<I>, I>
+        extends KeyValueRepository<M, I> {
 
-    List<T> findAllByProject(String project);
+    List<M> findAllByProject(String project);
 
-    Optional<T> findByIdAndProject(I id, String project);
+    Optional<M> findByIdAndProject(I id, String project);
 }
