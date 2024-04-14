@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.runtime.report;
 
+import apps.amaralus.qa.platform.common.model.IdSource;
 import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
 import apps.amaralus.qa.platform.runtime.execution.context.TestState;
 import lombok.Getter;
@@ -11,9 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @RequiredArgsConstructor
-@Getter
-public class TestReport {
+public class TestReport implements IdSource<Long> {
+    @Setter
+    @Getter
+    private Long id = 0L;
     private final TestInfo testInfo;
     private final TestState state;
     private final String message;

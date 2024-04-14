@@ -3,6 +3,7 @@ package apps.amaralus.qa.platform.runtime;
 import apps.amaralus.qa.platform.common.exception.EntityNotFoundException;
 import apps.amaralus.qa.platform.runtime.execution.ExecutableTestPlan;
 import apps.amaralus.qa.platform.runtime.execution.context.TestState;
+import apps.amaralus.qa.platform.runtime.report.TestReportService;
 import apps.amaralus.qa.platform.runtime.schedule.TestPlanFactory;
 import apps.amaralus.qa.platform.testplan.TestPlan;
 import apps.amaralus.qa.platform.testplan.TestPlanService;
@@ -26,6 +27,7 @@ public class ExecutionManager {
 
     private final TestPlanFactory testPlanFactory;
     private final TestPlanService testPlanService;
+    private final TestReportService testReportService;
     private final Map<Long, ExecutableTestPlan> runningTestPlans = new ConcurrentHashMap<>();
 
     public void run(@NotNull Long testPlanId) {
@@ -71,8 +73,8 @@ public class ExecutionManager {
         if (testPlan.getState() == CREATED || testPlan.getState() == RUNNING)
             testPlan.cancel();
         log.info("Test plan {} execution finished", testPlan.getTestInfo());
-        // todo save report
         var report = testPlan.getReport();
+        testReportService.create(report);
         log.debug("Test plan {} report:\n{}", testPlan.getTestInfo(), report);
     }
 }

@@ -14,6 +14,8 @@ import apps.amaralus.qa.platform.runtime.action.debug.DebugAction;
 import apps.amaralus.qa.platform.runtime.action.debug.DebugActionRepository;
 import apps.amaralus.qa.platform.runtime.execution.ExecutionProperties;
 import apps.amaralus.qa.platform.runtime.execution.StepExecutionProperties;
+import apps.amaralus.qa.platform.runtime.report.TestReportModel;
+import apps.amaralus.qa.platform.runtime.report.TestReportService;
 import apps.amaralus.qa.platform.testcase.TestCaseModel;
 import apps.amaralus.qa.platform.testcase.TestCaseRepository;
 import apps.amaralus.qa.platform.testcase.TestStep;
@@ -27,7 +29,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -43,6 +47,8 @@ class FunctionalManualTest {
     TestPlanService testPlanService;
     @Autowired
     ExecutionManager executionManager;
+    @Autowired
+    TestReportService reportService;
     @Autowired
     TestCaseRepository testCaseRepository;
     @Autowired
@@ -84,7 +90,12 @@ class FunctionalManualTest {
 //        executionManager.stop(testPlan.getId());
         Thread.sleep(2000);
 
+        List<TestReportModel> models = reportService.findAllModels();
+
+        assertEquals(1, models.size());
         assertTrue(true);
+
+        reportService.deleteAllByProject();
     }
 
     @Test

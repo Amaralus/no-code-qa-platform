@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Project implements IdSource<String> {
 
-        @Pattern(regexp = "(^[a-zA-Z0-9-]+$)", message = "Must be in kebab-case")
-        private String id;
+    @Pattern(regexp = "(^[a-zA-Z0-9-]+$)", message = "Must be in kebab-case")
+    private String id;
     @NotBlank
     private String name;
     private String description;
