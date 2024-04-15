@@ -1,6 +1,8 @@
 package apps.amaralus.qa.platform.runtime.execution.context;
 
 import apps.amaralus.qa.platform.dataset.model.DatasetModel;
+import apps.amaralus.qa.platform.placeholder.InvalidPlaceholderException;
+import apps.amaralus.qa.platform.placeholder.Placeholder;
 import apps.amaralus.qa.platform.placeholder.resolve.PlaceholderResolver;
 import apps.amaralus.qa.platform.runtime.execution.result.ExecutionResult;
 import apps.amaralus.qa.platform.runtime.execution.result.TestFailedException;
@@ -45,7 +47,11 @@ public class TestContext {
         return testCaseDataset.getVariable(property);
     }
 
-    public String resolvePlaceholdersText(String text) {
-        return placeholderResolver.resolve(text);
+    public Object resolvePlaceholdersText(String text) {
+        try {
+            return placeholderResolver.resolve(Placeholder.parse(text));
+        } catch (InvalidPlaceholderException ignore) {
+            return placeholderResolver.resolve(text);
+        }
     }
 }
