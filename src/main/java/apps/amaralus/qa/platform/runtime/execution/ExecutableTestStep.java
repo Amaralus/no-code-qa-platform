@@ -101,12 +101,12 @@ public class ExecutableTestStep extends ExecutableTestSupport implements StageTa
     }
 
     private ExecutionResult handleException(Throwable throwable) {
-        var exceptionClass = Throwables.getRootCause(throwable).getClass();
+        var rootCause = Throwables.getRootCause(throwable);
 
-        if (CancellationException.class == exceptionClass)
+        if (rootCause instanceof CancellationException)
             return ExecutionResult.cancel();
-        if (TestFailedException.class == exceptionClass)
-            return ExecutionResult.fail(throwable.getMessage());
+        if (rootCause instanceof TestFailedException)
+            return ExecutionResult.fail(rootCause.getMessage());
 
         return new ErrorResult(throwable);
     }

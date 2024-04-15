@@ -1,6 +1,6 @@
 package apps.amaralus.qa.platform.runtime.schedule;
 
-import apps.amaralus.qa.platform.runtime.action.ActionsService;
+import apps.amaralus.qa.platform.runtime.action.RuntimeActionFactory;
 import apps.amaralus.qa.platform.runtime.execution.ExecutableTestCase;
 import apps.amaralus.qa.platform.runtime.execution.ExecutableTestStep;
 import apps.amaralus.qa.platform.runtime.execution.SimpleTask;
@@ -18,7 +18,7 @@ public class TestCaseFactory {
 
     private final ExecutionScheduler sequentialExecutionScheduler;
     private final ExecutionScheduler parallelExecutionScheduler;
-    private final ActionsService actionsService;
+    private final RuntimeActionFactory runtimeActionFactory;
 
     public ExecutableTestCase produce(TestCase testCase) {
 
@@ -36,7 +36,7 @@ public class TestCaseFactory {
 
     private ExecutableTestStep produce(TestStep testStep, int orderNumber) {
         var executionProperties = testStep.getStepExecutionProperties();
-        var stepAction = actionsService.produceAction(executionProperties);
+        var stepAction = runtimeActionFactory.produceAction(executionProperties);
 
         var executableTestStep = new ExecutableTestStep(new TestInfo(orderNumber, testStep.getName()), stepAction);
         executableTestStep.timeout(executionProperties.getTimeout(), executionProperties.getTimeUnit());
