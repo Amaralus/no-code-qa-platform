@@ -10,15 +10,15 @@ import apps.amaralus.qa.platform.project.api.Project;
 import apps.amaralus.qa.platform.project.context.DefaultProjectContext;
 import apps.amaralus.qa.platform.project.context.ProjectContext;
 import apps.amaralus.qa.platform.runtime.action.ActionType;
-import apps.amaralus.qa.platform.runtime.action.debug.DebugAction;
-import apps.amaralus.qa.platform.runtime.action.debug.DebugActionRepository;
 import apps.amaralus.qa.platform.runtime.execution.ExecutionProperties;
 import apps.amaralus.qa.platform.runtime.execution.StepExecutionProperties;
-import apps.amaralus.qa.platform.runtime.report.TestReportModel;
-import apps.amaralus.qa.platform.runtime.report.TestReportService;
 import apps.amaralus.qa.platform.testcase.TestCaseModel;
 import apps.amaralus.qa.platform.testcase.TestCaseRepository;
 import apps.amaralus.qa.platform.testcase.TestStep;
+import apps.amaralus.qa.platform.testcase.action.asserts.AssertActionModel;
+import apps.amaralus.qa.platform.testcase.action.asserts.AssertActionRepository;
+import apps.amaralus.qa.platform.testcase.action.debug.DebugActionModel;
+import apps.amaralus.qa.platform.testcase.action.debug.DebugActionRepository;
 import apps.amaralus.qa.platform.testplan.TestPlan;
 import apps.amaralus.qa.platform.testplan.TestPlanService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static apps.amaralus.qa.platform.testcase.action.asserts.Assertion.ASSERT_EQUALS;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -41,6 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 @Slf4j
 @Disabled
+@SuppressWarnings("all")
 class FunctionalManualTest {
 
     @Autowired
@@ -48,11 +49,11 @@ class FunctionalManualTest {
     @Autowired
     ExecutionManager executionManager;
     @Autowired
-    TestReportService reportService;
-    @Autowired
     TestCaseRepository testCaseRepository;
     @Autowired
     DebugActionRepository debugActionRepository;
+    @Autowired
+    AssertActionRepository assertActionRepository;
     @Autowired
     PlaceholderResolver placeholderResolver;
     @Autowired
@@ -71,6 +72,7 @@ class FunctionalManualTest {
     void before() {
         ((DefaultProjectContext) projectContext).setProjectId("myProject");
         debugActionRepository.deleteAll();
+        assertActionRepository.deleteAll();
         projectService.delete("myProject");
     }
 
@@ -90,12 +92,7 @@ class FunctionalManualTest {
 //        executionManager.stop(testPlan.getId());
         Thread.sleep(2000);
 
-        List<TestReportModel> models = reportService.findAllModels();
-
-        assertEquals(1, models.size());
         assertTrue(true);
-
-        reportService.deleteAllByProject();
     }
 
     @Test
@@ -118,6 +115,39 @@ class FunctionalManualTest {
         var project = projectService.create(new Project("myProject", "My Project", null, 0, 0));
         createTestCase(false, "Runtime placeholders case", project.getRootFolder(), 1,
                 "resolved msg = {{project:var}}");
+
+        datasetService.setVariable(project.getDataset(), "var", "val");
+
+        var testPlan = new TestPlan();
+        testPlan.setName("My test plan");
+        testPlan.setExecutionProperties(new ExecutionProperties(false));
+        testPlan = testPlanService.create(testPlan);
+
+        executionManager.run(testPlan.getId());
+
+        Thread.sleep(1000);
+
+        assertTrue(true);
+    }
+
+    @Test
+    void assertsRuntime() throws InterruptedException {
+        var project = projectService.create(new Project("myProject", "My Project", null, 0, 0));
+
+        var testCase = new TestCaseModel();
+        testCase.setProject("myProject");
+        testCase.setName("Assert case");
+        testCase.setFolder(project.getRootFolder());
+        testCase.setExecutionProperties(new ExecutionProperties(false));
+
+        var step = new TestStep();
+        step.setName("Assert that step");
+        step.setStepExecutionProperties(new StepExecutionProperties(1, ActionType.ASSERT));
+        testCase.setTestSteps(List.of(step));
+        testCaseRepository.save(testCase);
+
+        assertActionRepository.save(
+                new AssertActionModel(1L, "myProject", ASSERT_EQUALS, "lol val", "lol {{project:var}}"));
 
         datasetService.setVariable(project.getDataset(), "var", "val");
 
@@ -156,7 +186,7 @@ class FunctionalManualTest {
         step.setStepExecutionProperties(new StepExecutionProperties(iteration, ActionType.DEBUG));
 
         debugMessage = debugMessage == null ? step.getName() + " executed" : debugMessage;
-        debugActionRepository.save(new DebugAction(iteration, "myProject", debugMessage));
+        debugActionRepository.save(new DebugActionModel((long) iteration, "myProject", debugMessage));
 
         return step;
     }

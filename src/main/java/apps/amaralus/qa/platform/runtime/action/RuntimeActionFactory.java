@@ -9,11 +9,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-public class ActionsService {
+public class RuntimeActionFactory {
 
     private final Map<ActionType, ActionFactory> factories;
 
-    public ActionsService(List<ActionFactory> factories) {
+    public RuntimeActionFactory(List<ActionFactory> factories) {
         this.factories = factories.stream()
                 .collect(Collectors.toMap(
                         ActionFactory::factoryActionType,
