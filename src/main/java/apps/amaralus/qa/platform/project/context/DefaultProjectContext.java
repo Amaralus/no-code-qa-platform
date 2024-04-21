@@ -11,9 +11,10 @@ public class DefaultProjectContext implements ProjectContext {
 
     private String projectId = "";
 
-    public void setProjectId(@NotNull String projectId) {
+    public ProjectContext setProjectId(@NotNull String projectId) {
         Assert.notNull(projectId, "Project id must not be null!");
         this.projectId = projectId;
+        return this;
     }
 
     @Override

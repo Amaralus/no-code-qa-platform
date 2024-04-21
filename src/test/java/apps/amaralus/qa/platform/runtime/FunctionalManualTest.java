@@ -12,6 +12,7 @@ import apps.amaralus.qa.platform.project.context.ProjectContext;
 import apps.amaralus.qa.platform.runtime.action.ActionType;
 import apps.amaralus.qa.platform.runtime.execution.ExecutionProperties;
 import apps.amaralus.qa.platform.runtime.execution.StepExecutionProperties;
+import apps.amaralus.qa.platform.runtime.report.TestReportService;
 import apps.amaralus.qa.platform.testcase.TestCaseModel;
 import apps.amaralus.qa.platform.testcase.TestCaseRepository;
 import apps.amaralus.qa.platform.testcase.TestStep;
@@ -66,6 +67,8 @@ class FunctionalManualTest {
     FolderService folderService;
     @Autowired
     ProjectContext projectContext;
+    @Autowired
+    TestReportService testReportService;
 
 
     @BeforeEach
@@ -92,6 +95,8 @@ class FunctionalManualTest {
 //        executionManager.stop(testPlan.getId());
         Thread.sleep(2000);
 
+        System.out.println(testReportService.findAllModels());
+//        testReportService.deleteAllByProject();
         assertTrue(true);
     }
 

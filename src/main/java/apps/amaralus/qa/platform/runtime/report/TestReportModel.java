@@ -2,9 +2,15 @@ package apps.amaralus.qa.platform.runtime.report;
 
 import apps.amaralus.qa.platform.project.linked.ProjectLinkedModel;
 import apps.amaralus.qa.platform.rocksdb.sequence.GeneratedSequence;
+import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
+import apps.amaralus.qa.platform.runtime.execution.context.TestState;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.keyvalue.annotation.KeySpace;
+
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @KeySpace("test-report")
@@ -12,9 +18,18 @@ public class TestReportModel implements ProjectLinkedModel<Long> {
     @Id
     @GeneratedSequence("test-report-id")
     private Long id;
-    //возможность при редактировании давать имя и описание отчету после сохранения?
     private String name;
-    private String description;
     private String project;
-    private String report;
+    private TestState state;
+    private Long testPlanId;
+    private TestInfo testInfo;
+    private LocalTime executionTime;
+    private List<TestSubReport> subReports = new ArrayList<>();
+
+    public record TestSubReport(
+            TestInfo testInfo,
+            TestState state,
+            LocalTime executionTime,
+            List<TestSubReport> subReports) {
+    }
 }

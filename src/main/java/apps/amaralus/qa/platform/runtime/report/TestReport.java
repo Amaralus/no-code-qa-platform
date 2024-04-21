@@ -13,17 +13,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+@Getter
 @RequiredArgsConstructor
 public class TestReport implements IdSource<Long> {
     @Setter
-    @Getter
     private Long id = 0L;
     private final TestInfo testInfo;
     private final TestState state;
     private final String message;
     private final LocalTime executionTime;
     @Setter
-    @Getter
     private List<TestReport> subReports = new ArrayList<>();
     @Setter
     private int deep;

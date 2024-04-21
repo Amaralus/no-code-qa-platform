@@ -5,6 +5,7 @@ import apps.amaralus.qa.platform.runtime.report.ReportSupplier;
 import apps.amaralus.qa.platform.runtime.report.TestReport;
 import lombok.Setter;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.function.Consumer;
 

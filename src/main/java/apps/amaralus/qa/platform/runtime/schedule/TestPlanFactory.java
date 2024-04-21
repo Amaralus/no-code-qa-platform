@@ -2,6 +2,7 @@ package apps.amaralus.qa.platform.runtime.schedule;
 
 import apps.amaralus.qa.platform.placeholder.generate.PlaceholderGeneratorsProvider;
 import apps.amaralus.qa.platform.placeholder.resolve.PlaceholderResolver;
+import apps.amaralus.qa.platform.project.context.ProjectContext;
 import apps.amaralus.qa.platform.runtime.execution.ExecutableTestCase;
 import apps.amaralus.qa.platform.runtime.execution.ExecutableTestPlan;
 import apps.amaralus.qa.platform.runtime.execution.SimpleTask;
@@ -32,6 +33,7 @@ public class TestPlanFactory {
     private final PlaceholderGeneratorsProvider placeholderGeneratorsProvider;
     private final TestCaseService testCaseService;
     private final TestCaseFactory testCaseFactory;
+    private final ProjectContext projectContext;
 
     public ExecutableTestPlan produce(TestPlan testPlan) {
 
@@ -71,7 +73,8 @@ public class TestPlanFactory {
     }
 
     private ExecutableTestPlan buildExecutableTestPlan(TestPlan testPlan, List<ExecutableTestCase> testCases) {
-        var executableTestPlan = new ExecutableTestPlan(new TestInfo(testPlan.getId(), testPlan.getName()));
+        var executableTestPlan = new ExecutableTestPlan(
+                new TestInfo(testPlan.getId(), testPlan.getName(), projectContext.getProjectId()));
 
         var executionGraph = getScheduler(testPlan.getExecutionProperties().parallelExecution())
                 .schedule(testCases, new SimpleTask(), new SimpleTask(executableTestPlan::executionGraphFinishedCallback));

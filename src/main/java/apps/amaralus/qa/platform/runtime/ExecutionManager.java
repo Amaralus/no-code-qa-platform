@@ -28,6 +28,7 @@ public class ExecutionManager {
     private final TestPlanFactory testPlanFactory;
     private final TestPlanService testPlanService;
     private final TestReportService testReportService;
+
     private final Map<Long, ExecutableTestPlan> runningTestPlans = new ConcurrentHashMap<>();
 
     public void run(@NotNull Long testPlanId) {
@@ -74,7 +75,7 @@ public class ExecutionManager {
             testPlan.cancel();
         log.info("Test plan {} execution finished", testPlan.getTestInfo());
         var report = testPlan.getReport();
-        testReportService.create(report);
+        testReportService.create(report, testPlan.getTestInfo());
         log.debug("Test plan {} report:\n{}", testPlan.getTestInfo(), report);
     }
 }

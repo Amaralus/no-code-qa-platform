@@ -1,34 +1,50 @@
 package apps.amaralus.qa.platform.runtime.report;
 
+import apps.amaralus.qa.platform.common.exception.EntityNotFoundException;
+import apps.amaralus.qa.platform.project.context.DefaultProjectContext;
 import apps.amaralus.qa.platform.project.linked.ProjectLinkedService;
-import lombok.AllArgsConstructor;
+import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
+import apps.amaralus.qa.platform.runtime.report.api.Report;
+import apps.amaralus.qa.platform.runtime.report.mapper.ReportMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TestReportService extends ProjectLinkedService<TestReport, TestReportModel, Long> {
 
-    public TestReportModel updateDescription(Long id, String description) {
-        Assert.notNull(id, ID_NOT_NULL_MESSAGE);
+    private final ReportMapper reportMapper;
+    private TestInfo testInfo;
 
-        var report = repository.findById(id)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Report not found by id " + id + "for project " + projectContext.getProjectId()));
-        report.setDescription(description);
-
-        return repository.save(report);
+    public TestReport create(TestReport entity, TestInfo testInfo) {
+        projectContext = new DefaultProjectContext().setProjectId(testInfo.project());
+        this.testInfo = testInfo;
+        return super.create(entity);
     }
 
+    protected void beforeCreate(TestReportModel model) {
+        model.setTestPlanId(testInfo.id());
+        model.setName(testInfo.getTestName());
+        super.beforeCreate(model);
+    }
 
-    public TestReportModel updateName(Long id, String name) {
-        Assert.notNull(id, ID_NOT_NULL_MESSAGE);
+    public Report findReportById(Long id) {
+        var reportModel = findModelById(id)
+                .orElseThrow(() -> new EntityNotFoundException(TestReportModel.class, id));
+        return reportMapper.toEntity(reportModel);
+    }
 
-        var report = repository.findById(id)
-                .orElseThrow(() ->
-                        new IllegalArgumentException("Report not found by id " + id + "for project " + projectContext.getProjectId()));
-        report.setName(name);
+    public List<Report> findAllReports() {
+        return reportMapper.toEntityList(findAllModels());
+    }
 
-        return repository.save(report);
+    public Optional<Report> findLastModel() {
+        var models = findAllModels();
+        return models.isEmpty()
+                ? Optional.empty()
+                : Optional.of(reportMapper.toEntity(models.get(models.size() - 1)));
     }
 }

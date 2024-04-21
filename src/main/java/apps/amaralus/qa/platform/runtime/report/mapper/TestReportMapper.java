@@ -1,16 +1,12 @@
-package apps.amaralus.qa.platform.runtime.report;
+package apps.amaralus.qa.platform.runtime.report.mapper;
 
 import apps.amaralus.qa.platform.common.GenericMapper;
-import org.mapstruct.AfterMapping;
+import apps.amaralus.qa.platform.runtime.report.TestReport;
+import apps.amaralus.qa.platform.runtime.report.TestReportModel;
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
 
 import static org.mapstruct.MappingConstants.ComponentModel.SPRING;
 
 @Mapper(componentModel = SPRING)
 public interface TestReportMapper extends GenericMapper<TestReport, TestReportModel> {
-    @AfterMapping
-    default void enrich(@MappingTarget TestReportModel model, TestReport entity) {
-        model.setReport(entity.toString());
-    }
 }
