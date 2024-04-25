@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ public class TestReport implements IdSource<Long> {
     private final TestState state;
     private final String message;
     private final LocalTime executionTime;
+    private final ZonedDateTime startTime = ZonedDateTime.now();
     @Setter
     private List<TestReport> subReports = new ArrayList<>();
     @Setter

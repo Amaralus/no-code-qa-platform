@@ -96,7 +96,7 @@ class FunctionalManualTest {
         Thread.sleep(2000);
 
         System.out.println(testReportService.findAllModels());
-//        testReportService.deleteAllByProject();
+        testReportService.deleteAllByProject();
         assertTrue(true);
     }
 

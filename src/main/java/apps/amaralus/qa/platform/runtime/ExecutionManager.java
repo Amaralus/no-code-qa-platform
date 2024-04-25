@@ -75,7 +75,7 @@ public class ExecutionManager {
             testPlan.cancel();
         log.info("Test plan {} execution finished", testPlan.getTestInfo());
         var report = testPlan.getReport();
-        testReportService.create(report, testPlan.getTestInfo());
+        testReportService.create(report);
         log.debug("Test plan {} report:\n{}", testPlan.getTestInfo(), report);
     }
 }

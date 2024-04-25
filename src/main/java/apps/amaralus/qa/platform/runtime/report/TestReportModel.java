@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.keyvalue.annotation.KeySpace;
 
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +23,8 @@ public class TestReportModel implements ProjectLinkedModel<Long> {
     private String project;
     private TestState state;
     private Long testPlanId;
-    private TestInfo testInfo;
     private LocalTime executionTime;
+    private ZonedDateTime startTime;
     private List<TestSubReport> subReports = new ArrayList<>();
 
     public record TestSubReport(
