@@ -1,9 +1,9 @@
-package apps.amaralus.qa.platform.runtime.report.mapper;
+package apps.amaralus.qa.platform.testplan.report.mapper;
 
 import apps.amaralus.qa.platform.common.GenericMapper;
 import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
-import apps.amaralus.qa.platform.runtime.report.TestReport;
-import apps.amaralus.qa.platform.runtime.report.TestReportModel;
+import apps.amaralus.qa.platform.testplan.report.TestReport;
+import apps.amaralus.qa.platform.testplan.report.model.TestReportModel;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;

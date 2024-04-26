@@ -1,4 +1,4 @@
-package apps.amaralus.qa.platform.runtime.report;
+package apps.amaralus.qa.platform.testplan.report;
 
 import apps.amaralus.qa.platform.common.model.IdSource;
 import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;

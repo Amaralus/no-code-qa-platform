@@ -1,11 +1,10 @@
 package apps.amaralus.qa.platform.runtime.execution;
 
 import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
-import apps.amaralus.qa.platform.runtime.report.ReportSupplier;
-import apps.amaralus.qa.platform.runtime.report.TestReport;
+import apps.amaralus.qa.platform.testplan.report.ReportSupplier;
+import apps.amaralus.qa.platform.testplan.report.TestReport;
 import lombok.Setter;
 
-import java.time.LocalTime;
 import java.util.List;
 import java.util.function.Consumer;
 

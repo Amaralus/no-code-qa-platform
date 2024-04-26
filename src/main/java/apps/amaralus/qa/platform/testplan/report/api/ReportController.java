@@ -1,9 +1,9 @@
-package apps.amaralus.qa.platform.runtime.report.api;
+package apps.amaralus.qa.platform.testplan.report.api;
 
 import apps.amaralus.qa.platform.project.context.InterceptProjectId;
 import apps.amaralus.qa.platform.project.context.ProjectContextLinked;
-import apps.amaralus.qa.platform.runtime.report.TestReportModel;
-import apps.amaralus.qa.platform.runtime.report.TestReportService;
+import apps.amaralus.qa.platform.testplan.report.model.TestReportModel;
+import apps.amaralus.qa.platform.testplan.report.TestReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +23,16 @@ public class ReportController extends ProjectContextLinked {
 
     @GetMapping
     @InterceptProjectId
-    public List<TestReportModel> findAll(@PathVariable String project) {
-        return reportService.findAllModels();
+    public List<TestReportModel> findAll(@PathVariable String project,
+                                         @PathVariable Long testPlanId) {
+        return reportService.findAllModelsByTestPlanId(testPlanId);
     }
 
     @GetMapping("/last")
     @InterceptProjectId
-    public Object findLastReport(@PathVariable String project) {
-        Optional<TestReportModel> optional = reportService.findLastModel();
+    public Object findLastReport(@PathVariable String project,
+                                 @PathVariable Long testPlanId) {
+        Optional<TestReportModel> optional = reportService.findLastModel(testPlanId);
         return optional.isPresent()
                 ? optional.get()
                 : new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
@@ -38,7 +40,9 @@ public class ReportController extends ProjectContextLinked {
 
     @GetMapping("/{id}")
     @InterceptProjectId
-    public Object findReportById(@PathVariable String project, @PathVariable Long id) {
+    public Object findReportById(@PathVariable String project,
+                                 @PathVariable Long id,
+                                 @PathVariable Long testPlanId) {
         Optional<TestReportModel> optional = reportService.findModelById(id);
         return optional.isPresent()
                 ? optional.get()
@@ -48,7 +52,8 @@ public class ReportController extends ProjectContextLinked {
     @InterceptProjectId
     @DeleteMapping("/{id}")
     public void deleteReport(@PathVariable String project,
-                             @PathVariable Long id) {
+                             @PathVariable Long id,
+                             @PathVariable String testPlanId) {
         reportService.delete(id);
     }
 

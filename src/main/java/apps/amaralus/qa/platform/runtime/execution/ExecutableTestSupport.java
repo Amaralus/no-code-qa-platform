@@ -2,9 +2,8 @@ package apps.amaralus.qa.platform.runtime.execution;
 
 import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
 import apps.amaralus.qa.platform.runtime.execution.context.TestState;
-import apps.amaralus.qa.platform.runtime.report.ReportSupplier;
-import apps.amaralus.qa.platform.runtime.report.TestReport;
-import apps.amaralus.qa.platform.runtime.report.Timer;
+import apps.amaralus.qa.platform.testplan.report.ReportSupplier;
+import apps.amaralus.qa.platform.testplan.report.TestReport;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

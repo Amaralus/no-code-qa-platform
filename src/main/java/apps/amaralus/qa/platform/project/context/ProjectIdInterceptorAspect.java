@@ -1,20 +1,21 @@
 package apps.amaralus.qa.platform.project.context;
 
-import org.aspectj.lang.JoinPoint;
+import lombok.RequiredArgsConstructor;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.InvocationTargetException;
-
 @Component
 @Aspect
+@RequiredArgsConstructor
 public class ProjectIdInterceptorAspect {
 
-    @Before("@annotation(apps.amaralus.qa.platform.project.context.InterceptProjectId)")
-    public void before(JoinPoint joinPoint)
-            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    private final ThreadLocalProjectContext projectContext;
+
+    @Around("@annotation(apps.amaralus.qa.platform.project.context.InterceptProjectId)")
+    public Object before(ProceedingJoinPoint joinPoint) throws Throwable {
 
         var signature = (MethodSignature) joinPoint.getSignature();
         var parameterName = signature.getMethod().getDeclaredAnnotation(InterceptProjectId.class).parameterName();
@@ -28,11 +29,12 @@ public class ProjectIdInterceptorAspect {
             throw new IllegalArgumentException(String.format("Parameter \"%s\" not found in method %s.%s()",
                     parameterName, signature.getDeclaringType().getName(), signature.getName()));
 
-        @SuppressWarnings("unchecked") var projectContext = (DefaultProjectContext) signature
-                .getDeclaringType()
-                .getSuperclass()
-                .getDeclaredMethod("getProjectContext")
-                .invoke(joinPoint.getTarget());
         projectContext.setProjectId(projectId);
+
+        try {
+            return joinPoint.proceed();
+        } finally {
+            projectContext.clear();
+        }
     }
 }

@@ -1,4 +1,4 @@
-package apps.amaralus.qa.platform.runtime.report;
+package apps.amaralus.qa.platform.testplan.report.model;
 
 import apps.amaralus.qa.platform.project.linked.ProjectLinkedModel;
 import apps.amaralus.qa.platform.rocksdb.sequence.GeneratedSequence;
@@ -24,5 +24,5 @@ public class TestReportModel implements ProjectLinkedModel<Long> {
     private Long testPlanId;
     private LocalTime executionTime;
     private ZonedDateTime startTime;
-    private List<TestSubReportModel> subReports = new ArrayList<>();
+    private List<SubReportModel> subReports = new ArrayList<>();
 }
