@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Getter
 public abstract class ProjectContextLinked {
 
-    protected DefaultProjectContext projectContext;
+    protected ProjectContext projectContext;
 
     @Autowired
-    public void setProjectContext(DefaultProjectContext projectContext) {
+    public void setProjectContext(ProjectContext projectContext) {
         this.projectContext = projectContext;
     }
 }
