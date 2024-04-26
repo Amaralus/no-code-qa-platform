@@ -2,7 +2,6 @@ package apps.amaralus.qa.platform.runtime.report;
 
 import apps.amaralus.qa.platform.project.linked.ProjectLinkedModel;
 import apps.amaralus.qa.platform.rocksdb.sequence.GeneratedSequence;
-import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
 import apps.amaralus.qa.platform.runtime.execution.context.TestState;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -25,12 +24,5 @@ public class TestReportModel implements ProjectLinkedModel<Long> {
     private Long testPlanId;
     private LocalTime executionTime;
     private ZonedDateTime startTime;
-    private List<TestSubReport> subReports = new ArrayList<>();
-
-    public record TestSubReport(
-            TestInfo testInfo,
-            TestState state,
-            LocalTime executionTime,
-            List<TestSubReport> subReports) {
-    }
+    private List<TestSubReportModel> subReports = new ArrayList<>();
 }

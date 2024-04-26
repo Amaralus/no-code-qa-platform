@@ -74,6 +74,7 @@ class FunctionalManualTest {
     @BeforeEach
     void before() {
         ((DefaultProjectContext) projectContext).setProjectId("myProject");
+        testCaseRepository.deleteAll();
         debugActionRepository.deleteAll();
         assertActionRepository.deleteAll();
         projectService.delete("myProject");

@@ -9,7 +9,7 @@ public final class Routes {
     public static final String ENVIRONMENTS = PROJECTS_VARIABLE + "/environments";
     public static final String IT_SERVICES = PROJECTS_VARIABLE + "/it-services";
     public static final String ALIASES = PROJECTS_VARIABLE + "/aliases";
-    public static final String REPORTS = PROJECTS_VARIABLE + "/reports";
+    public static final String REPORTS = PROJECTS_VARIABLE + "/{testPlanId}/reports";
 
     private Routes() {
     }
