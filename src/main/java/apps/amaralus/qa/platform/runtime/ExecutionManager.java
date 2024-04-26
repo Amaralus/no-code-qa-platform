@@ -1,8 +1,6 @@
 package apps.amaralus.qa.platform.runtime;
 
 import apps.amaralus.qa.platform.common.exception.EntityNotFoundException;
-import apps.amaralus.qa.platform.project.context.DefaultProjectContext;
-import apps.amaralus.qa.platform.project.context.ProjectContext;
 import apps.amaralus.qa.platform.runtime.execution.ExecutableTestPlan;
 import apps.amaralus.qa.platform.runtime.execution.context.TestState;
 import apps.amaralus.qa.platform.runtime.report.TestReportService;
@@ -12,7 +10,6 @@ import apps.amaralus.qa.platform.testplan.TestPlanService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -31,7 +28,6 @@ public class ExecutionManager {
     private final TestPlanFactory testPlanFactory;
     private final TestPlanService testPlanService;
     private final TestReportService testReportService;
-    private ProjectContext projectContext;
 
     private final Map<Long, ExecutableTestPlan> runningTestPlans = new ConcurrentHashMap<>();
 
@@ -70,8 +66,6 @@ public class ExecutionManager {
     }
 
     private void testPlanFinishCallback(ExecutableTestPlan testPlan) {
-        //todo
-        setProjectContext(new DefaultProjectContext().setProjectId(testPlan.getTestInfo().project()));
         runningTestPlans.remove(testPlan.getTestInfo().id());
         finishExecution(testPlan);
     }
@@ -83,10 +77,5 @@ public class ExecutionManager {
         var report = testPlan.getReport();
         testReportService.create(report);
         log.debug("Test plan {} report:\n{}", testPlan.getTestInfo(), report);
-    }
-
-    @Autowired
-    public void setProjectContext(ProjectContext projectContext) {
-        this.projectContext = projectContext;
     }
 }
