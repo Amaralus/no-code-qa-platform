@@ -12,13 +12,13 @@ import apps.amaralus.qa.platform.project.context.ProjectContext;
 import apps.amaralus.qa.platform.runtime.action.ActionType;
 import apps.amaralus.qa.platform.runtime.execution.ExecutionProperties;
 import apps.amaralus.qa.platform.runtime.execution.StepExecutionProperties;
-import apps.amaralus.qa.platform.testcase.TestCaseModel;
 import apps.amaralus.qa.platform.testcase.TestCaseRepository;
-import apps.amaralus.qa.platform.testcase.TestStep;
 import apps.amaralus.qa.platform.testcase.action.asserts.AssertActionModel;
 import apps.amaralus.qa.platform.testcase.action.asserts.AssertActionRepository;
 import apps.amaralus.qa.platform.testcase.action.debug.DebugActionModel;
 import apps.amaralus.qa.platform.testcase.action.debug.DebugActionRepository;
+import apps.amaralus.qa.platform.testcase.model.TestCaseModel;
+import apps.amaralus.qa.platform.testcase.model.TestStep;
 import apps.amaralus.qa.platform.testplan.TestPlan;
 import apps.amaralus.qa.platform.testplan.TestPlanService;
 import lombok.extern.slf4j.Slf4j;
@@ -67,6 +67,8 @@ class FunctionalManualTest {
     @Autowired
     ProjectContext projectContext;
 
+    Project project;
+
 
     @BeforeEach
     void before() {
@@ -74,6 +76,7 @@ class FunctionalManualTest {
         debugActionRepository.deleteAll();
         assertActionRepository.deleteAll();
         projectService.delete("myProject");
+        project = projectService.create(new Project("myProject", "My Project", null, 0, 0));
     }
 
     @Test
@@ -112,7 +115,6 @@ class FunctionalManualTest {
 
     @Test
     void runtimePlaceholders() throws InterruptedException {
-        var project = projectService.create(new Project("myProject", "My Project", null, 0, 0));
         createTestCase(false, "Runtime placeholders case", project.getRootFolder(), 1,
                 "resolved msg = {{project:var}}");
 
@@ -132,7 +134,6 @@ class FunctionalManualTest {
 
     @Test
     void assertsRuntime() throws InterruptedException {
-        var project = projectService.create(new Project("myProject", "My Project", null, 0, 0));
 
         var testCase = new TestCaseModel();
         testCase.setProject("myProject");

@@ -1,9 +1,10 @@
-package apps.amaralus.qa.platform.testcase;
+package apps.amaralus.qa.platform.testcase.model;
 
 import apps.amaralus.qa.platform.common.model.IdSource;
 import apps.amaralus.qa.platform.dataset.linked.DatasetSource;
 import apps.amaralus.qa.platform.label.model.api.Label;
 import apps.amaralus.qa.platform.runtime.execution.ExecutionProperties;
+import apps.amaralus.qa.platform.testcase.Status;
 import lombok.Data;
 
 import java.util.ArrayList;

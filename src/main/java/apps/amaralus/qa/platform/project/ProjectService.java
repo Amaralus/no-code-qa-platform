@@ -62,9 +62,11 @@ public class ProjectService extends CrudService<Project, ProjectModel, String> {
     public void delete(@NotNull String id) {
         Assert.notNull(id, ID_NOT_NULL_MESSAGE);
 
+        log.info("удаляю все для проекта {}", id);
         if (!repository.existsById(id))
             return;
 
+        log.info("удаляю все для проекта {}", id);
         projectLinked.forEach(ProjectLinkedService::deleteAllByProject);
 
         repository.deleteById(id);

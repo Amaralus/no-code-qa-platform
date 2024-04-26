@@ -6,7 +6,7 @@ import apps.amaralus.qa.platform.dataset.alias.model.AliasModel;
 import apps.amaralus.qa.platform.dataset.model.DatasetModel;
 import apps.amaralus.qa.platform.folder.model.FolderModel;
 import apps.amaralus.qa.platform.project.database.ProjectModel;
-import apps.amaralus.qa.platform.testcase.TestCaseModel;
+import apps.amaralus.qa.platform.testcase.model.TestCaseModel;
 import apps.amaralus.qa.platform.testplan.TestPlan;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package apps.amaralus.qa.platform.testcase;
+package apps.amaralus.qa.platform.testcase.model;
 
 import apps.amaralus.qa.platform.runtime.execution.StepExecutionProperties;
 import lombok.Data;

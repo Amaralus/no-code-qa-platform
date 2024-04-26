@@ -5,8 +5,8 @@ import apps.amaralus.qa.platform.runtime.execution.ExecutableTestCase;
 import apps.amaralus.qa.platform.runtime.execution.ExecutableTestStep;
 import apps.amaralus.qa.platform.runtime.execution.SimpleTask;
 import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
-import apps.amaralus.qa.platform.testcase.TestCase;
-import apps.amaralus.qa.platform.testcase.TestStep;
+import apps.amaralus.qa.platform.testcase.model.TestCase;
+import apps.amaralus.qa.platform.testcase.model.TestStep;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
