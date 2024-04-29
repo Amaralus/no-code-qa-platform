@@ -23,7 +23,8 @@ public class TestReport implements IdSource<Long> {
     private final TestState state;
     private final String message;
     private final LocalTime executionTime;
-    private final ZonedDateTime startTime;
+    @Setter
+    private ZonedDateTime startTime;
     @Setter
     private List<TestReport> subReports = new ArrayList<>();
     @Setter

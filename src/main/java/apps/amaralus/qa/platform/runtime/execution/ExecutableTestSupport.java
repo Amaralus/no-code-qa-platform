@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.time.ZonedDateTime;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static apps.amaralus.qa.platform.runtime.execution.context.TestState.CREATED;
@@ -37,8 +36,6 @@ public abstract class ExecutableTestSupport implements Executable, Cancelable, R
 
     @Override
     public TestReport getReport() {
-        return new TestReport(
-                testInfo, state, resultMessage,
-                timer.getElapsedAsLocalTime(), ZonedDateTime.now());
+        return new TestReport(testInfo, state, resultMessage, timer.getElapsedAsLocalTime());
     }
 }
