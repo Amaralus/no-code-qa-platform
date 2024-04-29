@@ -47,6 +47,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <rocksdb.version>8.5.3</rocksdb.version>
         <guava.version>32.0.0-jre</guava.version>
+        <jetbrains.annotations.version>24.0.1</jetbrains.annotations.version>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <okhttp.version>4.12.0</okhttp.version>
         <jib.version>3.4.0</jib.version>
         <frontend.maven.plugin.version>1.14.0</frontend.maven.plugin.version>
         <nodejs.version>v18.18.2</nodejs.version>
@@ -56,7 +59,7 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>24.0.1</version>
+            <version>${jetbrains.annotations.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -102,11 +105,16 @@
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okhttp.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
-            <version>1.5.5.Final</version>
+            <version>${mapstruct.version}</version>
         </dependency>
 
         <dependency>
