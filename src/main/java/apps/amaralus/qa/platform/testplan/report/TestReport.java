@@ -1,5 +1,6 @@
-package apps.amaralus.qa.platform.runtime.report;
+package apps.amaralus.qa.platform.testplan.report;
 
+import apps.amaralus.qa.platform.common.model.IdSource;
 import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
 import apps.amaralus.qa.platform.runtime.execution.context.TestState;
 import lombok.Getter;
@@ -7,19 +8,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
+
 @Getter
-public class TestReport {
+@RequiredArgsConstructor
+public class TestReport implements IdSource<Long> {
+    @Setter
+    private Long id = 0L;
     private final TestInfo testInfo;
     private final TestState state;
     private final String message;
     private final LocalTime executionTime;
     @Setter
-    @Getter
+    private ZonedDateTime startTime;
+    @Setter
     private List<TestReport> subReports = new ArrayList<>();
     @Setter
     private int deep;

@@ -7,7 +7,7 @@ import apps.amaralus.qa.platform.runtime.execution.result.ErrorResult;
 import apps.amaralus.qa.platform.runtime.execution.result.ExecutionResult;
 import apps.amaralus.qa.platform.runtime.execution.result.TestFailedException;
 import apps.amaralus.qa.platform.runtime.execution.result.TimeoutResult;
-import apps.amaralus.qa.platform.runtime.report.TestReport;
+import apps.amaralus.qa.platform.testplan.report.TestReport;
 import com.google.common.base.Throwables;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

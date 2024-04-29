@@ -7,7 +7,6 @@ import apps.amaralus.qa.platform.placeholder.Placeholder;
 import apps.amaralus.qa.platform.placeholder.resolve.PlaceholderResolver;
 import apps.amaralus.qa.platform.project.ProjectService;
 import apps.amaralus.qa.platform.project.api.Project;
-import apps.amaralus.qa.platform.project.context.DefaultProjectContext;
 import apps.amaralus.qa.platform.project.context.ProjectContext;
 import apps.amaralus.qa.platform.runtime.action.ActionType;
 import apps.amaralus.qa.platform.runtime.execution.ExecutionProperties;
@@ -21,6 +20,7 @@ import apps.amaralus.qa.platform.testcase.action.debug.DebugActionModel;
 import apps.amaralus.qa.platform.testcase.action.debug.DebugActionRepository;
 import apps.amaralus.qa.platform.testplan.TestPlan;
 import apps.amaralus.qa.platform.testplan.TestPlanService;
+import apps.amaralus.qa.platform.testplan.report.TestReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -67,17 +67,24 @@ class FunctionalManualTest {
     @Autowired
     ProjectContext projectContext;
 
+    @Autowired
+    TestReportService testReportService;
+
+    Project project;
 
     @BeforeEach
     void before() {
-        ((DefaultProjectContext) projectContext).setProjectId("myProject");
+        // в каждый тестовый метод идет в разных потоках
+        projectContext.setProjectId("myProject");
         debugActionRepository.deleteAll();
         assertActionRepository.deleteAll();
         projectService.delete("myProject");
+        project = projectService.create(new Project("myProject", "My Project", null, 0, 0));
     }
 
     @Test
     void runtime() throws InterruptedException {
+        projectContext.setProjectId("myProject");
 
         createTestCase(false, "TestCase1", 0L, 4, null);
         createTestCase(false, "TestCase2", 0L, 4, null);
@@ -91,13 +98,15 @@ class FunctionalManualTest {
 //        Thread.sleep(4000);
 //        executionManager.stop(testPlan.getId());
         Thread.sleep(2000);
+        System.out.println(testReportService.findAllModels());
+        testReportService.deleteAllByProject();
 
         assertTrue(true);
     }
 
     @Test
     void placeholders() {
-        var project = projectService.create(new Project("myProject", null, null, 0L, 0L));
+        projectContext.setProjectId("myProject");
         datasetService.setVariable(folderService.findById(project.getRootFolder()).get().getDataset(), "var", "val");
         log.info("project {}", project);
 
@@ -112,7 +121,7 @@ class FunctionalManualTest {
 
     @Test
     void runtimePlaceholders() throws InterruptedException {
-        var project = projectService.create(new Project("myProject", "My Project", null, 0, 0));
+        projectContext.setProjectId("myProject");
         createTestCase(false, "Runtime placeholders case", project.getRootFolder(), 1,
                 "resolved msg = {{project:var}}");
 
@@ -132,7 +141,7 @@ class FunctionalManualTest {
 
     @Test
     void assertsRuntime() throws InterruptedException {
-        var project = projectService.create(new Project("myProject", "My Project", null, 0, 0));
+        projectContext.setProjectId("myProject");
 
         var testCase = new TestCaseModel();
         testCase.setProject("myProject");

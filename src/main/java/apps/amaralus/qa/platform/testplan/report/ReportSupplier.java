@@ -1,4 +1,4 @@
-package apps.amaralus.qa.platform.runtime.report;
+package apps.amaralus.qa.platform.testplan.report;
 
 public interface ReportSupplier {
 

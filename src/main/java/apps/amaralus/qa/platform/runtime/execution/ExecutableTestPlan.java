@@ -1,10 +1,11 @@
 package apps.amaralus.qa.platform.runtime.execution;
 
 import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
-import apps.amaralus.qa.platform.runtime.report.ReportSupplier;
-import apps.amaralus.qa.platform.runtime.report.TestReport;
+import apps.amaralus.qa.platform.testplan.report.ReportSupplier;
+import apps.amaralus.qa.platform.testplan.report.TestReport;
 import lombok.Setter;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -15,6 +16,7 @@ public class ExecutableTestPlan extends ExecutableTestSupport implements Executi
     private ExecutionGraph executionGraph;
     @Setter
     private Consumer<ExecutableTestPlan> finishCallback;
+    private ZonedDateTime startTime;
 
     public ExecutableTestPlan(TestInfo testInfo) {
         super(testInfo);
@@ -27,6 +29,7 @@ public class ExecutableTestPlan extends ExecutableTestSupport implements Executi
 
         timer.start();
         setState(RUNNING);
+        startTime = ZonedDateTime.now();
         executionGraph.execute();
     }
 
@@ -52,6 +55,7 @@ public class ExecutableTestPlan extends ExecutableTestSupport implements Executi
     @Override
     public TestReport getReport() {
         var report = super.getReport();
+        report.setStartTime(startTime);
         report.setSubReports(getTestCases().stream()
                 .map(ReportSupplier::getReport)
                 .toList());
