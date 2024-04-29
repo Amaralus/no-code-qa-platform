@@ -20,6 +20,7 @@ import apps.amaralus.qa.platform.testcase.model.TestCaseModel;
 import apps.amaralus.qa.platform.testcase.model.TestStep;
 import apps.amaralus.qa.platform.testplan.TestPlan;
 import apps.amaralus.qa.platform.testplan.TestPlanService;
+import apps.amaralus.qa.platform.testplan.report.TestReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -66,6 +67,9 @@ class FunctionalManualTest {
     @Autowired
     ProjectContext projectContext;
 
+    @Autowired
+    TestReportService testReportService;
+
     Project project;
 
     @BeforeEach
@@ -94,6 +98,8 @@ class FunctionalManualTest {
 //        Thread.sleep(4000);
 //        executionManager.stop(testPlan.getId());
         Thread.sleep(2000);
+        System.out.println(testReportService.findAllModels());
+        testReportService.deleteAllByProject();
 
         assertTrue(true);
     }

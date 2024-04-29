@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.runtime.schedule;
 
+import apps.amaralus.qa.platform.project.context.ProjectContext;
 import apps.amaralus.qa.platform.runtime.action.RuntimeActionFactory;
 import apps.amaralus.qa.platform.runtime.execution.ExecutableTestCase;
 import apps.amaralus.qa.platform.runtime.execution.ExecutableTestStep;
@@ -19,6 +20,7 @@ public class TestCaseFactory {
     private final ExecutionScheduler sequentialExecutionScheduler;
     private final ExecutionScheduler parallelExecutionScheduler;
     private final RuntimeActionFactory runtimeActionFactory;
+    private final ProjectContext projectContext;
 
     public ExecutableTestCase produce(TestCase testCase) {
 
@@ -26,7 +28,8 @@ public class TestCaseFactory {
         for (int i = 0; i < testCase.getTestSteps().size(); i++)
             testSteps.add(produce(testCase.getTestSteps().get(i), i));
 
-        var executableTestCase = new ExecutableTestCase(new TestInfo(testCase.getId(), testCase.getName()));
+        var executableTestCase = new ExecutableTestCase(
+                new TestInfo(testCase.getId(), testCase.getName(), projectContext.getProjectId()));
         var graph = getScheduler(testCase.getExecutionProperties().parallelExecution())
                 .schedule(testSteps, new SimpleTask(), new SimpleTask(executableTestCase::executionGraphFinishedCallback));
         executableTestCase.setExecutionGraph(graph);
@@ -38,7 +41,8 @@ public class TestCaseFactory {
         var executionProperties = testStep.getStepExecutionProperties();
         var stepAction = runtimeActionFactory.produceAction(executionProperties);
 
-        var executableTestStep = new ExecutableTestStep(new TestInfo(orderNumber, testStep.getName()), stepAction);
+        var executableTestStep = new ExecutableTestStep(
+                new TestInfo(orderNumber, testStep.getName(), projectContext.getProjectId()), stepAction);
         executableTestStep.timeout(executionProperties.getTimeout(), executionProperties.getTimeUnit());
 
         return executableTestStep;
