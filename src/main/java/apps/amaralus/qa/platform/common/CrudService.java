@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.common;
 
+import apps.amaralus.qa.platform.common.exception.EntityNotFoundException;
 import apps.amaralus.qa.platform.common.model.CrudModel;
 import apps.amaralus.qa.platform.common.model.IdSource;
 import org.jetbrains.annotations.NotNull;
@@ -10,6 +11,7 @@ import org.springframework.util.Assert;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public abstract class CrudService<E extends IdSource<I>, M extends CrudModel<I>, I> {
 
@@ -65,6 +67,15 @@ public abstract class CrudService<E extends IdSource<I>, M extends CrudModel<I>,
 
     public List<M> findAllModels() {
         return repository.findAll();
+    }
+
+    protected E findModifySave(@NotNull I id, @NotNull Consumer<M> modifier) {
+        Assert.notNull(modifier, "modifier must not be null!");
+        var model = findModelById(id)
+                .orElseThrow(() -> new EntityNotFoundException(modelClass, id));
+
+        modifier.accept(model);
+        return mapper.toEntity(repository.save(model));
     }
 
     @SuppressWarnings("unchecked")

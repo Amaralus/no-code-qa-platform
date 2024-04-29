@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ProjectService extends CrudService<Project, ProjectModel, String> {
-    private static final String PROJECT_TEXT = "Project [";
+
     private final FolderService folderService;
     private final DatasetService datasetService;
     private final List<? extends ProjectLinkedService<?, ?, ?>> projectLinked;
@@ -36,26 +36,12 @@ public class ProjectService extends CrudService<Project, ProjectModel, String> {
     }
 
     public @NotNull Project updateDescription(@NotNull String id, @Nullable String description) {
-        Assert.notNull(id, ID_NOT_NULL_MESSAGE);
-
-        var project = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(PROJECT_TEXT + id + "] not exists!"));
-
-        project.setDescription(description);
-
-        return mapper.toEntity(repository.save(project));
+        return findModifySave(id, project -> project.setDescription(description));
     }
 
     public @NotNull Project updateName(@NotNull String id, @NotNull String name) {
-        Assert.notNull(id, ID_NOT_NULL_MESSAGE);
         Assert.notNull(name, "name must not be null!");
-
-        var project = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(PROJECT_TEXT + id + "] not exists!"));
-
-        project.setName(name);
-
-        return mapper.toEntity(repository.save(project));
+        return findModifySave(id, project -> project.setName(name));
     }
 
     @Override

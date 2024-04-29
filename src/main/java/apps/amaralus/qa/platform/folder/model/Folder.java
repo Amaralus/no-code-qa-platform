@@ -2,12 +2,11 @@ package apps.amaralus.qa.platform.folder.model;
 
 import apps.amaralus.qa.platform.common.model.IdSource;
 import apps.amaralus.qa.platform.dataset.linked.DatasetSource;
-import apps.amaralus.qa.platform.label.model.api.Label;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -15,7 +14,7 @@ public class Folder implements IdSource<Long>, DatasetSource {
     private Long id = 0L;
     private String name;
     private String description;
-    private List<Label> labels = new ArrayList<>();
+    private Set<Long> labels = new HashSet<>();
     private Long parent;
     private long dataset;
     private String project;
