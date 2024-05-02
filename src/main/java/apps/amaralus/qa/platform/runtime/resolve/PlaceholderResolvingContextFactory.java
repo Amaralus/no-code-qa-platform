@@ -4,6 +4,7 @@ import apps.amaralus.qa.platform.dataset.DatasetService;
 import apps.amaralus.qa.platform.dataset.alias.AliasService;
 import apps.amaralus.qa.platform.dataset.alias.model.AliasModel;
 import apps.amaralus.qa.platform.dataset.model.DatasetModel;
+import apps.amaralus.qa.platform.environment.database.EnvironmentModel;
 import apps.amaralus.qa.platform.folder.model.FolderModel;
 import apps.amaralus.qa.platform.project.database.ProjectModel;
 import apps.amaralus.qa.platform.testcase.TestCaseModel;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -35,6 +37,7 @@ public class PlaceholderResolvingContextFactory {
         private final List<DatasetModel> datasets;
         private final List<AliasModel> aliases;
         private DatasetModel projectDataset;
+        private DatasetModel environmentDataset;
         @Getter
         private DatasetModel testCaseDataset;
         private Map<Long, Optional<DatasetModel>> foldersDatasets;
@@ -53,6 +56,7 @@ public class PlaceholderResolvingContextFactory {
             resolvingContext.setAllDatasets(allDatasets);
             resolvingContext.setFoldersDatasets(foldersDatasets);
             resolvingContext.setProjectDataset(projectDataset);
+            resolvingContext.setEnvironmentDataset(environmentDataset);
             resolvingContext.setTestCaseDataset(testCaseDataset);
 
             return resolvingContext;
@@ -64,20 +68,33 @@ public class PlaceholderResolvingContextFactory {
 
             for (var dataset : datasets) {
                 if (dataset.isLinked()) {
-                    var backlink = dataset.getBacklink();
-                    if (backlink.modelCLass() == TestCaseModel.class && (testCaseId == backlink.id())) {
-                        putDataset(dataset);
-                        testCaseDataset = dataset;
-                    } else if (backlink.modelCLass() == ProjectModel.class) {
-                        putDataset(dataset);
-                        projectDataset = dataset;
-                        // todo сделать выявление цепочки папок и сравнение на попадание в нее
-                    } else if (backlink.modelCLass() == FolderModel.class) {
-                        putDataset(dataset);
-                        foldersDatasets.put((Long) backlink.id(), Optional.of(dataset));
-                    }
+                    filterLinkedDataset(dataset, testCaseId);
                 } else
                     putDataset(dataset);
+            }
+        }
+
+        private void filterLinkedDataset(DatasetModel dataset, Long testCaseId) {
+            var backlink = dataset.getBacklink();
+
+            if (backlink.modelCLass() == TestCaseModel.class
+                && Objects.equals(testCaseId, backlink.id())) {
+                putDataset(dataset);
+                testCaseDataset = dataset;
+
+            } else if (backlink.modelCLass() == EnvironmentModel.class
+                       && Objects.equals(testPlan.getEnvironment(), backlink.id())) {
+                putDataset(dataset);
+                environmentDataset = dataset;
+
+            } else if (backlink.modelCLass() == ProjectModel.class) {
+                putDataset(dataset);
+                projectDataset = dataset;
+
+                // todo сделать выявление цепочки папок и сравнение на попадание в нее
+            } else if (backlink.modelCLass() == FolderModel.class) {
+                putDataset(dataset);
+                foldersDatasets.put((Long) backlink.id(), Optional.of(dataset));
             }
         }
 

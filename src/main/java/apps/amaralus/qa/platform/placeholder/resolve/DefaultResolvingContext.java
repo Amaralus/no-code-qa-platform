@@ -5,6 +5,7 @@ import apps.amaralus.qa.platform.dataset.alias.AliasService;
 import apps.amaralus.qa.platform.dataset.alias.model.AliasModel;
 import apps.amaralus.qa.platform.dataset.linked.DatasetSource;
 import apps.amaralus.qa.platform.dataset.model.DatasetModel;
+import apps.amaralus.qa.platform.environment.EnvironmentService;
 import apps.amaralus.qa.platform.folder.FolderService;
 import apps.amaralus.qa.platform.placeholder.DefaultPlaceholderType;
 import apps.amaralus.qa.platform.project.ProjectService;
@@ -27,6 +28,7 @@ public class DefaultResolvingContext implements ResolvingContext {
     private final TestCaseService testCaseService;
     private final ProjectService projectService;
     private final AliasService aliasService;
+    private final EnvironmentService environmentService;
     private ProjectContext projectContext;
 
     @Override
@@ -36,8 +38,9 @@ public class DefaultResolvingContext implements ResolvingContext {
             case DATASET -> findDataset(id);
             case FOLDER -> findLinkedDataset(folderService, id);
             case TESTCASE -> findLinkedDataset(testCaseService, id);
+            case ENVIRONMENT -> findLinkedDataset(environmentService, id);
             // todo доделать после доработки окружения
-            case SERVICE, ENVIRONMENT -> Optional.empty();
+            case SERVICE -> Optional.empty();
             case PROJECT -> projectService.findById(projectContext.getProjectId())
                     .flatMap(model -> findDataset(model.getDataset()));
             default -> Optional.empty();

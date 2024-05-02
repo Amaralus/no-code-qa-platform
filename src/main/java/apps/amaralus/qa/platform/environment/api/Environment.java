@@ -1,4 +1,4 @@
-package apps.amaralus.qa.platform.environment;
+package apps.amaralus.qa.platform.environment.api;
 
 import apps.amaralus.qa.platform.common.model.IdSource;
 import apps.amaralus.qa.platform.dataset.linked.DatasetSource;

@@ -16,6 +16,7 @@ public class RuntimeResolvingContext implements ResolvingContext {
 
     private DatasetModel projectDataset;
     private DatasetModel testCaseDataset;
+    private DatasetModel environmentDataset;
     private Map<Long, Optional<DatasetModel>> foldersDatasets;
     private Map<Long, Optional<DatasetModel>> allDatasets;
     private Map<String, Optional<AliasModel>> aliases;
@@ -28,8 +29,8 @@ public class RuntimeResolvingContext implements ResolvingContext {
             case PROJECT -> Optional.of(projectDataset);
             case FOLDER -> foldersDatasets.getOrDefault(id, Optional.empty());
             case TESTCASE -> Optional.of(testCaseDataset);
+            case ENVIRONMENT -> Optional.of(environmentDataset);
             // todo доделать после доработки окружения
-            case ENVIRONMENT -> Optional.empty();
             case SERVICE -> Optional.empty();
             default -> Optional.empty();
         };

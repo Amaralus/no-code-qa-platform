@@ -1,4 +1,4 @@
-package apps.amaralus.qa.platform.environment.model;
+package apps.amaralus.qa.platform.environment.database;
 
 import apps.amaralus.qa.platform.dataset.linked.DatasetSource;
 import apps.amaralus.qa.platform.project.linked.ProjectLinkedModel;

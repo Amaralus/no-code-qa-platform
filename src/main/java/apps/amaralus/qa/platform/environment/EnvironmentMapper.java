@@ -1,8 +1,8 @@
 package apps.amaralus.qa.platform.environment;
 
-import apps.amaralus.qa.platform.environment.Environment;
-import apps.amaralus.qa.platform.environment.model.EnvironmentModel;
 import apps.amaralus.qa.platform.common.GenericMapper;
+import apps.amaralus.qa.platform.environment.api.Environment;
+import apps.amaralus.qa.platform.environment.database.EnvironmentModel;
 import org.mapstruct.*;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
