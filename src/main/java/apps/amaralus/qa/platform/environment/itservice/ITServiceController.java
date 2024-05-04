@@ -1,6 +1,6 @@
-package apps.amaralus.qa.platform.itservice;
+package apps.amaralus.qa.platform.environment.itservice;
 
-import apps.amaralus.qa.platform.itservice.model.ITService;
+import apps.amaralus.qa.platform.environment.itservice.model.ITService;
 import apps.amaralus.qa.platform.project.context.InterceptProjectId;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
