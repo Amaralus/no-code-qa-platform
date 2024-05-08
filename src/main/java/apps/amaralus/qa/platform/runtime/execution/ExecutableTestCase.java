@@ -3,11 +3,13 @@ package apps.amaralus.qa.platform.runtime.execution;
 import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
 import apps.amaralus.qa.platform.testplan.report.ReportSupplier;
 import apps.amaralus.qa.platform.testplan.report.TestReport;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Predicate;
 
 import static apps.amaralus.qa.platform.runtime.execution.context.TestState.*;
 
@@ -17,6 +19,9 @@ public class ExecutableTestCase extends ExecutableTestSupport implements StageTa
     private ExecutionGraph executionGraph;
     @Setter
     private Runnable taskFinishCallback;
+    @Setter
+    @Getter
+    private Predicate<StageTask> executionCondition = task -> true;
 
     public ExecutableTestCase(TestInfo testInfo) {
         super(testInfo);

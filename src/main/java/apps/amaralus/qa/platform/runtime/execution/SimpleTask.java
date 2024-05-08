@@ -1,15 +1,22 @@
 package apps.amaralus.qa.platform.runtime.execution;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Predicate;
 
 @Slf4j
 public final class SimpleTask implements StageTask {
     private final AtomicBoolean canceled = new AtomicBoolean();
     private final Runnable action;
-    private Runnable callback;
+    @Setter
+    private Runnable taskFinishCallback;
+    @Setter
+    @Getter
+    private Predicate<StageTask> executionCondition = task -> true;
 
     public SimpleTask() {
         this(null);
@@ -25,7 +32,7 @@ public final class SimpleTask implements StageTask {
             return;
         if (action != null)
             action.run();
-        callback.run();
+        taskFinishCallback.run();
     }
 
     @Override
@@ -36,10 +43,5 @@ public final class SimpleTask implements StageTask {
     @Override
     public boolean isCanceled() {
         return canceled.get();
-    }
-
-    @Override
-    public void setTaskFinishCallback(Runnable taskFinishCallback) {
-        callback = taskFinishCallback;
     }
 }

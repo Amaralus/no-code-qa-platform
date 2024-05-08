@@ -25,8 +25,14 @@ public class DefaultStage implements Stage {
 
     @Override
     public void execute() {
-        if (!isCanceled() && (inputStages.isEmpty() || inputCounter.incrementAndGet() == inputsCount()))
+        if (!isCanceled() && (inputStages.isEmpty() || inputCounter.incrementAndGet() == inputsCount())) {
+            if (stageTask.checkExecutionCondition())
                 stageTask.execute();
+            else {
+                cancel();
+                taskFinishCallback();
+            }
+        }
     }
 
     @Override

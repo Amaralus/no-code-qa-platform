@@ -9,12 +9,14 @@ import apps.amaralus.qa.platform.runtime.execution.result.TestFailedException;
 import apps.amaralus.qa.platform.runtime.execution.result.TimeoutResult;
 import apps.amaralus.qa.platform.testplan.report.TestReport;
 import com.google.common.base.Throwables;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 import static apps.amaralus.qa.platform.runtime.execution.context.TestState.*;
 
@@ -30,6 +32,9 @@ public class ExecutableTestStep extends ExecutableTestSupport implements StageTa
     private TimeUnit timeUnit;
     @Setter
     private Runnable taskFinishCallback;
+    @Setter
+    @Getter
+    private Predicate<StageTask> executionCondition = task -> true;
     @Setter
     private Runnable taskFailCallback;
     private CompletableFuture<ExecutionResult> stepTask;
