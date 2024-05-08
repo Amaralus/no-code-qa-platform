@@ -17,4 +17,6 @@ public class ITServiceModel implements ProjectLinkedModel<Long> {
         private String name;
         private String description;
         private String project;
+    private String host;
+    private Integer port;
 }

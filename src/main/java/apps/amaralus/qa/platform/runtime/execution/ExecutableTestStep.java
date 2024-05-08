@@ -59,10 +59,12 @@ public class ExecutableTestStep extends ExecutableTestSupport implements StageTa
     @Override
     public void cancel() {
         super.cancel();
-        if (stepTask != null)
+        if (stepTask != null) {
             // значение true никак не влияет на прерывание потока, всегда работает как false
             stepTask.cancel(false);
-        else {
+            if (stepAction instanceof Cancelable cancelableAction)
+                cancelableAction.cancel();
+        } else {
             timer.stop();
             setState(CANCELED);
         }
