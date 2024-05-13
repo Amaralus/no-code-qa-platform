@@ -13,7 +13,7 @@
 
     <groupId>apps.amaralus</groupId>
     <artifactId>no-code-qa-platform</artifactId>
-    <version>0.0.30</version>
+    <version>0.0.31</version>
     <packaging>jar</packaging>
 
     <licenses>
@@ -53,6 +53,7 @@
         <jib.version>3.4.0</jib.version>
         <frontend.maven.plugin.version>1.14.0</frontend.maven.plugin.version>
         <nodejs.version>v18.18.2</nodejs.version>
+        <spring-docs.version>2.5.0</spring-docs.version>
     </properties>
 
     <dependencies>
@@ -88,6 +89,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${spring-docs.version}</version>
         </dependency>
 
         <dependency>
