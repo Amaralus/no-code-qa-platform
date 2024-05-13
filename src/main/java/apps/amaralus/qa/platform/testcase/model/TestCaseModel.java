@@ -4,7 +4,6 @@ import apps.amaralus.qa.platform.dataset.linked.DatasetSource;
 import apps.amaralus.qa.platform.label.linked.LabelLinkedModel;
 import apps.amaralus.qa.platform.project.linked.ProjectLinkedModel;
 import apps.amaralus.qa.platform.rocksdb.sequence.GeneratedSequence;
-import apps.amaralus.qa.platform.runtime.execution.ExecutionProperties;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.keyvalue.annotation.KeySpace;
@@ -25,7 +24,7 @@ public class TestCaseModel implements ProjectLinkedModel<Long>, DatasetSource, L
     private TestCaseStatus status;
     private Set<Long> labels = new HashSet<>();
     private List<TestStep> testSteps = new ArrayList<>();
-    private ExecutionProperties executionProperties;
+    private TestCaseExecutionProperties executionProperties;
 
     private long folder;
     private long dataset;

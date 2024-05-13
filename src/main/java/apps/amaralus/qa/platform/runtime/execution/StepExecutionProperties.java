@@ -1,18 +1,30 @@
 package apps.amaralus.qa.platform.runtime.execution;
 
 import apps.amaralus.qa.platform.runtime.action.ActionType;
+import apps.amaralus.qa.platform.runtime.execution.properties.TaskExecutionProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.util.Assert;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import static apps.amaralus.qa.platform.runtime.action.ActionType.REST;
 
 @Data
 @NoArgsConstructor
-public class StepExecutionProperties {
+public class StepExecutionProperties implements TaskExecutionProperties {
+
+    private static final String TASK_ID_IS_NULL_MESSAGE = "taskId must not be null!";
+
     private long executionAction;
     private ActionType actionType = ActionType.NONE;
     private long timeout = 10L;
     private TimeUnit timeUnit = TimeUnit.SECONDS;
+    private Set<Long> executeAfterTasks = new HashSet<>();
+    private Set<Long> dependsFromTasks = new HashSet<>();
 
     public StepExecutionProperties(long executionAction) {
         this.executionAction = executionAction;
@@ -34,5 +46,34 @@ public class StepExecutionProperties {
         this.actionType = actionType;
         this.timeout = timeout;
         this.timeUnit = timeUnit;
+    }
+
+    @Override
+    public void addExecuteAfter(@NotNull Long taskId) {
+        Assert.notNull(taskId, TASK_ID_IS_NULL_MESSAGE);
+        executeAfterTasks.add(taskId);
+    }
+
+    @Override
+    public void removeExecuteAfter(@NotNull Long taskId) {
+        Assert.notNull(taskId, TASK_ID_IS_NULL_MESSAGE);
+        executeAfterTasks.remove(taskId);
+    }
+
+    @Override
+    public void addDependsFrom(@NotNull Long taskId) {
+        Assert.notNull(taskId, TASK_ID_IS_NULL_MESSAGE);
+        dependsFromTasks.add(taskId);
+    }
+
+    @Override
+    public void removeDependsFrom(@NotNull Long taskId) {
+        Assert.notNull(taskId, TASK_ID_IS_NULL_MESSAGE);
+        dependsFromTasks.remove(taskId);
+    }
+
+    @Override
+    public boolean initialStepRequired() {
+        return actionType == REST;
     }
 }

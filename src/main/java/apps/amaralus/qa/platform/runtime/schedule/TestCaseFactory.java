@@ -30,7 +30,7 @@ public class TestCaseFactory {
 
         var executableTestCase = new ExecutableTestCase(
                 new TestInfo(testCase.getId(), testCase.getName(), projectContext.getProjectId()));
-        var graph = getScheduler(testCase.getExecutionProperties().parallelExecution())
+        var graph = getScheduler(testCase.getExecutionProperties().isParallelExecution())
                 .schedule(testSteps, new SimpleTask(), new SimpleTask(executableTestCase::executionGraphFinishedCallback));
         executableTestCase.setExecutionGraph(graph);
 

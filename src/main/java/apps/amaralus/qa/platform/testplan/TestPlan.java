@@ -1,7 +1,6 @@
 package apps.amaralus.qa.platform.testplan;
 
 import apps.amaralus.qa.platform.common.model.IdSource;
-import apps.amaralus.qa.platform.runtime.execution.ExecutionProperties;
 import lombok.Data;
 
 import static apps.amaralus.qa.platform.testplan.AutomationDegree.AUTO;
@@ -12,5 +11,5 @@ public class TestPlan implements IdSource<Long> {
     private String name;
     private long environment;
     private AutomationDegree automationDegree = AUTO;
-    private ExecutionProperties executionProperties;
+    private TestPlanExecutionProperties executionProperties;
 }

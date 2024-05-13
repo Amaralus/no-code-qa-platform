@@ -76,7 +76,7 @@ public class TestPlanFactory {
         var executableTestPlan = new ExecutableTestPlan(
                 new TestInfo(testPlan.getId(), testPlan.getName(), projectContext.getProjectId()));
 
-        var executionGraph = getScheduler(testPlan.getExecutionProperties().parallelExecution())
+        var executionGraph = getScheduler(testPlan.getExecutionProperties().isParallelExecution())
                 .schedule(testCases, new SimpleTask(), new SimpleTask(executableTestPlan::executionGraphFinishedCallback));
         executableTestPlan.setExecutionGraph(executionGraph);
 

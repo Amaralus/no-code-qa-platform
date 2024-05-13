@@ -2,7 +2,7 @@ package apps.amaralus.qa.platform.testplan;
 
 import apps.amaralus.qa.platform.project.linked.ProjectLinkedModel;
 import apps.amaralus.qa.platform.rocksdb.sequence.GeneratedSequence;
-import apps.amaralus.qa.platform.runtime.execution.ExecutionProperties;
+import apps.amaralus.qa.platform.runtime.execution.properties.GraphExecutionProperties;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.keyvalue.annotation.KeySpace;
@@ -16,5 +16,5 @@ public class TestPlanModel implements ProjectLinkedModel<Long> {
     private String name;
     private String project;
     private long environment;
-    private ExecutionProperties executionProperties;
+    private GraphExecutionProperties executionProperties;
 }
