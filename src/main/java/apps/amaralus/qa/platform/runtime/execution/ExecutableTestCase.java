@@ -1,6 +1,7 @@
 package apps.amaralus.qa.platform.runtime.execution;
 
 import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
+import apps.amaralus.qa.platform.runtime.execution.properties.TestCaseExecutionProperties;
 import apps.amaralus.qa.platform.testplan.report.ReportSupplier;
 import apps.amaralus.qa.platform.testplan.report.TestReport;
 import lombok.Getter;
@@ -16,15 +17,18 @@ import static apps.amaralus.qa.platform.runtime.execution.context.TestState.*;
 @Slf4j
 public class ExecutableTestCase extends ExecutableTestSupport implements StageTask, ExecutionGraphDelegate {
     private final AtomicBoolean failed = new AtomicBoolean();
+    @Getter
+    private final TestCaseExecutionProperties executionProperties;
     private ExecutionGraph executionGraph;
     @Setter
     private Runnable taskFinishCallback;
     @Setter
     @Getter
-    private Predicate<StageTask> executionCondition = task -> true;
+    private Predicate<StageTask> executionCondition = DEFAULT_CONDITION;
 
-    public ExecutableTestCase(TestInfo testInfo) {
+    public ExecutableTestCase(TestInfo testInfo, TestCaseExecutionProperties executionProperties) {
         super(testInfo);
+        this.executionProperties = executionProperties;
     }
 
     @Override

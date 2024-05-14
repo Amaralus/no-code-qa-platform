@@ -1,7 +1,5 @@
-package apps.amaralus.qa.platform.testcase.model;
+package apps.amaralus.qa.platform.runtime.execution.properties;
 
-import apps.amaralus.qa.platform.runtime.execution.properties.GraphExecutionProperties;
-import apps.amaralus.qa.platform.runtime.execution.properties.TaskExecutionProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,8 +13,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TestCaseExecutionProperties implements GraphExecutionProperties, TaskExecutionProperties {
-
-    private static final String TASK_ID_IS_NULL_MESSAGE = "taskId must not be null!";
 
     private boolean parallelExecution;
     private boolean failFast;

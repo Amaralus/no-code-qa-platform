@@ -6,6 +6,8 @@ import java.util.Set;
 
 public interface TaskExecutionProperties {
 
+    String TASK_ID_IS_NULL_MESSAGE = "taskId must not be null!";
+
     @NotNull Set<Long> getExecuteAfterTasks();
 
     @NotNull Set<Long> getDependsFromTasks();

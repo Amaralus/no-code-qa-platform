@@ -1,8 +1,8 @@
 package apps.amaralus.qa.platform.runtime.action;
 
 import apps.amaralus.qa.platform.common.exception.EntityNotFoundException;
-import apps.amaralus.qa.platform.runtime.execution.StepExecutionProperties;
 import apps.amaralus.qa.platform.runtime.execution.context.TestContext;
+import apps.amaralus.qa.platform.runtime.execution.properties.StepExecutionProperties;
 import apps.amaralus.qa.platform.testcase.action.debug.DebugActionModel;
 import apps.amaralus.qa.platform.testcase.action.debug.DebugActionRepository;
 import lombok.RequiredArgsConstructor;

@@ -12,17 +12,17 @@ import apps.amaralus.qa.platform.project.ProjectService;
 import apps.amaralus.qa.platform.project.api.Project;
 import apps.amaralus.qa.platform.project.context.ProjectContext;
 import apps.amaralus.qa.platform.runtime.action.ActionType;
-import apps.amaralus.qa.platform.runtime.execution.StepExecutionProperties;
+import apps.amaralus.qa.platform.runtime.execution.properties.StepExecutionProperties;
+import apps.amaralus.qa.platform.runtime.execution.properties.TestCaseExecutionProperties;
+import apps.amaralus.qa.platform.runtime.execution.properties.TestPlanExecutionProperties;
 import apps.amaralus.qa.platform.testcase.TestCaseRepository;
 import apps.amaralus.qa.platform.testcase.action.asserts.AssertActionModel;
 import apps.amaralus.qa.platform.testcase.action.asserts.AssertActionRepository;
 import apps.amaralus.qa.platform.testcase.action.debug.DebugActionModel;
 import apps.amaralus.qa.platform.testcase.action.debug.DebugActionRepository;
-import apps.amaralus.qa.platform.testcase.model.TestCaseExecutionProperties;
 import apps.amaralus.qa.platform.testcase.model.TestCaseModel;
 import apps.amaralus.qa.platform.testcase.model.TestStep;
 import apps.amaralus.qa.platform.testplan.TestPlan;
-import apps.amaralus.qa.platform.testplan.TestPlanExecutionProperties;
 import apps.amaralus.qa.platform.testplan.TestPlanService;
 import apps.amaralus.qa.platform.testplan.report.TestReportService;
 import lombok.extern.slf4j.Slf4j;
@@ -242,6 +242,7 @@ class FunctionalManualTest {
 
     TestStep createTestStep(int iteration, String debugMessage) {
         var step = new TestStep();
+        step.setOrdinalNumber((long) iteration);
         step.setName("step" + iteration);
         step.setStepExecutionProperties(new StepExecutionProperties(iteration, ActionType.DEBUG));
 

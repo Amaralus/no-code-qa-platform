@@ -2,8 +2,8 @@ package apps.amaralus.qa.platform.testplan.report.api;
 
 import apps.amaralus.qa.platform.project.context.InterceptProjectId;
 import apps.amaralus.qa.platform.project.context.ProjectContextLinked;
-import apps.amaralus.qa.platform.testplan.report.model.TestReportModel;
 import apps.amaralus.qa.platform.testplan.report.TestReportService;
+import apps.amaralus.qa.platform.testplan.report.model.TestReportModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

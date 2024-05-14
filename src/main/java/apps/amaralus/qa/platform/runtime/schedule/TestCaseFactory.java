@@ -29,7 +29,8 @@ public class TestCaseFactory {
             testSteps.add(produce(testCase.getTestSteps().get(i), i));
 
         var executableTestCase = new ExecutableTestCase(
-                new TestInfo(testCase.getId(), testCase.getName(), projectContext.getProjectId()));
+                new TestInfo(testCase.getId(), testCase.getName(), projectContext.getProjectId()),
+                testCase.getExecutionProperties());
         var graph = getScheduler(testCase.getExecutionProperties().isParallelExecution())
                 .schedule(testSteps, new SimpleTask(), new SimpleTask(executableTestCase::executionGraphFinishedCallback));
         executableTestCase.setExecutionGraph(graph);
@@ -41,11 +42,10 @@ public class TestCaseFactory {
         var executionProperties = testStep.getStepExecutionProperties();
         var stepAction = runtimeActionFactory.produceAction(executionProperties);
 
-        var executableTestStep = new ExecutableTestStep(
-                new TestInfo(orderNumber, testStep.getName(), projectContext.getProjectId()), stepAction);
-        executableTestStep.timeout(executionProperties.getTimeout(), executionProperties.getTimeUnit());
-
-        return executableTestStep;
+        return new ExecutableTestStep(
+                new TestInfo(orderNumber, testStep.getName(), projectContext.getProjectId()),
+                testStep.getStepExecutionProperties(),
+                stepAction);
     }
 
     private ExecutionScheduler getScheduler(boolean isParallel) {

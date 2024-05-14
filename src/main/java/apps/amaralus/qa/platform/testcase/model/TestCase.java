@@ -2,6 +2,7 @@ package apps.amaralus.qa.platform.testcase.model;
 
 import apps.amaralus.qa.platform.common.model.IdSource;
 import apps.amaralus.qa.platform.dataset.linked.DatasetSource;
+import apps.amaralus.qa.platform.runtime.execution.properties.TestCaseExecutionProperties;
 import lombok.Data;
 
 import java.util.ArrayList;

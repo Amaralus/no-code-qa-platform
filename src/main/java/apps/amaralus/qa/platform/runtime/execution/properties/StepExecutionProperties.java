@@ -1,7 +1,6 @@
-package apps.amaralus.qa.platform.runtime.execution;
+package apps.amaralus.qa.platform.runtime.execution.properties;
 
 import apps.amaralus.qa.platform.runtime.action.ActionType;
-import apps.amaralus.qa.platform.runtime.execution.properties.TaskExecutionProperties;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -16,8 +15,6 @@ import static apps.amaralus.qa.platform.runtime.action.ActionType.REST;
 @Data
 @NoArgsConstructor
 public class StepExecutionProperties implements TaskExecutionProperties {
-
-    private static final String TASK_ID_IS_NULL_MESSAGE = "taskId must not be null!";
 
     private long executionAction;
     private ActionType actionType = ActionType.NONE;

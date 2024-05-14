@@ -1,6 +1,5 @@
-package apps.amaralus.qa.platform.testplan;
+package apps.amaralus.qa.platform.runtime.execution.properties;
 
-import apps.amaralus.qa.platform.runtime.execution.properties.GraphExecutionProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

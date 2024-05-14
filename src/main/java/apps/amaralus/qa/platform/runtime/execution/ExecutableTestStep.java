@@ -3,6 +3,7 @@ package apps.amaralus.qa.platform.runtime.execution;
 import apps.amaralus.qa.platform.runtime.action.StepAction;
 import apps.amaralus.qa.platform.runtime.execution.context.TestContext;
 import apps.amaralus.qa.platform.runtime.execution.context.TestInfo;
+import apps.amaralus.qa.platform.runtime.execution.properties.StepExecutionProperties;
 import apps.amaralus.qa.platform.runtime.execution.result.ErrorResult;
 import apps.amaralus.qa.platform.runtime.execution.result.ExecutionResult;
 import apps.amaralus.qa.platform.runtime.execution.result.TestFailedException;
@@ -15,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import static apps.amaralus.qa.platform.runtime.execution.context.TestState.*;
@@ -24,23 +24,24 @@ import static apps.amaralus.qa.platform.runtime.execution.context.TestState.*;
 public class ExecutableTestStep extends ExecutableTestSupport implements StageTask, RuntimeExecutorAware {
 
     private final StepAction stepAction;
+    @Getter
+    private final StepExecutionProperties executionProperties;
     @Setter
     private TestContext testContext;
     @Setter
     private RuntimeExecutor runtimeExecutor;
-    private long timeout;
-    private TimeUnit timeUnit;
     @Setter
     private Runnable taskFinishCallback;
     @Setter
     @Getter
-    private Predicate<StageTask> executionCondition = task -> true;
+    private Predicate<StageTask> executionCondition = DEFAULT_CONDITION;
     @Setter
     private Runnable taskFailCallback;
     private CompletableFuture<ExecutionResult> stepTask;
 
-    public ExecutableTestStep(TestInfo testInfo, StepAction stepAction) {
+    public ExecutableTestStep(TestInfo testInfo, StepExecutionProperties executionProperties, StepAction stepAction) {
         super(testInfo);
+        this.executionProperties = executionProperties;
         this.stepAction = stepAction;
     }
 
@@ -54,7 +55,7 @@ public class ExecutableTestStep extends ExecutableTestSupport implements StageTa
         timer.start();
 
         stepTask = runtimeExecutor.supplyAsync(this::executeAction);
-        var handleTask = stepTask.completeOnTimeout(timeoutResult(), timeout, timeUnit)
+        var handleTask = stepTask.completeOnTimeout(timeoutResult(), executionProperties.getTimeout(), executionProperties.getTimeUnit())
                 .exceptionally(this::handleException)
                 .thenAccept(this::handleResult);
 
@@ -124,12 +125,7 @@ public class ExecutableTestStep extends ExecutableTestSupport implements StageTa
     }
 
     private TimeoutResult timeoutResult() {
-        return new TimeoutResult(timeout, timeUnit);
-    }
-
-    public void timeout(long timeout, TimeUnit timeUnit) {
-        this.timeout = timeout;
-        this.timeUnit = timeUnit;
+        return new TimeoutResult(executionProperties.getTimeout(), executionProperties.getTimeUnit());
     }
 
     @Override

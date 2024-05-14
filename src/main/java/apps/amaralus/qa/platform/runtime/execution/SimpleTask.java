@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.runtime.execution;
 
+import apps.amaralus.qa.platform.runtime.execution.properties.TaskExecutionProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,10 @@ public final class SimpleTask implements StageTask {
     private Runnable taskFinishCallback;
     @Setter
     @Getter
-    private Predicate<StageTask> executionCondition = task -> true;
+    private Predicate<StageTask> executionCondition = DEFAULT_CONDITION;
+    @Setter
+    @Getter
+    private TaskExecutionProperties executionProperties;
 
     public SimpleTask() {
         this(null);

@@ -1,6 +1,7 @@
 package apps.amaralus.qa.platform.testplan;
 
 import apps.amaralus.qa.platform.common.model.IdSource;
+import apps.amaralus.qa.platform.runtime.execution.properties.TestPlanExecutionProperties;
 import lombok.Data;
 
 import static apps.amaralus.qa.platform.testplan.AutomationDegree.AUTO;
