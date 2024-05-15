@@ -134,4 +134,9 @@ public class ExecutableTestStep extends ExecutableTestSupport implements StageTa
         report.setDeep(2);
         return report;
     }
+
+    @Override
+    public Long getTaskId() {
+        return testInfo.id();
+    }
 }

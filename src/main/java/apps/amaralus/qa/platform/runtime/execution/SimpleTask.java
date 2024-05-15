@@ -21,6 +21,9 @@ public final class SimpleTask implements StageTask {
     @Setter
     @Getter
     private TaskExecutionProperties executionProperties;
+    @Getter
+    @Setter
+    private Long taskId = 0L;
 
     public SimpleTask() {
         this(null);

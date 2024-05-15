@@ -5,17 +5,16 @@ import apps.amaralus.qa.platform.label.model.LabelModel;
 import apps.amaralus.qa.platform.label.model.api.Label;
 import apps.amaralus.qa.platform.project.linked.ProjectLinkedService;
 import apps.amaralus.qa.platform.testcase.TestCaseService;
-import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 @Service
-@RequiredArgsConstructor
 public class LabelService extends ProjectLinkedService<Label, LabelModel, Long> {
 
-    private final TestCaseService testCaseService;
-    private final FolderService folderService;
+    private FolderService folderService;
+    private TestCaseService testCaseService;
 
     public void linkTestCase(@NotNull Long id, @NotNull Long testCase) {
         Assert.notNull(testCase, "testCase must not be null!");
@@ -44,5 +43,15 @@ public class LabelService extends ProjectLinkedService<Label, LabelModel, Long> 
             label.getLinkedFolders().forEach(folder -> folderService.removeLabel(folder, id));
         });
         super.delete(id);
+    }
+
+    @Autowired
+    public void setTestCaseService(TestCaseService testCaseService) {
+        this.testCaseService = testCaseService;
+    }
+
+    @Autowired
+    public void setFolderService(FolderService folderService) {
+        this.folderService = folderService;
     }
 }

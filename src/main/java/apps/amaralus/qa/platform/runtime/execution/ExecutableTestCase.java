@@ -95,4 +95,9 @@ public class ExecutableTestCase extends ExecutableTestSupport implements StageTa
         report.setDeep(1);
         return report;
     }
+
+    @Override
+    public Long getTaskId() {
+        return testInfo.id();
+    }
 }

@@ -25,8 +25,8 @@ public class TestCaseFactory {
     public ExecutableTestCase produce(TestCase testCase) {
 
         var testSteps = new ArrayList<ExecutableTestStep>();
-        for (int i = 0; i < testCase.getTestSteps().size(); i++)
-            testSteps.add(produce(testCase.getTestSteps().get(i), i));
+        for (var testStep : testCase.getTestSteps())
+            testSteps.add(produce(testStep));
 
         var executableTestCase = new ExecutableTestCase(
                 new TestInfo(testCase.getId(), testCase.getName(), projectContext.getProjectId()),
@@ -38,12 +38,12 @@ public class TestCaseFactory {
         return executableTestCase;
     }
 
-    private ExecutableTestStep produce(TestStep testStep, int orderNumber) {
+    private ExecutableTestStep produce(TestStep testStep) {
         var executionProperties = testStep.getStepExecutionProperties();
         var stepAction = runtimeActionFactory.produceAction(executionProperties);
 
         return new ExecutableTestStep(
-                new TestInfo(orderNumber, testStep.getName(), projectContext.getProjectId()),
+                new TestInfo(testStep.getOrdinalNumber(), testStep.getName(), projectContext.getProjectId()),
                 testStep.getStepExecutionProperties(),
                 stepAction);
     }

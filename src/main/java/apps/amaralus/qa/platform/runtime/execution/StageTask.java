@@ -19,4 +19,6 @@ public interface StageTask extends Executable, Cancelable {
     }
 
     TaskExecutionProperties getExecutionProperties();
+
+    Long getTaskId();
 }

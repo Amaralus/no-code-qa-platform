@@ -137,8 +137,8 @@ class FunctionalManualTest {
     void runtime() throws InterruptedException {
         projectContext.setProjectId("myProject");
 
-        createTestCase(false, "TestCase1", 0L, 4, null);
-        createTestCase(false, "TestCase2", 0L, 4, null);
+//        createTestCase(true, "TestCase1", 0L, 4, null);
+        createTestCase(true, "TestCase2", 0L, 4, null);
 
         var testPlan = new TestPlan();
         testPlan.setName("My test plan");
@@ -148,7 +148,7 @@ class FunctionalManualTest {
         executionManager.run(testPlan.getId());
 //        Thread.sleep(4000);
 //        executionManager.stop(testPlan.getId());
-        Thread.sleep(2000);
+        Thread.sleep(5000);
         System.out.println(testReportService.findAllModels());
         testReportService.deleteAllByProject();
 
@@ -245,6 +245,11 @@ class FunctionalManualTest {
         step.setOrdinalNumber((long) iteration);
         step.setName("step" + iteration);
         step.setStepExecutionProperties(new StepExecutionProperties(iteration, ActionType.DEBUG));
+
+        if (iteration == 3)
+            step.getStepExecutionProperties().addExecuteAfter(2L);
+        if (iteration == 4)
+            step.getStepExecutionProperties().addDependsFrom(1L);
 
         debugMessage = debugMessage == null ? step.getName() + " executed" : debugMessage;
         debugActionRepository.save(new DebugActionModel((long) iteration, "myProject", debugMessage));

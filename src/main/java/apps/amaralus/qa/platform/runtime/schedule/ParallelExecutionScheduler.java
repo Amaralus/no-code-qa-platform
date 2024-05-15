@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class ParallelExecutionScheduler extends AbstractExecutionScheduler {
@@ -21,9 +23,20 @@ public class ParallelExecutionScheduler extends AbstractExecutionScheduler {
         var initialStage = new DefaultStage(initialTask);
         var finalStage = new DefaultStage(finalTask);
 
-        var stages = tasks.stream()
+        var stagesMap = tasks.stream()
                 .map(DefaultStage::new)
-                .<LinkedList<Stage>>collect(LinkedList::new, List::add, List::addAll);
+                .collect(Collectors.toMap(
+                        stage -> stage.getStageTask().getTaskId(),
+                        Function.identity()
+                ));
+
+        stagesMap.forEach((id, stage) -> {
+            var taskProperties = stage.getStageTask().getExecutionProperties();
+            taskProperties.getExecuteAfterTasks().forEach(previousStage -> Stage.link(stagesMap.get(previousStage), stage));
+            taskProperties.getDependsFromTasks().forEach(previousStage -> Stage.link(stagesMap.get(previousStage), stage));
+        });
+
+        var stages = new LinkedList<>(stagesMap.values());
 
         linkInputs(stages, initialStage);
         linkOutputs(stages, finalStage);
