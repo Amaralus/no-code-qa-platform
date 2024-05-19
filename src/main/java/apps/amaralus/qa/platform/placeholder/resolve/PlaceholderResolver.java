@@ -3,6 +3,7 @@ package apps.amaralus.qa.platform.placeholder.resolve;
 import apps.amaralus.qa.platform.dataset.model.DatasetModel;
 import apps.amaralus.qa.platform.placeholder.DefaultPlaceholderType;
 import apps.amaralus.qa.platform.placeholder.Placeholder;
+import apps.amaralus.qa.platform.placeholder.accessor.DataAccessorProvider;
 import apps.amaralus.qa.platform.placeholder.generate.GeneratedPlaceholderType;
 import apps.amaralus.qa.platform.placeholder.generate.PlaceholderGeneratorsProvider;
 import lombok.EqualsAndHashCode;
@@ -19,6 +20,7 @@ public class PlaceholderResolver {
 
     private final ResolvingContext resolvingContext;
     private final PlaceholderGeneratorsProvider generatorsProvider;
+    private final DataAccessorProvider dataAccessorProvider;
 
     public Object resolve(Placeholder placeholder) {
         return new RecursiveStackResolver().resolve(placeholder);
@@ -43,7 +45,9 @@ public class PlaceholderResolver {
             else
                 stack.push(datasetVariable);
 
-            var value = dataset.map(model -> model.getVariable(datasetVariable.variable)).orElse(null);
+            var value = dataset.map(model -> model.getVariable(datasetVariable.variable))
+                    .map(v -> dataAccessorProvider.getVariableByPath(datasetVariable.pathToNestedVariable, v))
+                    .orElse(null);
 
             if (value instanceof String text)
                 value = resolve(text);
@@ -92,9 +96,16 @@ public class PlaceholderResolver {
     public static class DatasetVariable {
         Long datasetId;
         String variable;
+        String pathToNestedVariable;
 
         public DatasetVariable(String variable) {
-            this.variable = variable;
+            if (variable.contains(".")) {
+                this.variable = variable.substring(0, variable.indexOf("."));
+                this.pathToNestedVariable = variable.substring(variable.indexOf(".") + 1);
+            } else {
+                this.variable = variable;
+                this.pathToNestedVariable = null;
+            }
         }
     }
 }

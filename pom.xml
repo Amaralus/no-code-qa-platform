@@ -13,7 +13,7 @@
 
     <groupId>apps.amaralus</groupId>
     <artifactId>no-code-qa-platform</artifactId>
-    <version>0.0.31</version>
+    <version>0.0.32</version>
     <packaging>jar</packaging>
 
     <licenses>
@@ -92,7 +92,11 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${spring-docs.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>2.9.0</version>
+        </dependency>
         <dependency>
             <groupId>org.rocksdb</groupId>
             <artifactId>rocksdbjni</artifactId>

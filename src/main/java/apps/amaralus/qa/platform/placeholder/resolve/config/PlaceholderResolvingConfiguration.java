@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.placeholder.resolve.config;
 
+import apps.amaralus.qa.platform.placeholder.accessor.DataAccessorProvider;
 import apps.amaralus.qa.platform.placeholder.generate.PlaceholderGeneratorsProvider;
 import apps.amaralus.qa.platform.placeholder.resolve.PlaceholderResolver;
 import apps.amaralus.qa.platform.placeholder.resolve.ResolvingContext;
@@ -11,7 +12,8 @@ public class PlaceholderResolvingConfiguration {
 
     @Bean
     public PlaceholderResolver defaultPlaceholderResolver(ResolvingContext resolvingContext,
-                                                          PlaceholderGeneratorsProvider placeholderGeneratorsProvider) {
-        return new PlaceholderResolver(resolvingContext, placeholderGeneratorsProvider);
+                                                          PlaceholderGeneratorsProvider placeholderGeneratorsProvider,
+                                                          DataAccessorProvider dataAccessorProvider) {
+        return new PlaceholderResolver(resolvingContext, placeholderGeneratorsProvider, dataAccessorProvider);
     }
 }

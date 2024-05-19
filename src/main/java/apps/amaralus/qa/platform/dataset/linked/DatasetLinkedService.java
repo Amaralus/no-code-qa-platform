@@ -23,6 +23,7 @@ public abstract class DatasetLinkedService<
         var dataset = datasetService.create(
                 new Dataset(createDatasetName(model.getId()), null, true, new Backlink<>(modelClass, model.getId())));
         model.setDataset(dataset.getId());
+        repository.save(model);
     }
 
     private String createDatasetName(I id) {

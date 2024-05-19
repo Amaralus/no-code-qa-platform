@@ -9,10 +9,11 @@ public class Placeholder {
 
     public static final Pattern BRACES_PATTERN = Pattern.compile("\\{\\{(.*?)}}");
     public static final Pattern LOCATION_PATTERN = Pattern.compile("([a-zA-Z0-9-_]+)");
+    public static final Pattern VARIABLE_PATTERN = Pattern.compile("([a-zA-Z0-9-_.\\[\\]]+)");
     public static final Pattern LOCATION_VARIABLE_PATTERN =
             Pattern.compile(LOCATION_PATTERN + ":" + LOCATION_PATTERN);
     public static final Pattern FULL_PATH_PATTERN =
-            Pattern.compile(LOCATION_PATTERN + "#(\\d+):" + LOCATION_PATTERN);
+            Pattern.compile(LOCATION_PATTERN + "#(\\d+):" + VARIABLE_PATTERN);
 
     private final String path;
     private final String location;
