@@ -2,7 +2,9 @@ package apps.amaralus.qa.platform.runtime;
 
 import apps.amaralus.qa.platform.dataset.DatasetService;
 import apps.amaralus.qa.platform.dataset.alias.AliasService;
+import apps.amaralus.qa.platform.dataset.model.api.Dataset;
 import apps.amaralus.qa.platform.folder.FolderService;
+import apps.amaralus.qa.platform.folder.model.Folder;
 import apps.amaralus.qa.platform.placeholder.Placeholder;
 import apps.amaralus.qa.platform.placeholder.resolve.PlaceholderResolver;
 import apps.amaralus.qa.platform.project.ProjectService;
@@ -71,6 +73,7 @@ class FunctionalManualTest {
     TestReportService testReportService;
 
     Project project;
+    Dataset dataset;
 
     @BeforeEach
     void before() {
@@ -113,6 +116,92 @@ class FunctionalManualTest {
         // act
         var resolve = placeholderResolver
                 .resolve(Placeholder.parse("{{folder#18:var}}"));
+        log.info("resolved: {}", resolve);
+
+        projectService.delete("myProject");
+        assertTrue(true);
+    }
+
+    @Test
+    void jsonBasePlaceholders() {
+        projectContext.setProjectId("myProject");
+        Folder folder = folderService.findById(project.getRootFolder()).get();
+
+        datasetService.setVariable(folder.getDataset(), "var", """
+                {
+                    "some1" : "Hi",
+                    "some2" : [
+                        {
+                            "hello" : "world"
+                        },
+                        {
+                            "hello" : "world1"
+                        }
+                    ],
+                    "some3" : ["1", "2", "3"]
+                }
+                """);
+        log.info("project {}", project);
+
+        // act
+        var resolve = placeholderResolver
+                .resolve(Placeholder.parse("{{folder#14:var.some1}}"));
+        log.info("resolved: {}", resolve);
+
+        projectService.delete("myProject");
+        assertTrue(true);
+    }
+
+    @Test
+    void jsonComplexArrayPlaceholders() {
+        projectContext.setProjectId("myProject");
+        datasetService.setVariable(folderService.findById(project.getRootFolder()).get().getDataset(), "var", """
+                {
+                    "some1" : "Hi",
+                    "some2" : [
+                        {
+                            "hello" : "world"
+                        },
+                        {
+                            "hello" : "world1"
+                        }
+                    ],
+                    "some3" : ["1", "2", "3"]
+                }
+                """);
+        log.info("project {}", project);
+
+        // act
+        var resolve = placeholderResolver
+                .resolve(Placeholder.parse("{{folder#17:var.some2[1].hello}}"));
+        log.info("resolved: {}", resolve);
+
+        projectService.delete("myProject");
+        assertTrue(true);
+    }
+
+    @Test
+    void jsonBaseArrayPlaceholders() {
+        projectContext.setProjectId("myProject");
+        datasetService.setVariable(folderService.findById(project.getRootFolder()).get().getDataset(), "var", """
+                {
+                    "some1" : "Hi",
+                    "some2" : [
+                        {
+                            "hello" : "world"
+                        },
+                        {
+                            "hello" : "world1"
+                        }
+                    ],
+                    "some3" : ["1", "2", "3"]
+                }
+                """);
+        log.info("project {}", project);
+
+        // act
+        var resolve = placeholderResolver
+                .resolve(Placeholder.parse("{{folder#18:var.some3}}"));
         log.info("resolved: {}", resolve);
 
         projectService.delete("myProject");

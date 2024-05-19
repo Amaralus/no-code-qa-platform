@@ -1,5 +1,6 @@
 package apps.amaralus.qa.platform.runtime.schedule;
 
+import apps.amaralus.qa.platform.placeholder.accessor.DataAccessorProvider;
 import apps.amaralus.qa.platform.placeholder.generate.PlaceholderGeneratorsProvider;
 import apps.amaralus.qa.platform.placeholder.resolve.PlaceholderResolver;
 import apps.amaralus.qa.platform.project.context.ProjectContext;
@@ -31,6 +32,7 @@ public class TestPlanFactory {
     private final ExecutionScheduler parallelExecutionScheduler;
     private final PlaceholderResolvingContextFactory resolvingContextFactory;
     private final PlaceholderGeneratorsProvider placeholderGeneratorsProvider;
+    private final DataAccessorProvider dataAccessorProvider;
     private final TestCaseService testCaseService;
     private final TestCaseFactory testCaseFactory;
     private final ProjectContext projectContext;
@@ -92,7 +94,7 @@ public class TestPlanFactory {
                                 testPlan.getTestInfo(),
                                 testCase.getTestInfo(),
                                 testStep.getTestInfo(),
-                                new PlaceholderResolver(resolvingContext, placeholderGeneratorsProvider),
+                                new PlaceholderResolver(resolvingContext, placeholderGeneratorsProvider, dataAccessorProvider),
                                 contextFactory.getTestCaseDataset()
                         ));
         }
