@@ -1,0 +1,58 @@
+version: '3.7'
+
+services:
+
+  no-code-qa-platform:
+    image: 'amaralus/qa-platform:0.0.31'
+    container_name: qa-platform
+    volumes:
+      - ./data/qa-platform:/rocksdb
+    ports:
+      - "8080:8090"
+
+  camel-demo:
+    image: 'amaralus/camel-demo:0.0.1'
+    container_name: camel-demo
+    ports:
+      - "8080:8091"
+
+  kafka:
+    image: bitnami/kafka:3.1.2
+    container_name: kafka
+    ports:
+      - "9094:9094"
+    networks:
+      - app-tier
+    environment:
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka:9093
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    volumes:
+      - ./data/kafka:/bitnami
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.1
+    container_name: kafka-ui
+    ports:
+      - "8080:8092"
+    networks:
+      - app-tier
+    environment:
+      - KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS=kafka:9092
+      - KAFKA_CLUSTERS_0_NAME=kafka-local
+
+  postrges:
+    image: postgres:15.2-alpine
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data

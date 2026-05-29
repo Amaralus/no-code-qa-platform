@@ -24,15 +24,15 @@ public class TestCaseFactory {
 
     public ExecutableTestCase produce(TestCase testCase) {
 
-        var testSteps = new ArrayList<ExecutableTestStep>();
+        var executableTestSteps = new ArrayList<ExecutableTestStep>();
         for (var testStep : testCase.getTestSteps())
-            testSteps.add(produce(testStep));
+            executableTestSteps.add(produce(testStep));
 
         var executableTestCase = new ExecutableTestCase(
                 new TestInfo(testCase.getId(), testCase.getName(), projectContext.getProjectId()),
                 testCase.getExecutionProperties());
         var graph = getScheduler(testCase.getExecutionProperties().isParallelExecution())
-                .schedule(testSteps, new SimpleTask(), new SimpleTask(executableTestCase::executionGraphFinishedCallback));
+                .schedule(executableTestSteps, new SimpleTask(), new SimpleTask(executableTestCase::executionGraphFinishedCallback));
         executableTestCase.setExecutionGraph(graph);
 
         return executableTestCase;

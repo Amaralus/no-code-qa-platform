@@ -33,6 +33,11 @@ public class DebugActionFactory implements ActionFactory {
     private record DebugStepAction(String message) implements StepAction {
         @Override
         public void execute(TestContext testContext) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             testContext.setResultMessage(String.valueOf(testContext.resolvePlaceholdersText(message)));
         }
     }
